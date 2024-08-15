@@ -2,6 +2,9 @@ package com.revshop.controllers;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.revshop.service.LoginService;
 import com.revshop.service.impl.LoginServiceIMPL;
 
@@ -23,7 +26,7 @@ public class LoginServlet extends HttpServlet {
 		// TODO Auto-generated constructor stub
 	}
 
-//	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
     // Page paths
     private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/LoginAndRegistration.jsp";
@@ -60,7 +63,7 @@ public class LoginServlet extends HttpServlet {
             }
         } catch (Exception e) {
         	e.printStackTrace();
-//            logger.error("Error during login: ", e);
+            logger.error("Error during login: ", e);
             forwardWithError(request, response, "An unexpected error occurred. Please try again later.");
         }
     }
