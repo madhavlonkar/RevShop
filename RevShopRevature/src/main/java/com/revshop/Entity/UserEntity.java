@@ -1,6 +1,6 @@
-package com.revshop.dto;
+package com.revshop.Entity;
 
-public class UserDTO {
+public class UserEntity {
 
 	private int userId;
 	private String firstName;
@@ -156,7 +156,7 @@ public class UserDTO {
 		this.kycStatus = kycStatus;
 	}
 
-	public UserDTO(int userId, String firstName, String lastName, String gender, String mobile, String email,
+	public UserEntity(int userId, String firstName, String lastName, String gender, String mobile, String email,
 			String pincode, String billingAddress, String shippingAddress, String bankAccountNo, String ifsc,
 			String companyName, String gstNumber, String websiteUrl, String productType, String panNumber,
 			String kycStatus) {
@@ -180,7 +180,7 @@ public class UserDTO {
 		this.kycStatus = kycStatus;
 	}
 
-	public UserDTO() {
+	public UserEntity() {
 		super();
 	}
 

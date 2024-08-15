@@ -2,8 +2,9 @@ package com.revshop.controllers;
 
 import java.io.IOException;
 
-import com.revshop.dao.RegistrationDAO;
-import com.revshop.dto.RegistrationDTO;
+import com.revshop.Entity.LoginEntity;
+import com.revshop.service.LoginService;
+import com.revshop.service.impl.LoginServiceIMPL;
 import com.revshop.utility.BCryptPasswordUtil;
 
 import jakarta.servlet.ServletException;
@@ -19,80 +20,78 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RegistrationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
 	public RegistrationServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		request.getRequestDispatcher("LoginAndRegistration/Login.jsp").forward(request, response);
-	}
+//	private static final Logger logger = LoggerFactory.getLogger(RegistrationServlet.class);
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String userType = request.getParameter("userType");
-		String userName = request.getParameter("username");
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+    // Page paths
+    private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/LoginAndRegistration.jsp";
+    private static final String SUCCESS_PAGE = "OtherPages/Success.html";
+    private static final String ERROR_PAGE = "OtherPages/Error.html";
 
-		String hashedPassword = BCryptPasswordUtil.hashPassword(password);
+    private final LoginService loginService = LoginServiceIMPL.getInstance();
 
-		RegistrationDTO registration = new RegistrationDTO();
-		registration.setEmail(email);
-		registration.setUserId(1);
-		registration.setUserName(userName);
-		registration.setFirstLogin(true);
-		registration.setPassword(hashedPassword);
-		registration.setRole(userType);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+    }
 
-		RegistrationDAO rdao = new RegistrationDAO();
-		try {
-			// Check if email or username already exists
-			if (rdao.emailExists(registration.getEmail())) {
-			    request.setAttribute("errorMessage", "Email already exists. Please use a different email.");
-			    request.setAttribute("section", "sign-up");
-			    request.getRequestDispatcher("LoginAndRegistration/LoginAndRegistration.jsp").forward(request, response);
-			    return;
-			}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userType = request.getParameter("userType");
+        String userName = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-			if (rdao.usernameExists(registration.getUserName())) {
-			    request.setAttribute("errorMessage", "Username already exists. Please choose a different username.");
-			    request.setAttribute("section", "sign-up");
-			    request.getRequestDispatcher("LoginAndRegistration/LoginAndRegistration.jsp").forward(request, response);
-			    return;
-			}
+        if (userName == null || email == null || password == null || userType == null) {
+            request.setAttribute("RegistererrorMessage", "All fields are required.");
+            request.setAttribute("section", "sign-up");
+            request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+            return;
+        }
 
+        String hashedPassword = BCryptPasswordUtil.hashPassword(password);
 
-			// Save the registration details
-			boolean result = rdao.saveLogin(registration);
+        LoginEntity registration = new LoginEntity();
+        registration.setEmail(email);
+        registration.setUserName(userName);
+        registration.setFirstLogin(true);
+        registration.setPassword(hashedPassword);
+        registration.setRole(userType);
 
-			if (result) {
-				response.sendRedirect("OtherPages/Success.html");
-			} else {
-				// If save failed, redirect to an error page
-				response.sendRedirect("OtherPages/Error.html");
-			}
+        try {
+            if (loginService.emailExists(registration.getEmail())) {
+                forwardWithError(request, response, "Email already exists. Please use a different email.");
+                return;
+            }
 
-		} catch (Exception e) {
-			// Log the exception and redirect to an error page
-			System.out.println("Error during registration: " + e.getMessage());
-			e.printStackTrace();
-			request.setAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
-			request.getRequestDispatcher("LoginAndRegistration/LoginAndRegistration.jsp").forward(request, response);
-		}
-	}
+            if (loginService.usernameExists(registration.getUserName())) {
+                forwardWithError(request, response, "Username already exists. Please choose a different username.");
+                return;
+            }
+
+            boolean result = loginService.saveLogin(registration);
+            if (result) {
+                response.sendRedirect(SUCCESS_PAGE);
+            } else {
+                response.sendRedirect(ERROR_PAGE);
+            }
+        } catch (Exception e) {
+        	e.printStackTrace();
+//            logger.error("Error during registration: ", e);
+            forwardWithError(request, response, "An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
+            throws ServletException, IOException {
+        request.setAttribute("RegistererrorMessage", errorMessage);
+        request.setAttribute("section", "sign-up");
+        request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+    }
 
 }
