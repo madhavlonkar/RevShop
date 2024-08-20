@@ -316,7 +316,8 @@
 															</div>
 															<div class="product-line-info">
 																<span class="label-atrr">Discount:</span> <span
-																	class="value"><%=product.getProductDiscount()%> %</span>
+																	class="value"><%=product.getProductDiscount()%>
+																	%</span>
 															</div>
 														</div>
 														<div
@@ -325,7 +326,8 @@
 																<div class="col-md-5 col qty">
 																	<div class="label">Qty:</div>
 																	<div class="quantity">
-																		<input type="text" name="qty" value="<%=product.getProductStock()%>"
+																		<input type="text" name="qty"
+																			value="<%=product.getProductStock()%>"
 																			class="input-group form-control"> <span
 																			class="input-group-btn-vertical">
 																			<button
@@ -349,17 +351,11 @@
 																</div>
 																<div class="col-md-2 col text-xs-right align-self-end">
 																	<div class="cart-line-product-actions">
-																		<form
-																			action="<%=request.getContextPath()%>/ProductDeleteServlet"
-																			method="post">
-																			<input type="hidden" name="productId"
-																				value="<%=product.getProductId()%>">
-																			<button type="submit"
-																				class="btn btn-link remove-from-cart" rel="nofollow"
-																				data-link-action="delete-from-cart">
-																				<i class="fa fa-trash-o" aria-hidden="true"></i>
-																			</button>
-																		</form>
+																		<button class="btn btn-link remove-from-cart"
+																			rel="nofollow"
+																			data-product-id="<%=product.getProductId()%>">
+																			<i class="fa fa-trash-o" aria-hidden="true"></i>
+																		</button>
 																	</div>
 																</div>
 															</div>
@@ -371,6 +367,34 @@
 												}
 												%>
 											</ul>
+											<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+											
+
+											<script>
+											$(document).ready(function() {
+											    $('.remove-from-cart').click(function(event) {
+											        event.preventDefault(); // Prevent the default form submission
+
+											        var productId = $(this).data('product-id');
+											        console.log("Delete button clicked for product ID: " + productId);
+
+											        $.ajax({
+											            url: '<%=request.getContextPath()%>/ProductDeleteServlet',
+											            type: 'POST',
+											            data: { productId: productId },
+											            success: function(response) {
+											                // Remove the product from the UI
+											                console.log("Product deleted successfully");
+											                $('#product-' + productId).remove();
+											            },
+											            error: function(xhr, status, error) {
+											                console.error("Failed to delete the product: " + error);
+											                alert('Failed to delete the product. Please try again.');
+											            }
+											        });
+											    });
+											});
+											</script>
 
 
 

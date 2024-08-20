@@ -37,37 +37,24 @@ public class ProductDeleteServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		 String productIdStr = request.getParameter("productId");
+		String productIdStr = request.getParameter("productId");
 
-	        try {
-	            int productId = Integer.parseInt(productIdStr);
-	            ProductService productService = new ProductServiceIMPL();
+		try {
+			int productId = Integer.parseInt(productIdStr);
+			ProductService productService = new ProductServiceIMPL();
 
-	            boolean isDeleted = productService.deleteProduct(productId);
+			boolean isDeleted = productService.deleteProduct(productId);
 
-	            if (isDeleted) {
-	                // Redirect back to the same page after successful deletion
-	                response.sendRedirect(request.getContextPath() + "/ProductMaintenanceServlet");
-	            } else {
-	                // Handle the case where deletion fails
-	                request.setAttribute("errorMessage", "Failed to delete the product. Please try again.");
-	                request.getRequestDispatcher(request.getContextPath() + "/ProductMaintenanceServlet").forward(request, response);
-	            }
-	        } catch (NumberFormatException e) {
-	            // Handle invalid product ID format
-	            request.setAttribute("errorMessage", "Invalid product ID.");
-	            request.getRequestDispatcher(request.getContextPath() + "/ProductMaintenanceServlet").forward(request, response);
-	        } catch (Exception e) {
-	            // Handle any other exceptions
-	            request.setAttribute("errorMessage", "An error occurred while deleting the product. Please try again.");
-	            request.getRequestDispatcher(request.getContextPath() + "/ProductMaintenanceServlet").forward(request, response);
-	        }
-
+			if (isDeleted) {
+				response.setStatus(HttpServletResponse.SC_OK); // 200 OK
+			} else {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+			}
+		} catch (NumberFormatException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+		}
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 
 }
