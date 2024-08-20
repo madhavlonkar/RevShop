@@ -29,4 +29,34 @@
     <servlet-name>LoginServlet</servlet-name>
     <url-pattern>/LoginServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProductAddServlet</display-name>
+    <servlet-name>ProductAddServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.ProductAddServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProductAddServlet</servlet-name>
+    <url-pattern>/ProductAddServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProductMaintenanceServlet</display-name>
+    <servlet-name>ProductMaintenanceServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.ProductMaintenanceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProductMaintenanceServlet</servlet-name>
+    <url-pattern>/ProductMaintenanceServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProductDeleteServlet</display-name>
+    <servlet-name>ProductDeleteServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.ProductDeleteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProductDeleteServlet</servlet-name>
+    <url-pattern>/ProductDeleteServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

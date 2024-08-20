@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+	
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-section {
+            width: 60%;
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #d35f8d;
+            font-size: 28px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            width: 48%;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #d35f8d;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #b54c6d;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            color: #d35f8d;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .cart-section {
+            width: 35%;
+            border-left: 1px solid #ddd;
+            padding-left: 20px;
+        }
+
+        .payments h3 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 22px;
+            color: #d35f8d;
+        }
+
+        .payment-icons {
+            margin: 15px 0;
+            font-size: 24px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        #previewImage {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h2>Add New Product</h2>
+            <p>Fill in the details to add a new product to the system</p>
+            <form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" name="productName">
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category *</label>
+                        <input type="text" id="productCategory" name="productCategory">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productPrice">Price *</label>
+                        <input type="text" id="productPrice" name="productPrice">
+                    </div>
+                    <div class="form-group">
+                        <label for="productStock">Stock Quantity *</label>
+                        <input type="text" id="productStock" name="productStock">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Product Description *</label>
+                    <textarea id="productDescription" name="productDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productImage">Product Image *</label>
+                    <input type="file" id="productImage" name="productImage" accept="image/*">
+                </div>
+                <button class="checkout-btn">Add Product</button>
+            </form>
+            <a href="#" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <div class="cart-section">
+            <div class="payments">
+                <h3>PREVIEW IMAGE</h3>
+                <div class="payment-icons">
+                    <!-- Alt text will be shown here initially -->
+                    <img id="previewImage" src="" alt="No image uploaded" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('previewImage');
+            const reader = new FileReader();
+            reader.onload = function() {
+                preview.src = reader.result;
+                preview.alt = "Product Image";
+            };
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
