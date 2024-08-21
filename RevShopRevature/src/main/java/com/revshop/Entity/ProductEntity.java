@@ -11,11 +11,12 @@ public class ProductEntity implements Entity {
 	private double productPrice;
 	private double productDiscount;
 	private int productStock;
-	private byte[] productImage;
 	private String productBrand;
 	private String productCategory;
 	private String productTags;
 	private String productStatus;
+
+	private String productImage;
 
 	public int getProductId() {
 		return productId;
@@ -97,17 +98,17 @@ public class ProductEntity implements Entity {
 		this.productStatus = productStatus;
 	}
 
-	public byte[] getProductImage() {
+	public String getProductImage() {
 		return productImage;
 	}
 
-	public void setProductImage(byte[] productImage) {
+	public void setProductImage(String productImage) {
 		this.productImage = productImage;
 	}
 
 	public ProductEntity(int productId, String productName, String productDescription, double productPrice,
-			double productDiscount, int productStock, byte[] productImage, String productBrand, String productCategory,
-			String productTags, String productStatus) {
+			double productDiscount, int productStock, String productBrand, String productCategory, String productTags,
+			String productStatus, String productImage) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -115,39 +116,24 @@ public class ProductEntity implements Entity {
 		this.productPrice = productPrice;
 		this.productDiscount = productDiscount;
 		this.productStock = productStock;
-		this.productImage = productImage;
 		this.productBrand = productBrand;
 		this.productCategory = productCategory;
 		this.productTags = productTags;
 		this.productStatus = productStatus;
+		this.productImage = productImage;
 	}
 
 	public ProductEntity() {
 		super();
 	}
-	
-	public String getProductImageAsBase64() {
-        if (this.productImage != null && this.productImage.length > 0) {
-            return Base64.getEncoder().encodeToString(this.productImage);
-        }
-        return null;
-    }
-    
-    public String getProductImageUrl() {
-        String base64Image = getProductImageAsBase64();
-        if (base64Image != null) {
-            return "data:image/jpeg;base64," + base64Image;
-        }
-        return "path/to/default/image.jpg"; // Fallback in case no image is available
-    }
 
 	@Override
 	public String toString() {
 		return "ProductEntity [productId=" + productId + ", productName=" + productName + ", productDescription="
 				+ productDescription + ", productPrice=" + productPrice + ", productDiscount=" + productDiscount
-				+ ", productStock=" + productStock + ", productImage=" + Arrays.toString(productImage)
-				+ ", productBrand=" + productBrand + ", productCategory=" + productCategory + ", productTags="
-				+ productTags + ", productStatus=" + productStatus + "]";
+				+ ", productStock=" + productStock + ", productBrand=" + productBrand + ", productCategory="
+				+ productCategory + ", productTags=" + productTags + ", productStatus=" + productStatus
+				+ ", productImage=" + productImage + "]";
 	}
 
 }

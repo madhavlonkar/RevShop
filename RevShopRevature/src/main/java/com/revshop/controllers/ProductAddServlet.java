@@ -1,10 +1,10 @@
 package com.revshop.controllers;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import com.revshop.Entity.ProductEntity;
 import com.revshop.service.ProductService;
@@ -48,46 +48,57 @@ public class ProductAddServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String productName = request.getParameter("product_name");
-	    String productDescription = request.getParameter("product_description");
-	    double productPrice = Double.parseDouble(request.getParameter("product_price"));
-	    double productDiscount = Double.parseDouble(request.getParameter("product_discount"));
-	    int productStock = Integer.parseInt(request.getParameter("product_stock"));
-	    String productBrand = request.getParameter("product_brand");
-	    String productCategory = request.getParameter("product_category");
-	    String productStatus = request.getParameter("product_status");
-	    String productTags = request.getParameter("product_tags");
+		String productDescription = request.getParameter("product_description");
+		double productPrice = Double.parseDouble(request.getParameter("product_price"));
+		double productDiscount = Double.parseDouble(request.getParameter("product_discount"));
+		int productStock = Integer.parseInt(request.getParameter("product_stock"));
+		String productBrand = request.getParameter("product_brand");
+		String productCategory = request.getParameter("product_category");
+		String productStatus = request.getParameter("product_status");
+		String productTags = request.getParameter("product_tags");
 
-	    // Retrieve the uploaded file
-	    Part filePart = request.getPart("product_image");
-	    
-	    // Convert the uploaded file into a byte array
-	    byte[] imageBytes = filePart.getInputStream().readAllBytes();
+		String uploadDirectory = "C:\\Users\\madha\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
 
-	    // Create a new ProductEntity and set its fields
-	    ProductEntity product = new ProductEntity();
-	    product.setProductName(productName);
-	    product.setProductDescription(productDescription);
-	    product.setProductPrice(productPrice);
-	    product.setProductDiscount(productDiscount);
-	    product.setProductStock(productStock);
-	    product.setProductBrand(productBrand);
-	    product.setProductCategory(productCategory);
-	    product.setProductStatus(productStatus);
-	    product.setProductTags(productTags);
-	    
-	    // Set the image bytes in the product entity
-	    product.setProductImage(imageBytes);
+		// Retrieve the uploaded file
+		Part filePart = request.getPart("product_image");
 
-	    // Save the product to the database
-	    ProductService productService = new ProductServiceIMPL();
-	    boolean isProductSaved = productService.saveProduct(product);
+		// Get the file name from the Part object
+		String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
-	    // Respond to the client
-	    if (isProductSaved) {
-	        response.getWriter().println("Product added successfully.");
-	    } else {
-	        response.getWriter().println("Failed to add product.");
-	    }
+		// Create a path for the file
+		Path filePath = Paths.get(uploadDirectory + fileName);
+
+		// Save the file to the specified directory
+		Files.copy(filePart.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+		// Store the file path in the database
+		String imagePath = "Static/img/home/" + fileName;
+
+		// Create a new ProductEntity and set its fields
+		ProductEntity product = new ProductEntity();
+		product.setProductName(productName);
+		product.setProductDescription(productDescription);
+		product.setProductPrice(productPrice);
+		product.setProductDiscount(productDiscount);
+		product.setProductStock(productStock);
+		product.setProductBrand(productBrand);
+		product.setProductCategory(productCategory);
+		product.setProductStatus(productStatus);
+		product.setProductTags(productTags);
+
+		// Set the image path in the product entity
+		product.setProductImage(imagePath);
+
+		// Save the product to the database
+		ProductService productService = new ProductServiceIMPL();
+		boolean isProductSaved = productService.saveProduct(product);
+
+		// Respond to the client
+		if (isProductSaved) {
+			response.getWriter().println("Product added successfully.");
+		} else {
+			response.getWriter().println("Failed to add product.");
+		}
 	}
 
 }

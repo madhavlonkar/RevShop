@@ -33,10 +33,22 @@ public class ProductServiceIMPL implements ProductService {
 
 	@Override
 	public boolean deleteProduct(int id) {
-	    // Use the ProductDAO instance to delete the product by ID
-	    ProductDAO productDAO = ProductDAO.getInstance();
-	    return productDAO.delete(id);
+		// Use the ProductDAO instance to delete the product by ID
+		ProductDAO productDAO = ProductDAO.getInstance();
+		return productDAO.delete(id);
 	}
 
+	@Override
+	public ProductEntity getProductById(int id) {
+		// Use the ProductDAO instance to retrieve the product by ID
+		Entity entity = pdao.retrieveById(id);
+
+		// Check if the retrieved entity is an instance of ProductEntity
+		if (entity instanceof ProductEntity) {
+			return (ProductEntity) entity;
+		} else {
+			return null; // Return null if the entity is not a ProductEntity
+		}
+	}
 
 }
