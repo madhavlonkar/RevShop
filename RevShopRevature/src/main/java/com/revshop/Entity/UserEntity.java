@@ -1,6 +1,6 @@
 package com.revshop.Entity;
 
-public class UserEntity {
+public class UserEntity implements Entity {
 
 	private int userId;
 	private String firstName;
@@ -18,7 +18,7 @@ public class UserEntity {
 	private String websiteUrl;
 	private String productType;
 	private String panNumber;
-	private String kycStatus;
+//	private String kycStatus;
 
 	public int getUserId() {
 		return userId;
@@ -148,18 +148,18 @@ public class UserEntity {
 		this.panNumber = panNumber;
 	}
 
-	public String getKycStatus() {
-		return kycStatus;
-	}
-
-	public void setKycStatus(String kycStatus) {
-		this.kycStatus = kycStatus;
-	}
+//	public String getKycStatus() {
+//		return kycStatus;
+//	}
+//
+//	public void setKycStatus(String kycStatus) {
+//		this.kycStatus = kycStatus;
+//	}
 
 	public UserEntity(int userId, String firstName, String lastName, String gender, String mobile, String email,
 			String pincode, String billingAddress, String shippingAddress, String bankAccountNo, String ifsc,
-			String companyName, String gstNumber, String websiteUrl, String productType, String panNumber,
-			String kycStatus) {
+			String companyName, String gstNumber, String websiteUrl, String productType, String panNumber
+			) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
@@ -177,7 +177,6 @@ public class UserEntity {
 		this.websiteUrl = websiteUrl;
 		this.productType = productType;
 		this.panNumber = panNumber;
-		this.kycStatus = kycStatus;
 	}
 
 	public UserEntity() {
@@ -190,8 +189,7 @@ public class UserEntity {
 				+ gender + ", mobile=" + mobile + ", email=" + email + ", pincode=" + pincode + ", billingAddress="
 				+ billingAddress + ", shippingAddress=" + shippingAddress + ", bankAccountNo=" + bankAccountNo
 				+ ", ifsc=" + ifsc + ", companyName=" + companyName + ", gstNumber=" + gstNumber + ", websiteUrl="
-				+ websiteUrl + ", productType=" + productType + ", panNumber=" + panNumber + ", kycStatus=" + kycStatus
-				+ "]";
+				+ websiteUrl + ", productType=" + productType + ", panNumber=" + panNumber +"]";
 	}
 
 }

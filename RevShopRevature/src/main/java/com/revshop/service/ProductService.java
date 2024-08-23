@@ -13,5 +13,8 @@ public interface ProductService {
 	public boolean deleteProduct(int id);
 
 	ProductEntity getProductById(int id);
+	
+	public boolean updateProduct(ProductEntity entity);
+
 
 }

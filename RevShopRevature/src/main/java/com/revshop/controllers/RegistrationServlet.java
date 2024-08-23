@@ -30,7 +30,7 @@ public class RegistrationServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationServlet.class);
 
     // Page paths
-    private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/LoginAndRegistration.jsp";
+    private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/user-register.jsp";
     private static final String SUCCESS_PAGE = "OtherPages/Success.html";
     private static final String ERROR_PAGE = "OtherPages/Error.html";
 
@@ -52,7 +52,6 @@ public class RegistrationServlet extends HttpServlet {
 
         if (userName == null || email == null || password == null || userType == null) {
             request.setAttribute("RegistererrorMessage", "All fields are required.");
-            request.setAttribute("section", "sign-up");
             request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
             return;
         }
@@ -93,7 +92,6 @@ public class RegistrationServlet extends HttpServlet {
     private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
             throws ServletException, IOException {
         request.setAttribute("RegistererrorMessage", errorMessage);
-        request.setAttribute("section", "sign-up");
         request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
     }
 

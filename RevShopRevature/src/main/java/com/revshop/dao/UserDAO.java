@@ -9,11 +9,15 @@ import java.util.List;
 
 import com.revshop.Entity.Entity;
 import com.revshop.Entity.LoginEntity;
+import com.revshop.Entity.UserEntity;
 import com.revshop.utility.DBConnection;
 
 public class UserDAO implements DAO {
 
     private static final String INSERT_USER_BASIC = "INSERT INTO tbl_user (email) VALUES (?)";
+    private static final String INSERT_USER_FULL = "INSERT INTO tbl_user (firstName, lastName, gender, mobile, email, pincode, billingAddress, shippingAddress, bankAccountNo, ifsc, companyName, gstNumber, websiteUrl, productType, panNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_USER = "UPDATE tbl_user SET firstName = ?, lastName = ?, gender = ?, mobile = ?, pincode = ?, billingAddress = ?, shippingAddress = ?, bankAccountNo = ?, ifsc = ?, companyName = ?, gstNumber = ?, websiteUrl = ?, productType = ?, panNumber = ? WHERE userId = ?";
+
 
     // Singleton instance
     private static UserDAO instance;
@@ -35,14 +39,103 @@ public class UserDAO implements DAO {
 
     @Override
     public boolean insert(Entity entity) {
-        // Implementation to be provided
-        return false;
+        // Cast the entity to UserEntity
+        UserEntity user = (UserEntity) entity;
+        int result = 0;
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_FULL, Statement.RETURN_GENERATED_KEYS)) {
+
+            connection.setAutoCommit(false);
+
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getLastName());
+            preparedStatement.setString(3, user.getGender());
+            preparedStatement.setString(4, user.getMobile());
+            preparedStatement.setString(5, user.getEmail());
+            preparedStatement.setString(6, user.getPincode());
+            preparedStatement.setString(7, user.getBillingAddress());
+            preparedStatement.setString(8, user.getShippingAddress());
+            preparedStatement.setString(9, user.getBankAccountNo());
+            preparedStatement.setString(10, user.getIfsc());
+            preparedStatement.setString(11, user.getCompanyName());
+            preparedStatement.setString(12, user.getGstNumber());
+            preparedStatement.setString(13, user.getWebsiteUrl());
+            preparedStatement.setString(14, user.getProductType());
+            preparedStatement.setString(15, user.getPanNumber());
+
+            result = preparedStatement.executeUpdate();
+
+            if (result > 0) {
+                connection.commit();
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        user.setUserId(generatedKeys.getInt(1));
+                    }
+                }
+            } else {
+                connection.rollback();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try (Connection connection = DBConnection.getConnection()) {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        }
+
+        return result > 0;
     }
 
     @Override
     public boolean update(Entity entity) {
-        // Implementation to be provided
-        return false;
+        // Cast the entity to UserEntity
+        UserEntity user = (UserEntity) entity;
+        int result = 0;
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER)) {
+
+            connection.setAutoCommit(false);
+
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getLastName());
+            preparedStatement.setString(3, user.getGender());
+            preparedStatement.setString(4, user.getMobile());
+            preparedStatement.setString(5, user.getPincode());
+            preparedStatement.setString(6, user.getBillingAddress());
+            preparedStatement.setString(7, user.getShippingAddress());
+            preparedStatement.setString(8, user.getBankAccountNo());
+            preparedStatement.setString(9, user.getIfsc());
+            preparedStatement.setString(10, user.getCompanyName());
+            preparedStatement.setString(11, user.getGstNumber());
+            preparedStatement.setString(12, user.getWebsiteUrl());
+            preparedStatement.setString(13, user.getProductType());
+            preparedStatement.setString(14, user.getPanNumber());
+            preparedStatement.setInt(15, user.getUserId());
+
+            result = preparedStatement.executeUpdate();
+
+            if (result > 0) {
+                connection.commit();
+            } else {
+                connection.rollback();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try (Connection connection = DBConnection.getConnection()) {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        }
+
+        return result > 0;
     }
 
     @Override

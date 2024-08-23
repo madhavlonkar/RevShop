@@ -58,9 +58,9 @@ public class LoginServiceIMPL implements LoginService {
     }
 
     @Override
-    public boolean validate(String username, String password) {
+    public boolean validate(String email, String password) {
         try {
-            LoginEntity loginDetails = logindao.findByUsername(username);
+            LoginEntity loginDetails = logindao.findByEmail(email);
             if (loginDetails == null) {
                 return false; // Username does not exist
             }
@@ -72,6 +72,17 @@ public class LoginServiceIMPL implements LoginService {
             System.err.println("Error validating user: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+    
+    @Override
+    public LoginEntity findByEmail(String email) {
+        try {
+            return logindao.findByEmail(email);
+        } catch (Exception e) {
+            System.err.println("Error finding user by email: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 }

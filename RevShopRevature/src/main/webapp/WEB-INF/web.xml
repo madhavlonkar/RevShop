@@ -69,4 +69,44 @@
     <servlet-name>ProductEditServlet</servlet-name>
     <url-pattern>/ProductEditServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FirstTimeRegistrationSellerServlet</display-name>
+    <servlet-name>FirstTimeRegistrationSellerServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.FirstTimeRegistrationSellerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FirstTimeRegistrationSellerServlet</servlet-name>
+    <url-pattern>/FirstTimeRegistrationSellerServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DetailRegistration</display-name>
+    <servlet-name>DetailRegistration</servlet-name>
+    <servlet-class>com.revshop.controllers.DetailRegistration</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DetailRegistration</servlet-name>
+    <url-pattern>/DetailRegistration</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DetailRegistrationServlet</display-name>
+    <servlet-name>DetailRegistrationServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.DetailRegistrationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DetailRegistrationServlet</servlet-name>
+    <url-pattern>/DetailRegistrationServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProductUpdateServlet</display-name>
+    <servlet-name>ProductUpdateServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.ProductUpdateServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProductUpdateServlet</servlet-name>
+    <url-pattern>/ProductUpdateServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

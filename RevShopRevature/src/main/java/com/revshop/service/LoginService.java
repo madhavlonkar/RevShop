@@ -7,6 +7,7 @@ public interface LoginService {
 	public boolean saveLogin(LoginEntity login);
 	public boolean emailExists(String email);
 	public boolean usernameExists(String username);
-	public boolean validate(String username, String password);
+	public boolean validate(String email, String password);
+	LoginEntity findByEmail(String email);
 
 }

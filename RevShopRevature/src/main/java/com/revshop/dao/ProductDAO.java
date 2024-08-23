@@ -39,6 +39,7 @@ public class ProductDAO implements DAO {
 	private static final String INSERT_PRODUCT_QUERY = "INSERT INTO tbl_products(productName, productDescription, productPrice, productDiscount, productStock, productImage, productBrand, productCategory, productTags, productStatus) VALUES(?,?,?,?,?,?,?,?,?,?)";
 	private static final String RETRIEVE_ALL_QUERY = "SELECT * FROM tbl_products";
 	private static final String RETRIEVE_BY_ID_QUERY = "SELECT * FROM tbl_products WHERE productId = ?";
+	private static final String UPDATE_PRODUCT_QUERY = "UPDATE tbl_products SET productName = ?, productDescription = ?, productPrice = ?, productDiscount = ?, productStock = ?, productImage = ?, productBrand = ?, productCategory = ?, productTags = ?, productStatus = ? WHERE productId = ?";
 
 	@Override
 	public boolean insert(Entity entity) {
@@ -71,7 +72,31 @@ public class ProductDAO implements DAO {
 
 	@Override
 	public boolean update(Entity entity) {
-		return false;
+	    
+
+	    try (Connection connection = DBConnection.getConnection();
+	         PreparedStatement stmt = connection.prepareStatement(UPDATE_PRODUCT_QUERY)) {
+
+	        ProductEntity product = (ProductEntity) entity;
+	        stmt.setString(1, product.getProductName());
+	        stmt.setString(2, product.getProductDescription());
+	        stmt.setDouble(3, product.getProductPrice());
+	        stmt.setDouble(4, product.getProductDiscount());
+	        stmt.setInt(5, product.getProductStock());
+	        stmt.setString(6, product.getProductImage()); // Assuming image path is a string
+	        stmt.setString(7, product.getProductBrand());
+	        stmt.setString(8, product.getProductCategory());
+	        stmt.setString(9, product.getProductTags());
+	        stmt.setString(10, product.getProductStatus());
+	        stmt.setInt(11, product.getProductId());
+
+	        int result = stmt.executeUpdate();
+	        return result == 1;
+
+	    } catch (SQLException e) {
+	        logger.error("Error updating product ", e);
+	        return false;
+	    }
 	}
 
 	@Override

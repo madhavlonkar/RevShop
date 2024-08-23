@@ -57,7 +57,8 @@ public class ProductAddServlet extends HttpServlet {
 		String productStatus = request.getParameter("product_status");
 		String productTags = request.getParameter("product_tags");
 
-		String uploadDirectory = "C:\\Users\\madha\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
+		String uploadDirectory = "C:\\Users\\Maddy\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
+		
 
 		// Retrieve the uploaded file
 		Part filePart = request.getPart("product_image");

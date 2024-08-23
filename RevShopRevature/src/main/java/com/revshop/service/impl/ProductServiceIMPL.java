@@ -50,5 +50,11 @@ public class ProductServiceIMPL implements ProductService {
 			return null; // Return null if the entity is not a ProductEntity
 		}
 	}
+	
+	@Override
+	public boolean updateProduct(ProductEntity entity) {
+	    return pdao.update(entity);
+	}
+
 
 }

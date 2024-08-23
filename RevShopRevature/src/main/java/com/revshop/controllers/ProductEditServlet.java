@@ -6,6 +6,7 @@ import com.revshop.Entity.ProductEntity;
 import com.revshop.service.ProductService;
 import com.revshop.service.impl.ProductServiceIMPL;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,9 +44,8 @@ public class ProductEditServlet extends HttpServlet {
 		if (product != null) {
 			// Set the product as a request attribute
 			request.setAttribute("product", product);
-
-			// Forward to the edit JSP page
-			request.getRequestDispatcher("Seller/editProduct.jsp").forward(request, response);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("Seller/editProduct.jsp");
+			dispatcher.forward(request, response);
 		} else {
 			// If product not found, redirect to an error page or display a message
 			response.sendRedirect("errorPage.jsp");

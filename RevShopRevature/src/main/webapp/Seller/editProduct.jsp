@@ -1,9 +1,10 @@
+<%@ page import="com.revshop.Entity.ProductEntity"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Add New Product</title>
+<title>Add Product</title>
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link
@@ -12,24 +13,19 @@
 <!-- Basic Page Needs -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Rev Shop Ecommerce Site</title>
-
 <meta name="keywords" content="Furniture, Decor, Interior">
 <meta name="description"
 	content="Furnitica - Minimalist Furniture HTML Template">
 <meta name="author" content="tivatheme">
-
-
 <!-- Mobile Meta -->
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1">
-
 <!-- Google Fonts -->
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700"
 	rel="stylesheet">
-
 <!-- Vendor CSS -->
+<base href="${pageContext.request.contextPath}/">
 <link rel="stylesheet"
 	href="Static/libs/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet"
@@ -40,15 +36,12 @@
 <link rel="stylesheet" href="Static/libs/nivo-slider/css/style.css">
 <link rel="stylesheet"
 	href="Static/libs/font-material/css/material-design-iconic-font.min.css">
-<link rel="stylesheet"
-	href="Static/libs/slider-range/css/jslider.css">
+<link rel="stylesheet" href="Static/libs/slider-range/css/jslider.css">
 <link rel="stylesheet"
 	href="Static/libs/owl-carousel/assets/owl.carousel.min.css">
-
 <!-- Template CSS -->
 <link rel="stylesheet" type="text/css" href="Static/css/style.css">
-<link rel="stylesheet" type="text/css"
-	href="Static/css/reponsive.css">
+<link rel="stylesheet" type="text/css" href="Static/css/reponsive.css">
 <style>
 body {
 	font-family: 'Montserrat', sans-serif;
@@ -218,86 +211,7 @@ p {
 
 	<header>
 		<!-- header left mobie -->
-		<div class="header-mobile d-md-none">
-			<div
-				class="mobile hidden-md-up text-xs-center d-flex align-items-center justify-content-around">
 
-				<!-- menu left -->
-				<div id="mobile_mainmenu" class="item-mobile-top">
-					<i class="fa fa-bars" aria-hidden="true"></i>
-				</div>
-
-				<!-- logo -->
-				<div class="mobile-logo">
-					<a href="index-2.html"> <img class="logo-mobile img-fluid"
-						src="img/home/logo-mobie.png" alt="Prestashop_Furnitica">
-					</a>
-				</div>
-
-				<!-- menu right -->
-				<div class="mobile-menutop" data-target="#mobile-pagemenu">
-					<i class="zmdi zmdi-more"></i>
-				</div>
-			</div>
-
-			<!-- search -->
-			<div id="mobile_search" class="d-flex">
-				<div id="mobile_search_content">
-					<form method="get" action="#">
-
-						<input type="text" name="s" value="" placeholder="Search">
-						<button type="submit">
-							<i class="fa fa-search"></i>
-						</button>
-					</form>
-				</div>
-				<div class="desktop_cart">
-					<div class="blockcart block-cart cart-preview tiva-toggle">
-						<div class="header-cart tiva-toggle-btn">
-							<span class="cart-products-count">1</span> <i
-								class="fa fa-shopping-cart" aria-hidden="true"></i>
-						</div>
-						<div class="dropdown-content">
-							<div class="cart-content">
-								<table>
-									<tbody>
-										<tr>
-											<td class="product-image"><a href="product-detail.html">
-													<img src="Static/img/product/5.jpg" alt="Product">
-											</a></td>
-											<td>
-												<div class="product-name">
-													<a href="product-detail.html">Organic Strawberry Fruits</a>
-												</div>
-												<div>
-													2 x <span class="product-price">£28.98</span>
-												</div>
-											</td>
-											<td class="action"><a class="remove" href="#"> <i
-													class="fa fa-trash-o" aria-hidden="true"></i>
-											</a></td>
-										</tr>
-										<tr class="total">
-											<td colspan="2">Total:</td>
-											<td>£92.96</td>
-										</tr>
-
-										<tr>
-											<td colspan="3" class="d-flex justify-content-center">
-												<div class="cart-button">
-													<a href="product-cart.html" title="View Cart">View Cart</a>
-													<a href="product-checkout.html" title="Checkout">Checkout</a>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<!-- header desktop -->
 		<div class="header-top d-xs-none ">
@@ -306,8 +220,8 @@ p {
 					<!-- logo -->
 					<div class="col-sm-2 col-md-2 d-flex align-items-center">
 						<div id="logo">
-							<a href="index-2.html"> <img
-								src="Static/img/home/logo.png" alt="logo" class="img-fluid">
+							<a href="index-2.html"> <img src="Static/img/home/logo.png"
+								alt="logo" class="img-fluid">
 							</a>
 						</div>
 					</div>
@@ -317,10 +231,25 @@ p {
 						class="col-sm-5 col-md-5 align-items-center justify-content-center navbar-expand-md main-menu">
 						<div class="menu navbar collapse navbar-collapse">
 							<ul class="menu-top navbar-nav">
-								<li><a href="#" class="parent">Home</a></li>
-								<li><a href="#" class="parent">Blog</a></li>
-								<li class="nav-link"><a href="#" class="parent">Page</a></li>
-								<li><a href="contact.html" class="parent">Contact US</a></li>
+								<li><a href="index.html" class="parent">Home</a></li>
+								<li><a href="categories.html" class="parent">Categories</a>
+									<div class="dropdown-menu">
+										<ul>
+											<li class="item"><a href="index-2.html"
+												title="Electronics">Electronics</a></li>
+											<li class="item"><a href="home2.html" title="Fashion">Fashion</a>
+											</li>
+											<li class="item"><a href="home3.html"
+												title="Home Appliances">Home Appliances</a></li>
+											<li class="item"><a href="home4.html" title="Books">Books</a>
+											</li>
+											<li class="item"><a href="home5.html" title="Sports">Sports</a>
+											</li>
+										</ul>
+									</div></li>
+								<li><a href="order-history.html" class="parent">Order
+										History</a></li>
+								<li><a href="favorites.html" class="parent">Favorites</a></li>
 							</ul>
 						</div>
 					</div>
@@ -389,45 +318,7 @@ p {
 									<span class="cart-products-count">1</span> <i
 										class="fa fa-shopping-cart" aria-hidden="true"></i>
 								</div>
-								<div class="dropdown-content">
-									<div class="cart-content">
-										<table>
-											<tbody>
-												<tr>
-													<td class="product-image"><a
-														href="product-detail.html"> <img
-															src="Static/img/product/5.jpg" alt="Product">
-													</a></td>
-													<td>
-														<div class="product-name">
-															<a href="product-detail.html">Organic Strawberry
-																Fruits</a>
-														</div>
-														<div>
-															2 x <span class="product-price">£28.98</span>
-														</div>
-													</td>
-													<td class="action"><a class="remove" href="#"> <i
-															class="fa fa-trash-o" aria-hidden="true"></i>
-													</a></td>
-												</tr>
-												<tr class="total">
-													<td colspan="2">Total:</td>
-													<td>£92.96</td>
-												</tr>
 
-												<tr>
-													<td colspan="3" class="d-flex justify-content-center">
-														<div class="cart-button">
-															<a href="product-cart.html" title="View Cart">View
-																Cart</a> <a href="product-checkout.html" title="Checkout">Checkout</a>
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
 
 							</div>
 						</div>
@@ -455,30 +346,37 @@ p {
 								</div>
 							</div>
 						</nav>
-						<
+
 						<div class="container">
 							<div class="form-section">
 								<h2>Edit Product</h2>
 								<p>Fill in the details to update the product in the system</p>
-								<form action="/RevShopRevature/ProductUpdateServlet"
+								<form
+									action="${pageContext.request.contextPath}/ProductUpdateServlet"
 									method="POST" enctype="multipart/form-data">
+									<%
+									ProductEntity product = (ProductEntity) request.getAttribute("product");
+									if (product != null) {
+									%>
 									<input type="hidden" name="product_id"
-										value="${product.productId}">
+										value="<%=product.getProductId()%>">
 
 									<div class="form-row">
 										<div class="form-group">
 											<label for="productName">Product Name *</label> <input
 												type="text" id="productName" name="product_name"
-												value="${product.productName}" required>
+												value="<%=product.getProductName()%>" required>
 										</div>
 										<div class="form-group">
 											<label for="productCategory">Category *</label> <select
 												id="productCategory" name="product_category" required>
-												<option value="electronics" ${product.productCategory=='electronics' ? 'selected' : ''}>Electronics</option>
-												<option value="fashion" ${product.productCategory=='fashion' ? 'selected' : ''}>Fashion</option>
-												<option value="home_decor" ${product.productCategory=='home_decor' ? 'selected' : ''}>Home
+												<option value="electronics"
+													<%="electronics".equals(product.getProductCategory()) ? "selected" : ""%>>Electronics</option>
+												<option value="fashion"
+													<%="fashion".equals(product.getProductCategory()) ? "selected" : ""%>>Fashion</option>
+												<option value="home_decor"
+													<%="home_decor".equals(product.getProductCategory()) ? "selected" : ""%>>Home
 													Decor</option>
-												<!-- Add more categories as needed -->
 											</select>
 										</div>
 									</div>
@@ -486,45 +384,48 @@ p {
 										<div class="form-group">
 											<label for="productPrice">Price *</label> <input
 												type="number" id="productPrice" name="product_price"
-												value="${product.productPrice}" step="0.01" required>
+												value="<%=product.getProductPrice()%>" step="0.01"
+												required>
 										</div>
 										<div class="form-group">
 											<label for="productDiscount">Discount</label> <input
 												type="number" id="productDiscount" name="product_discount"
-												value="${product.productDiscount}" step="0.01">
+												value="<%=product.getProductDiscount()%>" step="0.01">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-group">
 											<label for="productStock">Stock Quantity *</label> <input
 												type="number" id="productStock" name="product_stock"
-												value="${product.productStock}" required>
+												value="<%=product.getProductStock()%>" required>
 										</div>
 										<div class="form-group">
 											<label for="productBrand">Brand *</label> <input type="text"
 												id="productBrand" name="product_brand"
-												value="${product.productBrand}" required>
+												value="<%=product.getProductBrand()%>" required>
 										</div>
 									</div>
 									<div class="form-group">
 										<label for="productDescription">Product Description *</label>
 										<textarea id="productDescription" name="product_description"
-											required>${product.productDescription}</textarea>
+											required><%=product.getProductDescription()%></textarea>
 									</div>
 									<div class="form-row">
 										<div class="form-group">
 											<label for="productStatus">Status *</label> <select
 												id="productStatus" name="product_status" required>
-												<option value="in_stock" ${product.productStatus=='in_stock' ? 'selected' : ''}>In
+												<option value="in_stock"
+													<%="in_stock".equals(product.getProductStatus()) ? "selected" : ""%>>In
 													Stock</option>
-												<option value="out_of_stock" ${product.productStatus=='out_of_stock' ? 'selected' : ''}>Out
+												<option value="out_of_stock"
+													<%="out_of_stock".equals(product.getProductStatus()) ? "selected" : ""%>>Out
 													of Stock</option>
 											</select>
 										</div>
 										<div class="form-group">
 											<label for="productTags">Tags</label> <input type="text"
 												id="productTags" name="product_tags"
-												value="${product.productTags}"
+												value="<%=product.getProductTags()%>"
 												placeholder="e.g., sale, new, bestseller">
 										</div>
 									</div>
@@ -533,12 +434,19 @@ p {
 											type="file" id="productImage" name="product_image"
 											accept="image/*">
 										<p>
-											Current Image: <a href="${product.productImage}"
-												target="_blank">${product.productImage}</a>
+											Current Image: <a href="<%=product.getProductImage()%>"
+												target="_blank"><%=product.getProductImage()%></a>
 										</p>
 									</div>
 									<button class="checkout-btn" type="submit">Update
 										Product</button>
+									<%
+									} else {
+									%>
+									<p>Error: Product not found or not set.</p>
+									<%
+									}
+									%>
 								</form>
 								<a href="#" class="back-btn">← Back to Dashboard</a>
 							</div>
@@ -547,7 +455,7 @@ p {
 								<div class="payments">
 									<h3>PREVIEW IMAGE</h3>
 									<div class="payment-icons">
-										<img id="previewImage" src="${product.productImage}"
+										<img id="previewImage" src="<%=product.getProductImage()%>"
 											alt="Product Image" style="width: 100%;">
 										<button id="removeImage" style="display: none;">X</button>
 									</div>
@@ -591,12 +499,11 @@ p {
 						</script>
 
 
-						<!-- footer -->
 						<footer class="footer-one">
 							<div class="inner-footer">
 								<div class="container">
 									<div class="footer-top col-lg-12 col-xs-12">
-										<div class=" row">
+										<div class="row">
 											<div class="nov-html col-lg-4 col-sm-12 col-xs-12">
 												<div class="block">
 													<div class="block-content">
@@ -609,8 +516,6 @@ p {
 															minim</p>
 													</div>
 												</div>
-
-
 											</div>
 											<div class="nov-html col-lg-4 col-sm-6">
 												<div class="block m-top">
@@ -618,8 +523,7 @@ p {
 													<div class="block-content">
 														<div class="contact-us">
 															<div class="title-content">
-																<i class="fa fa-home" aria-hidden="true"></i> <span>Address
-																	:</span>
+																<i class="fa fa-home" aria-hidden="true"></i> <span>Address:</span>
 															</div>
 															<div class="content-contact address-contact">
 																<p>123 Suspendis matti, Visaosang Building VST
@@ -628,8 +532,7 @@ p {
 														</div>
 														<div class="contact-us">
 															<div class="title-content">
-																<i class="fa fa-envelope" aria-hidden="true"></i> <span>Email
-																	:</span>
+																<i class="fa fa-envelope" aria-hidden="true"></i> <span>Email:</span>
 															</div>
 															<div class="content-contact mail-contact">
 																<p>madhavlonkar2@gmail.com</p>
@@ -637,19 +540,16 @@ p {
 														</div>
 														<div class="contact-us">
 															<div class="title-content">
-																<i class="fa fa-phone" aria-hidden="true"></i> <span>Phone
-																	:</span>
+																<i class="fa fa-phone" aria-hidden="true"></i> <span>Phone:</span>
 															</div>
 															<div class="content-contact phone-contact">
 																<p>+919370548600</p>
 															</div>
 														</div>
-
 													</div>
 												</div>
 											</div>
 											<div class="tiva-modules col-lg-4 col-md-6">
-
 												<div class="block m-top1">
 													<div class="block-content">
 														<div class="social-content">
@@ -658,17 +558,13 @@ p {
 																<div class="social">
 																	<ul class="list-inline mb-0 justify-content-end">
 																		<li class="list-inline-item mb-0"><a href="#"
-																			target="_blank"> <i class="fa fa-facebook"></i>
-																		</a></li>
+																			target="_blank"> <i class="fa fa-facebook"></i></a></li>
 																		<li class="list-inline-item mb-0"><a href="#"
-																			target="_blank"> <i class="fa fa-twitter"></i>
-																		</a></li>
+																			target="_blank"> <i class="fa fa-twitter"></i></a></li>
 																		<li class="list-inline-item mb-0"><a href="#"
-																			target="_blank"> <i class="fa fa-google"></i>
-																		</a></li>
+																			target="_blank"> <i class="fa fa-google"></i></a></li>
 																		<li class="list-inline-item mb-0"><a href="#"
-																			target="_blank"> <i class="fa fa-instagram"></i>
-																		</a></li>
+																			target="_blank"> <i class="fa fa-instagram"></i></a></li>
 																	</ul>
 																</div>
 															</div>
@@ -680,11 +576,10 @@ p {
 														<div class="payment-content">
 															<div class="title-block">Payment accept</div>
 															<div class="payment-image">
-																<img class="img-fluid"
-																	src="Static/img/home/payment.png" alt="img">
+																<img class="img-fluid" src="Static/img/home/payment.png"
+																	alt="img">
 															</div>
 														</div>
-														<!-- Popup newsletter -->
 													</div>
 												</div>
 											</div>
@@ -695,28 +590,17 @@ p {
 							<div id="tiva-copyright">
 								<div class="container">
 									<div class="row">
-										<div class="text-center col-lg-12 ">
-											<span> Rev Shop </span>
+										<div class="text-center col-lg-12">
+											<span>Rev Shop</span>
 										</div>
 									</div>
 								</div>
 							</div>
 						</footer>
-
-
-						<!-- back top top -->
+						<!-- back to top -->
 						<div class="back-to-top">
-							<a href="#"> <i class="fa fa-long-arrow-up"></i>
-							</a>
+							<a href="#"> <i class="fa fa-long-arrow-up"></i></a>
 						</div>
-
-						<!-- menu mobie left -->
-
-
-						<!-- menu mobie right -->
-
-
-
 						<!-- Vendor JS -->
 						<script src="Static/libs/jquery/jquery.min.js"></script>
 						<script src="Static/libs/popper/popper.min.js"></script>
@@ -728,11 +612,7 @@ p {
 							src="Static/libs/slider-range/js/jquery.dependClass-0.1.js"></script>
 						<script src="Static/libs/slider-range/js/draggable-0.1.js"></script>
 						<script src="Static/libs/slider-range/js/jquery.slider.js"></script>
-
 						<!-- Template JS -->
 						<script src="Static/js/theme.js"></script>
 </body>
-
-
-<!-- product-grid-sidebar-left10:55-->
 </html>
