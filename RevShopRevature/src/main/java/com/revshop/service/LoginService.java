@@ -9,5 +9,6 @@ public interface LoginService {
 	public boolean usernameExists(String username);
 	public boolean validate(String email, String password);
 	LoginEntity findByEmail(String email);
+	boolean updateFirstLoginFlag(String email);
 
 }

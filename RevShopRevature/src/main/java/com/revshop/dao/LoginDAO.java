@@ -76,8 +76,26 @@ public class LoginDAO implements DAO {
 
     @Override
     public boolean update(Entity entity) {
-        // TODO Auto-generated method stub
-        return false;
+        LoginEntity loginEntity = (LoginEntity) entity;
+        String query = "UPDATE tbl_login SET email = ?, password = ?, isFirstLogin = ?, role = ?, username = ? WHERE loginId = ?";
+        
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, loginEntity.getEmail());
+            preparedStatement.setString(2, loginEntity.getPassword());
+            preparedStatement.setBoolean(3, loginEntity.isFirstLogin());
+            preparedStatement.setString(4, loginEntity.getRole());
+            preparedStatement.setString(5, loginEntity.getUserName());
+            preparedStatement.setInt(6, loginEntity.getLoginId());
+
+            int result = preparedStatement.executeUpdate();
+            return result > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -133,6 +151,7 @@ public class LoginDAO implements DAO {
     // Extracts a LoginEntity object from a ResultSet
     private LoginEntity extractLoginEntity(ResultSet resultSet) throws SQLException {
         LoginEntity loginEntity = new LoginEntity();
+        loginEntity.setLoginId(resultSet.getInt("loginId"));  // Extracting loginId from ResultSet
         loginEntity.setUserName(resultSet.getString("username"));
         loginEntity.setEmail(resultSet.getString("email"));
         loginEntity.setPassword(resultSet.getString("password"));
@@ -141,4 +160,5 @@ public class LoginDAO implements DAO {
         loginEntity.setUserId(resultSet.getInt("userid"));
         return loginEntity;
     }
+
 }

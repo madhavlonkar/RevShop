@@ -85,4 +85,11 @@ public class LoginServiceIMPL implements LoginService {
             return null;
         }
     }
+
+	@Override
+	public boolean updateFirstLoginFlag(String email) {
+		LoginEntity user = findByEmail(email);
+		user.setFirstLogin(false);
+		return logindao.update(user);
+	}
 }

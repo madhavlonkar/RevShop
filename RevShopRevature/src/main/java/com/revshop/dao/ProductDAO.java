@@ -1,7 +1,5 @@
 package com.revshop.dao;
 
-import java.io.ByteArrayInputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,7 +34,7 @@ public class ProductDAO implements DAO {
 		return instance;
 	}
 
-	private static final String INSERT_PRODUCT_QUERY = "INSERT INTO tbl_products(productName, productDescription, productPrice, productDiscount, productStock, productImage, productBrand, productCategory, productTags, productStatus) VALUES(?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT_PRODUCT_QUERY = "INSERT INTO tbl_products(productName, productDescription, productPrice, productDiscount, productStock, productImage, productBrand, productCategory, productTags, productStatus,sellerId) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String RETRIEVE_ALL_QUERY = "SELECT * FROM tbl_products";
 	private static final String RETRIEVE_BY_ID_QUERY = "SELECT * FROM tbl_products WHERE productId = ?";
 	private static final String UPDATE_PRODUCT_QUERY = "UPDATE tbl_products SET productName = ?, productDescription = ?, productPrice = ?, productDiscount = ?, productStock = ?, productImage = ?, productBrand = ?, productCategory = ?, productTags = ?, productStatus = ? WHERE productId = ?";
@@ -60,6 +58,7 @@ public class ProductDAO implements DAO {
 			stmt.setString(8, product.getProductCategory());
 			stmt.setString(9, product.getProductTags());
 			stmt.setString(10, product.getProductStatus());
+			stmt.setInt(11, product.getSellerId());
 
 			int result = stmt.executeUpdate();
 			return result == 1;

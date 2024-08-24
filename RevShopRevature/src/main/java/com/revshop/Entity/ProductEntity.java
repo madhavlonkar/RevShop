@@ -1,8 +1,5 @@
 package com.revshop.Entity;
 
-import java.util.Arrays;
-import java.util.Base64;
-
 public class ProductEntity implements Entity {
 
 	private int productId;
@@ -17,6 +14,7 @@ public class ProductEntity implements Entity {
 	private String productStatus;
 
 	private String productImage;
+	private int sellerId;
 
 	public int getProductId() {
 		return productId;
@@ -106,9 +104,21 @@ public class ProductEntity implements Entity {
 		this.productImage = productImage;
 	}
 
+	public int getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(int sellerId) {
+		this.sellerId = sellerId;
+	}
+
+	public ProductEntity() {
+		super();
+	}
+
 	public ProductEntity(int productId, String productName, String productDescription, double productPrice,
 			double productDiscount, int productStock, String productBrand, String productCategory, String productTags,
-			String productStatus, String productImage) {
+			String productStatus, String productImage, int sellerId) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -121,10 +131,7 @@ public class ProductEntity implements Entity {
 		this.productTags = productTags;
 		this.productStatus = productStatus;
 		this.productImage = productImage;
-	}
-
-	public ProductEntity() {
-		super();
+		this.sellerId = sellerId;
 	}
 
 	@Override
@@ -133,7 +140,7 @@ public class ProductEntity implements Entity {
 				+ productDescription + ", productPrice=" + productPrice + ", productDiscount=" + productDiscount
 				+ ", productStock=" + productStock + ", productBrand=" + productBrand + ", productCategory="
 				+ productCategory + ", productTags=" + productTags + ", productStatus=" + productStatus
-				+ ", productImage=" + productImage + "]";
+				+ ", productImage=" + productImage + ", sellerId=" + sellerId + "]";
 	}
 
 }

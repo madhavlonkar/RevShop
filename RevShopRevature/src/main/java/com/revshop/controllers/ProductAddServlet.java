@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import com.revshop.Entity.LoginEntity;
 import com.revshop.Entity.ProductEntity;
 import com.revshop.service.ProductService;
 import com.revshop.service.impl.ProductServiceIMPL;
@@ -15,6 +16,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
 /**
@@ -47,6 +49,10 @@ public class ProductAddServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		HttpSession session = request.getSession();
+        LoginEntity user = (LoginEntity) session.getAttribute("user");
+        
+		int sellerId=user.getUserId();
 		String productName = request.getParameter("product_name");
 		String productDescription = request.getParameter("product_description");
 		double productPrice = Double.parseDouble(request.getParameter("product_price"));
@@ -86,6 +92,7 @@ public class ProductAddServlet extends HttpServlet {
 		product.setProductCategory(productCategory);
 		product.setProductStatus(productStatus);
 		product.setProductTags(productTags);
+		product.setSellerId(sellerId);
 
 		// Set the image path in the product entity
 		product.setProductImage(imagePath);

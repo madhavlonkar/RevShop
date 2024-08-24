@@ -1,11 +1,9 @@
-<%@ page import="com.revshop.Entity.ProductEntity"%>
-<%@ page import="java.util.List"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home Page</title>
+<title>Product Details</title>
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link
@@ -44,46 +42,79 @@
 <link rel="stylesheet" type="text/css" href="Static/css/style.css">
 <link rel="stylesheet" type="text/css" href="Static/css/reponsive.css">
 <style>
-
-
-/* Container that holds each product */
-.product-container .thumbnail-container {
-    width: 100%;
-    height: 200px; /* Fixed height for consistency */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ddd; /* Optional: Add a border for consistency */
-    background-color: #f8f8f8; /* Optional: Add a background color if the image doesn't fill the container */
+.toast {
+	visibility: hidden;
+	min-width: 250px;
+	margin-left: -125px;
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	border-radius: 2px;
+	padding: 16px;
+	position: fixed;
+	z-index: 1;
+	left: 50%;
+	bottom: 30px;
+	font-size: 17px;
 }
 
-/* The actual image inside each product */
-.product-container .thumbnail-container img {
-    max-width: 80%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    /* Ensures the entire image fits within the container and is centered */
+.toast.show {
+	visibility: visible;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
-/* Ensure all product containers have consistent height */
-.product-miniature {
-    min-height: 350px; /* Adjust based on your design */
-    margin-bottom: 20px;
+@
+-webkit-keyframes fadein {
+	from {bottom: 0;
+	opacity: 0;
 }
 
-.img-fluid {
-    max-width: 50%;
-    }
+to {
+	bottom: 30px;
+	opacity: 1;
+}
 
+}
+@
+keyframes fadein {
+	from {bottom: 0;
+	opacity: 0;
+}
+
+to {
+	bottom: 30px;
+	opacity: 1;
+}
+
+}
+@
+-webkit-keyframes fadeout {
+	from {bottom: 30px;
+	opacity: 1;
+}
+
+to {
+	bottom: 0;
+	opacity: 0;
+}
+
+}
+@
+keyframes fadeout {
+	from {bottom: 30px;
+	opacity: 1;
+}
+
+to {
+	bottom: 0;
+	opacity: 0;
+}
+}
 </style>
-
 </head>
 
-<body id="product-sidebar-left" class="product-grid-sidebar-left">
+<body id="product-detail">
 	<header>
 		<!-- header left mobie -->
 
@@ -206,9 +237,10 @@
 	<!-- main content -->
 	<div class="main-content">
 		<div id="wrapper-site">
-			<div id="content-wrapper" class="full-width">
+			<div id="content-wrapper">
 				<div id="main">
 					<div class="page-home">
+
 						<!-- breadcrumb -->
 						<nav class="breadcrumb-bg">
 							<div class="container no-index">
@@ -218,19 +250,17 @@
 										</a></li>
 										<li><a href="#"> <span>Madhav Lonkar</span>
 										</a></li>
-
 									</ol>
 								</div>
 							</div>
 						</nav>
-
 						<div class="container">
 							<div class="content">
 								<div class="row">
 									<div
-										class="sidebar-3 sidebar-collection col-lg-3 col-md-4 col-sm-4">
+										class="sidebar-3 sidebar-collection col-lg-3 col-md-3 col-sm-4">
 
-										<!-- category menu -->
+										<!-- category -->
 										<div class="sidebar-block">
 											<div class="title-block">Categories</div>
 											<div class="block-content">
@@ -277,243 +307,243 @@
 
 										<!-- best seller -->
 
-
 										<!-- product tag -->
 
 									</div>
-									<%@ page language="java" contentType="text/html; charset=UTF-8"
-										pageEncoding="UTF-8"%>
-									<%@ page import="com.revshop.Entity.ProductEntity"%>
-									<%@ page import="java.util.List"%>
-									<%
-									// Retrieve the list of products from the request scope
-									List<ProductEntity> products = (List<ProductEntity>) request.getAttribute("products");
-									%>
-									<div class="col-sm-8 col-lg-9 col-md-8 product-container">
-										<h1>All Products</h1>
-										<div class="js-product-list-top firt nav-top">
-											<div class="d-flex justify-content-around row">
-												<div class="col col-xs-12">
-													<ul class="nav nav-tabs">
-														<li><a href="#grid" data-toggle="tab"
-															class="active show fa fa-th-large"></a></li>
-														<li><a href="#list" data-toggle="tab"
-															class="fa fa-list-ul"></a></li>
-													</ul>
-												</div>
-												<div class="col col-xs-12">
-													<div
-														class="d-flex sort-by-row justify-content-lg-end justify-content-md-end">
-														<div class="products-sort-order dropdown">
-															<select class="select-title">
-																<option value="">Sort by</option>
-																<option value="name-asc">Name, A to Z</option>
-																<option value="name-desc">Name, Z to A</option>
-																<option value="price-asc">Price, low to high</option>
-																<option value="price-desc">Price, high to low</option>
-															</select>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="tab-content product-items">
-											<div id="grid" class="related tab-pane fade in active show">
-												<div class="row">
-													<%
-													for (ProductEntity product : products) {
-													%>
-													<div class="item text-center col-md-4">
-														<div
-															class="product-miniature js-product-miniature item-one first-item">
-															<div class="thumbnail-container border">
-																<a
-																	href="ProductDetailsServlet?productId=<%=product.getProductId()%>">
-																	<img class="img-fluid"
-																	src="<%=product.getProductImage()%>"
-																	alt="<%=product.getProductName()%>">
-																	
-																</a>
-																
-															</div>
-															<div class="product-description">
-																<div class="product-groups">
-																	<div class="product-title">
-																		<a
-																			href="ProductDetailsServlet?productId=<%=product.getProductId()%>"><%=product.getProductName()%></a>
-																	</div>
-																	<div class="rating">
-																		<div class="star-content">
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																		</div>
-																	</div>
-																	<div class="product-group-price">
-																		<div class="product-price-and-shipping">
-																			<span class="price">RS <%=product.getProductPrice()%></span>
-																		</div>
-																	</div>
-																</div>
-																<div
-																	class="product-buttons d-flex justify-content-center">
-																	<form action="cart" method="post" class="formAddToCart">
-																		<input type="hidden" name="id_product"
-																			value="<%=product.getProductId()%>">
-																		<button class="add-to-cart" type="submit">
-																			<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-																		</button>
-																	</form>
-																	<a class="addToWishlist"
-																		href="wishlist.jsp?productId=<%=product.getProductId()%>"
-																		data-rel="<%=product.getProductId()%>"> <i
-																		class="fa fa-heart" aria-hidden="true"></i>
-																	</a> <a
-																		href="quick-view.jsp?id=<%=product.getProductId()%>"
-																		class="quick-view hidden-sm-down"> <i
-																		class="fa fa-eye" aria-hidden="true"></i>
-																	</a>
+									<div class="col-sm-8 col-lg-9 col-md-9">
+										<div class="main-product-detail">
+											<h2>${product.productName}</h2>
+											<div class="product-single row">
+												<div class="product-detail col-xs-12 col-md-5 col-sm-5">
+													<div class="page-content" id="content">
+														<div class="images-container">
+															<div class="js-qv-mask mask tab-content border">
+																<div id="item1" class="tab-pane fade active in show">
+																	<img src="${product.productImage}" alt="Product Image">
 																</div>
 															</div>
 														</div>
 													</div>
-													<%
-													}
-													%>
 												</div>
-											</div>
-											<div id="list" class="related tab-pane fade">
-												<div class="row">
-													<%
-													for (ProductEntity product : products) {
-													%>
-													<div class="item col-md-12">
-														<div
-															class="product-miniature js-product-miniature item-one first-item">
-															<div class="row">
-																<div class="col-md-4">
-																	<div class="thumbnail-container border">
-																		<a
-																			href="ProductDetailsServlet?productId=<%=product.getProductId()%>">
-																			<img class="img-fluid"
-																			src="<%=product.getProductImage()%>"
-																			alt="<%=product.getProductName()%>">
+												<div class="product-info col-xs-12 col-md-7 col-sm-7">
+													<div class="detail-description">
+														<div class="price-del">
+															<span class="price" style="color: black;"> RS
+																${Math.floor(product.productPrice - (product.productPrice * product.productDiscount / 100))}
+															</span> <span class="original-price"
+																style="text-decoration: line-through; color: red; margin-left: 10px;">
+																RS ${Math.floor(product.productPrice)} </span> <span
+																class="discount-percentage"
+																style="color: green; font-weight: bold; margin-left: 10px;">
+																(${Math.floor(product.productDiscount)}% OFF) </span>
+														</div>
+														<p class="description">${product.productDescription}</p>
+
+														<div class="has-border cart-area">
+															<div class="product-quantity">
+																<div class="qty">
+																	<div class="input-group">
+																		<span class="add"> <a class="addToWishlist"
+																			href="#"> <i class="fa fa-heart"
+																				aria-hidden="true"></i>
 																		</a>
+																			<button class="btn btn-primary add-to-cart add-item"
+																				data-button-action="add-to-cart" type="submit">
+																				<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+																				<span>Add to cart</span>
+																			</button>
+																		</span>
 																	</div>
 																</div>
-																<div class="col-md-8">
-																	<div class="product-description">
-																		<div class="product-groups">
-																			<div class="product-title">
-																				<a
-																					href="ProductDetailsServlet?productId=<%=product.getProductId()%>"><%=product.getProductName()%></a>
-																				<span class="info-stock"> <i
-																					class="fa fa-check-square-o" aria-hidden="true"></i>
-																					In Stock
-																				</span>
+															</div>
+															<div class="clearfix"></div>
+															<p class="product-minimal-quantity"></p>
+														</div>
+														<div class="d-flex2 has-border">
+															<div class="btn-group">
+																<a href="#" id="share-button"> <i
+																	class="zmdi zmdi-share"></i> <span>Share</span>
+																</a> <a href="#" id="print-button" class="print"> <i
+																	class="zmdi zmdi-print"></i> <span>Print</span>
+																</a>
+																<div class="rating-comment d-flex">
+																	<div class="review-description d-flex">
+																		<span>REVIEW :</span>
+																		<div class="rating">
+																			<div class="star-content">
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
 																			</div>
-																			<div class="rating">
-																				<div class="star-content">
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																				</div>
-																			</div>
-																			<div class="product-group-price">
-																				<div class="product-price-and-shipping">
-																					<span class="price">RS <%=product.getProductPrice()%></span>
-																				</div>
-																			</div>
-																			<div class="discription">
-																				<%=product.getProductDescription()%>
-																			</div>
-																		</div>
-																		<div class="product-buttons d-flex">
-																			<form action="cart" method="post"
-																				class="formAddToCart">
-																				<input type="hidden" name="id_product"
-																					value="<%=product.getProductId()%>">
-																				<button class="add-to-cart" type="submit">
-																					<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-																					Add to cart
-																				</button>
-																			</form>
-																			<a class="addToWishlist"
-																				href="wishlist.jsp?productId=<%=product.getProductId()%>"
-																				data-rel="<%=product.getProductId()%>"> <i
-																				class="fa fa-heart" aria-hidden="true"></i>
-																			</a> <a
-																				href="quick-view.jsp?id=<%=product.getProductId()%>"
-																				class="quick-view hidden-sm-down"> <i
-																				class="fa fa-eye" aria-hidden="true"></i>
-																			</a>
 																		</div>
 																	</div>
 																</div>
 															</div>
 														</div>
+
+														<div class="d-flex2 has-border">
+															<span class="float-left"> <span class="availb">&nbsp  Availability:</span>
+																<span class="check"> <i
+																	class="fa fa-check-square-o" aria-hidden="true"></i> <span
+																	style="color: ${product.productStock > 0 ? 'green' : 'red'};">
+																		${product.productStock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}
+																</span>
+															</span>
+															</span>
+															<br>
+														</div>
+
+														<!-- Confirmation Message -->
+														<p id="confirmation-message"
+															style="color: green; display: none; margin-top: 10px;">Link
+															copied to clipboard!</p>
+
+														<!-- Toast Notification -->
+														<div id="toast" class="toast">Link copied to
+															clipboard</div>
+
+														<div class="content">
+															<p>
+																Categories: <span class="content2">
+																	${product.productCategory} </span>
+															</p>
+															<p>
+																Tags: <span class="content2">
+																	${product.productTags} </span>
+															</p>
+														</div>
 													</div>
-													<%
-													}
-													%>
 												</div>
 											</div>
-										</div>
 
+											<div class="review" id="review-section">
+												<ul class="nav nav-tabs">
+													<li class="active"><a data-toggle="tab" href="#review">Reviews
+															(2)</a></li>
+												</ul>
 
-										<!-- pagination -->
-										<div class="pagination">
-											<div class="js-product-list-top ">
-												<div class="d-flex justify-content-around row">
-													<div class="showing col col-xs-12">
-														<span>SHOWING 1-3 OF 3 ITEM(S)</span>
-													</div>
-													<div class="page-list col col-xs-12">
-														<ul>
-															<li><a rel="prev" href="#"
-																class="previous disabled js-search-link"> Previous </a>
-															</li>
-															<li class="current active"><a rel="nofollow"
-																href="#" class="disabled js-search-link"> 1 </a></li>
-															<li><a rel="nofollow" href="#"
-																class="disabled js-search-link"> 2 </a></li>
-															<li><a rel="nofollow" href="#"
-																class="disabled js-search-link"> 3 </a></li>
-
-															<li><a rel="next" href="#"
-																class="next disabled js-search-link"> Next </a></li>
-														</ul>
+												<div class="tab-content">
+													<div id="review" class="tab-pane fade active show">
+														<div class="spr-form">
+															<div class="user-comment">
+																<div class="spr-review">
+																	<div class="spr-review-header">
+																		<span class="spr-review-header-byline"> <strong>Peter
+																				Capidal</strong> - <span>Apr 14, 2018</span>
+																		</span>
+																		<div class="rating">
+																			<div class="star-content">
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="spr-review-content">
+																		<p class="spr-review-content-body">In feugiat
+																			venenatis enim, non finibus metus bibendum eu. Proin
+																			massa justo, eleifend fermentum varius quis, semper
+																			gravida quam. Cras nec enim sed lacus viverra luctus.
+																			Nunc quis accumsan mauris. Aliquam fermentum sit amet
+																			est id scelerisque. Nam porta risus metus.</p>
+																	</div>
+																</div>
+																<div class="spr-review preview2">
+																	<div class="spr-review-header">
+																		<span class="spr-review-header-byline"> <strong>David
+																				James</strong> - <span>Apr 13, 2018</span>
+																		</span>
+																		<div class="rating">
+																			<div class="star-content">
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																				<div class="star"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="spr-review-content">
+																		<p class="spr-review-content-body">In feugiat
+																			venenatis enim, non finibus metus bibendum eu. Proin
+																			massa justo, eleifend fermentum varius quis, semper
+																			gravida quam. Cras nec enim sed lacus viverra luctus.
+																			Nunc quis accumsan mauris. Aliquam fermentum sit amet
+																			est id scelerisque. Nam porta risus metus.</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<form id="write-review-section" method="post" action="#"
+															class="new-review-form">
+															<input type="hidden" name="review[rating]" value="3">
+															<input type="hidden" name="product_id">
+															<h3 class="spr-form-title">Write a review</h3>
+															<fieldset>
+																<div class="spr-form-review-rating">
+																	<label class="spr-form-label">Your Rating</label>
+																	<fieldset class="ratings">
+																		<input type="radio" id="star5" name="rating" value="5" />
+																		<label class="full" for="star5"
+																			title="Awesome - 5 stars"></label> <input
+																			type="radio" id="star4half" name="rating"
+																			value="4 and a half" /> <input type="radio"
+																			id="star4" name="rating" value="4" /> <label
+																			class="full" for="star4"
+																			title="Pretty good - 4 stars"></label> <input
+																			type="radio" id="star3half" name="rating"
+																			value="3 and a half" /> <input type="radio"
+																			id="star3" name="rating" value="3" /> <label
+																			class="full" for="star3" title="Meh - 3 stars"></label>
+																		<input type="radio" id="star2half" name="rating"
+																			value="2 and a half" /> <input type="radio"
+																			id="star2" name="rating" value="2" /> <label
+																			class="full" for="star2" title="Kinda bad - 2 stars"></label>
+																		<input type="radio" id="star1half" name="rating"
+																			value="1 and a half" /> <input type="radio"
+																			id="star1" name="rating" value="1" /> <label
+																			class="full" for="star1"
+																			title="Sucks big time - 1 star"></label> <input
+																			type="radio" id="starhalf" name="rating" value="half" />
+																	</fieldset>
+																</div>
+															</fieldset>
+															<fieldset class="spr-form-contact">
+																<div class="spr-form-contact-name">
+																	<input
+																		class="spr-form-input spr-form-input-text form-control"
+																		placeholder="Enter your name">
+																</div>
+																<div class="spr-form-contact-email">
+																	<input
+																		class="spr-form-input spr-form-input-email form-control"
+																		placeholder="Enter your email">
+																</div>
+															</fieldset>
+															<fieldset>
+																<div class="spr-form-review-body">
+																	<div class="spr-form-input">
+																		<textarea class="spr-form-input-textarea" rows="10"
+																			placeholder="Write your comments here"></textarea>
+																	</div>
+																</div>
+															</fieldset>
+															<div class="submit">
+																<input type="submit" name="addComment"
+																	id="submitComment" class="btn btn-default"
+																	value="Submit Review">
+															</div>
+														</form>
 													</div>
 												</div>
 											</div>
+
 										</div>
 									</div>
-
-									<!-- end col-md-9-1 -->
 								</div>
 							</div>
 						</div>
@@ -522,6 +552,7 @@
 			</div>
 		</div>
 	</div>
+
 
 	<!-- footer -->
 	<footer class="footer-one">
@@ -626,6 +657,46 @@
 		<a href="#"> <i class="fa fa-long-arrow-up"></i></a>
 	</div>
 
+	<script>
+		document
+				.getElementById('share-button')
+				.addEventListener(
+						'click',
+						function(event) {
+							event.preventDefault();
+
+							// Copy the current URL to the clipboard
+							navigator.clipboard
+									.writeText(window.location.href)
+									.then(
+											function() {
+												// Show the confirmation message
+												var confirmationMessage = document
+														.getElementById('confirmation-message');
+												confirmationMessage.style.display = 'block';
+
+												// Hide the message after a few seconds
+												setTimeout(
+														function() {
+															confirmationMessage.style.display = 'none';
+														}, 1000);
+											},
+											function(err) {
+												console
+														.error(
+																'Could not copy text: ',
+																err);
+											});
+						});
+
+		document.getElementById('print-button').addEventListener('click',
+				function(event) {
+					event.preventDefault();
+					// Trigger the print dialog
+					window.print();
+				});
+	</script>
+	<!-- Vendor JS -->
 	<script src="Static/libs/jquery/jquery.min.js"></script>
 	<script src="Static/libs/popper/popper.min.js"></script>
 	<script src="Static/libs/bootstrap/js/bootstrap.min.js"></script>

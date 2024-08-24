@@ -19,71 +19,71 @@ import jakarta.servlet.http.HttpSession;
  * Servlet implementation class LoginServlet
  */
 public class LoginServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
-    // Page paths
-    private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/user-login.jsp";
-    private static final String SUCCESS_PAGE = "OtherPages/success.jsp";
-    private static final String DETAIL_REGISTRATION_JSP = "LoginAndRegistration/detail-registration.jsp";
+	// Page paths
+	private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/user-login.jsp";
+	private static final String SUCCESS_PAGE = "OtherPages/success.jsp";
+	private static final String DETAIL_REGISTRATION_JSP = "LoginAndRegistration/detail-registration.jsp";
 
-    private final LoginService loginService = LoginServiceIMPL.getInstance();
+	private final LoginService loginService = LoginServiceIMPL.getInstance();
 
-    public LoginServlet() {
-        super();
-    }
+	public LoginServlet() {
+		super();
+	}
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
-    }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+	}
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
 
-        if (email == null || password == null) {
-            forwardWithError(request, response, "Username and password are required.");
-            return;
-        }
+		if (email == null || password == null) {
+			forwardWithError(request, response, "Username and password are required.");
+			return;
+		}
 
-        try {
-            if (loginService.validate(email, password)) {
-                // Retrieve user details after successful validation
-                LoginEntity user = loginService.findByEmail(email);
-                
-                if (user != null) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("user", user); // Store the entire user object in session
+		try {
+			if (loginService.validate(email, password)) {
+				// Retrieve user details after successful validation
+				LoginEntity user = loginService.findByEmail(email);
 
-                    // Check if it's the user's first login
-                    if (user.isFirstLogin()) {
-                        // Redirect to the detailed registration page if it's the first login
-                        response.sendRedirect(DETAIL_REGISTRATION_JSP);
-                    } else {
-                        // Redirect to the success page after a normal login
-                        response.sendRedirect(SUCCESS_PAGE);
-                    }
-                } else {
-                    forwardWithError(request, response, "Failed to retrieve user details.");
-                }
-            } else {
-                forwardWithError(request, response, "Invalid username or password");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Error during login: ", e);
-            forwardWithError(request, response, "An unexpected error occurred. Please try again later.");
-        }
-    }
+				if (user != null) {
+					HttpSession session = request.getSession();
+					session.setAttribute("user", user); 
 
-    private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
-            throws ServletException, IOException {
-        request.setAttribute("LoginerrorMessage", errorMessage);
-        request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
-    }
+					// Check if it's the user's first login
+					if (user.isFirstLogin()) {
+						
+						response.sendRedirect(DETAIL_REGISTRATION_JSP);
+					} else {
+						// Redirect to the success page after a normal login
+						response.sendRedirect("HomeServlet");
+					}
+				} else {
+					forwardWithError(request, response, "Failed to retrieve user details.");
+				}
+			} else {
+				forwardWithError(request, response, "Invalid username or password");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error during login: ", e);
+			forwardWithError(request, response, "An unexpected error occurred. Please try again later.");
+		}
+	}
+
+	private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
+			throws ServletException, IOException {
+		request.setAttribute("LoginerrorMessage", errorMessage);
+		request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+	}
 }
