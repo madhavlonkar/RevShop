@@ -1,5 +1,6 @@
 <%@ page import="com.revshop.Entity.ProductEntity"%>
 <%@ page import="java.util.List"%>
+<%@ page import="jakarta.servlet.http.HttpSession"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,50 +45,124 @@
 <link rel="stylesheet" type="text/css" href="Static/css/style.css">
 <link rel="stylesheet" type="text/css" href="Static/css/reponsive.css">
 <style>
+.toast {
+	visibility: hidden;
+	min-width: 250px;
+	margin-left: -125px;
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	border-radius: 2px;
+	padding: 16px;
+	position: fixed;
+	z-index: 1;
+	left: 50%;
+	bottom: 30px;
+	font-size: 17px;
+}
 
+.toast.show {
+	visibility: visible;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@
+-webkit-keyframes fadein {
+	from {bottom: 0;
+	opacity: 0;
+}
+
+to {
+	bottom: 30px;
+	opacity: 1;
+}
+
+}
+@
+keyframes fadein {
+	from {bottom: 0;
+	opacity: 0;
+}
+
+to {
+	bottom: 30px;
+	opacity: 1;
+}
+
+}
+@
+-webkit-keyframes fadeout {
+	from {bottom: 30px;
+	opacity: 1;
+}
+
+to {
+	bottom: 0;
+	opacity: 0;
+}
+
+}
+@
+keyframes fadeout {
+	from {bottom: 30px;
+	opacity: 1;
+}
+
+to {
+	bottom: 0;
+	opacity: 0;
+}
+}
+</style>
+<style>
 
 /* Container that holds each product */
 .product-container .thumbnail-container {
-    width: 100%;
-    height: 200px; /* Fixed height for consistency */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ddd; /* Optional: Add a border for consistency */
-    background-color: #f8f8f8; /* Optional: Add a background color if the image doesn't fill the container */
+	width: 100%;
+	height: 200px; /* Fixed height for consistency */
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd; /* Optional: Add a border for consistency */
+	background-color: #f8f8f8;
+	/* Optional: Add a background color if the image doesn't fill the container */
 }
 
 /* The actual image inside each product */
 .product-container .thumbnail-container img {
-    max-width: 80%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    /* Ensures the entire image fits within the container and is centered */
+	max-width: 80%;
+	max-height: 100%;
+	width: auto;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	/* Ensures the entire image fits within the container and is centered */
 }
 
 /* Ensure all product containers have consistent height */
 .product-miniature {
-    min-height: 350px; /* Adjust based on your design */
-    margin-bottom: 20px;
+	min-height: 350px; /* Adjust based on your design */
+	margin-bottom: 20px;
 }
 
 .img-fluid {
-    max-width: 50%;
-    }
-
+	max-width: 50%;
+}
 </style>
 
 </head>
 
 <body id="product-sidebar-left" class="product-grid-sidebar-left">
+	<div id="toast" class="toast"></div>
 	<header>
+		<%
+		// Fetch the user object from the session
+		HttpSession s = request.getSession();
+		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) s.getAttribute("user");
+		%>
 		<!-- header left mobie -->
-
-
 		<!-- header desktop -->
 		<div class="header-top d-xs-none ">
 			<div class="container">
@@ -187,16 +262,31 @@
 								</div>
 							</div>
 						</div>
+						<%
+																			if (user != null) {
+																				// Show add to cart button only if user is logged in
+																			%>
 						<div class="desktop_cart">
 							<div class="blockcart block-cart cart-preview tiva-toggle">
 								<div class="header-cart tiva-toggle-btn">
-									<span class="cart-products-count">1</span> <i
+									<span class="cart-products-count">1</span> <a
+										href="CartServlet?userId=<%=user.getUserId()%>"> <i
 										class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
 								</div>
-
-
 							</div>
 						</div>
+						<%}else{ %>
+						<div class="desktop_cart">
+							<div class="blockcart block-cart cart-preview tiva-toggle">
+								<div class="header-cart tiva-toggle-btn">
+									<span class="cart-products-count">1</span> <a
+										href="LoginAndRegistration/user-login.jsp"> <i
+										class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
+								</div>
+							</div>
+						</div><%} %>
 					</div>
 				</div>
 			</div>
@@ -281,10 +371,7 @@
 										<!-- product tag -->
 
 									</div>
-									<%@ page language="java" contentType="text/html; charset=UTF-8"
-										pageEncoding="UTF-8"%>
-									<%@ page import="com.revshop.Entity.ProductEntity"%>
-									<%@ page import="java.util.List"%>
+
 									<%
 									// Retrieve the list of products from the request scope
 									List<ProductEntity> products = (List<ProductEntity>) request.getAttribute("products");
@@ -320,6 +407,7 @@
 										<div class="tab-content product-items">
 											<div id="grid" class="related tab-pane fade in active show">
 												<div class="row">
+
 													<%
 													for (ProductEntity product : products) {
 													%>
@@ -332,9 +420,9 @@
 																	<img class="img-fluid"
 																	src="<%=product.getProductImage()%>"
 																	alt="<%=product.getProductName()%>">
-																	
+
 																</a>
-																
+
 															</div>
 															<div class="product-description">
 																<div class="product-groups">
@@ -369,13 +457,28 @@
 																</div>
 																<div
 																	class="product-buttons d-flex justify-content-center">
-																	<form action="cart" method="post" class="formAddToCart">
-																		<input type="hidden" name="id_product"
-																			value="<%=product.getProductId()%>">
+																	<%
+																	if (user != null) {
+																		// Show add to cart button only if user is logged in
+																	%>
+																	<!-- Update the form to use AJAX -->
+																	<form action="AddToCartServlet" method="post"
+																		class="formAddToCart">
+
+																		<input type="hidden" name="productId"
+																			value="<%=product.getProductId()%>"> <input
+																			type="hidden" name="userId"
+																			value="<%=user.getUserId()%>">
 																		<button class="add-to-cart" type="submit">
 																			<i class="fa fa-shopping-cart" aria-hidden="true"></i>
 																		</button>
 																	</form>
+
+																	<%
+																	}
+																	// Show a login prompt or disable button if not logged in
+																	%>
+
 																	<a class="addToWishlist"
 																		href="wishlist.jsp?productId=<%=product.getProductId()%>"
 																		data-rel="<%=product.getProductId()%>"> <i
@@ -453,15 +556,26 @@
 																			</div>
 																		</div>
 																		<div class="product-buttons d-flex">
-																			<form action="cart" method="post"
+																			<%
+																			if (user != null) {
+																				// Show add to cart button only if user is logged in
+																			%>
+																			<form action="AddToCartServlet" method="post"
 																				class="formAddToCart">
-																				<input type="hidden" name="id_product"
-																					value="<%=product.getProductId()%>">
+																				<input type="hidden" name="productId"
+																					value="<%=product.getProductId()%>"> <input
+																					type="hidden" name="userId"
+																					value="<%=user.getUserId()%>">
 																				<button class="add-to-cart" type="submit">
 																					<i class="fa fa-shopping-cart" aria-hidden="true"></i>
 																					Add to cart
 																				</button>
 																			</form>
+																			<%
+																			}
+																			// Show a login prompt or disable button if not logged in
+																			%>
+
 																			<a class="addToWishlist"
 																				href="wishlist.jsp?productId=<%=product.getProductId()%>"
 																				data-rel="<%=product.getProductId()%>"> <i
@@ -483,7 +597,6 @@
 												</div>
 											</div>
 										</div>
-
 
 										<!-- pagination -->
 										<div class="pagination">
@@ -625,6 +738,8 @@
 	<div class="back-to-top">
 		<a href="#"> <i class="fa fa-long-arrow-up"></i></a>
 	</div>
+
+
 
 	<script src="Static/libs/jquery/jquery.min.js"></script>
 	<script src="Static/libs/popper/popper.min.js"></script>

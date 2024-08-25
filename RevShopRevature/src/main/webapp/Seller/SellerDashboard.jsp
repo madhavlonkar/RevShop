@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
 <%@ page import="com.revshop.Entity.ProductEntity"%>
 <%@ page import="java.util.List"%>
 <!DOCTYPE html>
@@ -47,7 +46,6 @@
 <link rel="stylesheet" type="text/css" href="Static/css/style.css">
 <link rel="stylesheet" type="text/css" href="Static/css/reponsive.css">
 </head>
-
 <body class="product-cart checkout-cart blog">
 	<header>
 		<div class="header-top d-xs-none">
@@ -141,7 +139,6 @@
 			</div>
 		</div>
 	</header>
-
 	<!-- main content -->
 	<div class="main-content" id="cart">
 		<!-- main -->
@@ -159,7 +156,6 @@
 					</div>
 				</div>
 			</nav>
-
 			<div class="container">
 				<div class="row">
 					<!-- Sidebar -->
@@ -207,7 +203,6 @@
 										class="zmdi zmdi-minus"></i> <i class="zmdi zmdi-plus"></i>
 									</span> <a class="cateItem" href="#">Sports</a>
 								</div>
-
 							</div>
 						</div>
 					</div>
@@ -288,7 +283,6 @@
 																		</a>
 																	</div>
 																</div>
-
 																<div class="col-md-2 col text-xs-right align-self-end">
 																	<div class="cart-line-product-actions">
 																		<button class="btn btn-link remove-from-cart"
@@ -307,100 +301,40 @@
 												}
 												%>
 											</ul>
+											
 											<!-- Updated jQuery inclusion -->
 											<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 											<script>
-                                            $(document).ready(function() {
-                                                // Use event delegation to ensure dynamically added elements are handled
-                                                $(document).on('click', '.remove-from-cart', function(event) {
-                                                    event.preventDefault(); // Prevent the default form submission
+											$(document).ready(function() {
+											    $(document).on('click', '.remove-from-cart', function(event) {
+											        event.preventDefault(); // Prevent the default form submission
 
-                                                    var productId = $(this).data('product-id');
-                                                    console.log("Delete button clicked for product ID: " + productId);
+											        var productId = $(this).data('product-id');
+											        console.log("Delete button clicked for product ID: " + productId);
 
-                                                    $.ajax({
-                                                        url: '<%=request.getContextPath()%>
-												/ProductDeleteServlet',
-																									type : 'POST',
-																									data : {
-																										productId : productId
-																									},
-																									success : function(
-																											response) {
-																										// Remove the product from the UI
-																										console
-																												.log("Product deleted successfully");
-																										$(
-																												'#product-'
-																														+ productId)
-																												.remove();
-																									},
-																									error : function(
-																											xhr,
-																											status,
-																											error) {
-																										console
-																												.error("Failed to delete the product: "
-																														+ error);
-																										alert('Failed to delete the product. Please try again.');
-																									}
-																								});
-																					});
-																});
-											</script>
+											        if (!productId) {
+											            console.error("No product ID found.");
+											            return;
+											        }
 
-											<script>
-												$(document)
-														.ready(
-																function() {
-																	// Handle increment button click
-																	$(
-																			'.bootstrap-touchspin-up')
-																			.click(
-																					function() {
-																						var quantityInput = $(
-																								this)
-																								.closest(
-																										'.quantity')
-																								.find(
-																										'input[name="qty"]');
-																						var currentValue = parseInt(quantityInput
-																								.val());
+											        $.ajax({
+											            url: 'ProductDeleteServlet',  // Use the contextPath variable here
+											            type: 'POST',
+											            data: {
+											                productId: productId
+											            },
+											            success: function(response) {
+											                console.log("Product deleted successfully: ", response);
+											                $('#product-' + productId).remove();
+											            },
+											            error: function(xhr, status, error) {
+											                console.error("Failed to delete the product: " + error);
+											                alert('Failed to delete the product. Please try again.');
+											            }
+											        });
+											    });
+											});
 
-																						if (!isNaN(currentValue)) {
-																							quantityInput
-																									.val(currentValue + 1);
-																						} else {
-																							quantityInput
-																									.val(1);
-																						}
-																					});
-
-																	// Handle decrement button click
-																	$(
-																			'.bootstrap-touchspin-down')
-																			.click(
-																					function() {
-																						var quantityInput = $(
-																								this)
-																								.closest(
-																										'.quantity')
-																								.find(
-																										'input[name="qty"]');
-																						var currentValue = parseInt(quantityInput
-																								.val());
-
-																						if (!isNaN(currentValue)
-																								&& currentValue > 1) {
-																							quantityInput
-																									.val(currentValue - 1);
-																						} else {
-																							quantityInput
-																									.val(1); // Ensure it doesn't go below 1
-																						}
-																					});
-																});
 											</script>
 										</div>
 									</div>
@@ -412,10 +346,8 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
-
 	<footer class="footer-one">
 		<div class="inner-footer">
 			<div class="container">

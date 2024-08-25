@@ -129,4 +129,44 @@
     <servlet-name>HomeServlet</servlet-name>
     <url-pattern>/HomeServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AddToCartServlet</display-name>
+    <servlet-name>AddToCartServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.AddToCartServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddToCartServlet</servlet-name>
+    <url-pattern>/AddToCartServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>CartServlet</display-name>
+    <servlet-name>CartServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.CartServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CartServlet</servlet-name>
+    <url-pattern>/CartServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>CartUpdateServlet</display-name>
+    <servlet-name>CartUpdateServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.CartUpdateServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CartUpdateServlet</servlet-name>
+    <url-pattern>/CartUpdateServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>CartDeleteProductServlet</display-name>
+    <servlet-name>CartDeleteProductServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.CartDeleteProductServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CartDeleteProductServlet</servlet-name>
+    <url-pattern>/CartDeleteProductServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
