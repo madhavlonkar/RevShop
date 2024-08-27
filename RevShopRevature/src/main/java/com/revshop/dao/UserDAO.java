@@ -145,9 +145,40 @@ public class UserDAO implements DAO {
     }
 
     @Override
-    public Entity retrieveById(int id) {
-        // Implementation to be provided
-        return null;
+    public UserEntity retrieveById(int id) {
+        UserEntity user = null;
+        String query = "SELECT * FROM tbl_user WHERE userId = ?";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                user = new UserEntity();
+                user.setUserId(resultSet.getInt("userId"));
+                user.setFirstName(resultSet.getString("firstName"));
+                user.setLastName(resultSet.getString("lastName"));
+                user.setGender(resultSet.getString("gender"));
+                user.setMobile(resultSet.getString("mobile"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPincode(resultSet.getString("pincode"));
+                user.setBillingAddress(resultSet.getString("billingAddress"));
+                user.setShippingAddress(resultSet.getString("shippingAddress"));
+                user.setBankAccountNo(resultSet.getString("bankAccountNo"));
+                user.setIfsc(resultSet.getString("ifsc"));
+                user.setCompanyName(resultSet.getString("companyName"));
+                user.setGstNumber(resultSet.getString("gstNumber"));
+                user.setWebsiteUrl(resultSet.getString("websiteUrl"));
+                user.setProductType(resultSet.getString("productType"));
+                user.setPanNumber(resultSet.getString("panNumber"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
     }
 
     @Override

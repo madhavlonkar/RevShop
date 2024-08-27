@@ -181,7 +181,7 @@ to {
 						class="col-sm-5 col-md-5 align-items-center justify-content-center navbar-expand-md main-menu">
 						<div class="menu navbar collapse navbar-collapse">
 							<ul class="menu-top navbar-nav">
-								<li><a href="index.html" class="parent">Home</a></li>
+								<li><a href="HomeServlet" class="parent">Home</a></li>
 								<li><a href="categories.html" class="parent">Categories</a>
 									<div class="dropdown-menu">
 										<ul>
@@ -199,7 +199,7 @@ to {
 									</div></li>
 								<li><a href="order-history.html" class="parent">Order
 										History</a></li>
-								<li><a href="favorites.html" class="parent">Favorites</a></li>
+								<li><a href="FavriouteServletMain" class="parent">Favorites</a></li>
 							</ul>
 						</div>
 					</div>
@@ -263,9 +263,9 @@ to {
 							</div>
 						</div>
 						<%
-																			if (user != null) {
-																				// Show add to cart button only if user is logged in
-																			%>
+						if (user != null) {
+							// Show add to cart button only if user is logged in
+						%>
 						<div class="desktop_cart">
 							<div class="blockcart block-cart cart-preview tiva-toggle">
 								<div class="header-cart tiva-toggle-btn">
@@ -276,7 +276,9 @@ to {
 								</div>
 							</div>
 						</div>
-						<%}else{ %>
+						<%
+						} else {
+						%>
 						<div class="desktop_cart">
 							<div class="blockcart block-cart cart-preview tiva-toggle">
 								<div class="header-cart tiva-toggle-btn">
@@ -286,7 +288,10 @@ to {
 									</a>
 								</div>
 							</div>
-						</div><%} %>
+						</div>
+						<%
+						}
+						%>
 					</div>
 				</div>
 			</div>
@@ -474,17 +479,25 @@ to {
 																		</button>
 																	</form>
 
-																	<%
-																	}
-																	// Show a login prompt or disable button if not logged in
-																	%>
-
 																	<a class="addToWishlist"
-																		href="wishlist.jsp?productId=<%=product.getProductId()%>"
+																		href="FavriouteAddServlet?productId=<%=product.getProductId()%>&userId=<%=user.getUserId()%>"
 																		data-rel="<%=product.getProductId()%>"> <i
 																		class="fa fa-heart" aria-hidden="true"></i>
-																	</a> <a
-																		href="quick-view.jsp?id=<%=product.getProductId()%>"
+																	</a>
+
+																	<%
+																	} else {
+																	// Show a login prompt or disable button if not logged in
+																	%>
+																	<a class="addToWishlist"
+																		href="FavriouteAddServlet?productId=<%=product.getProductId()%>"
+																		data-rel="<%=product.getProductId()%>"> <i
+																		class="fa fa-heart" aria-hidden="true"></i>
+																	</a>
+																	<%
+																	}
+																	%>
+																	<a href="ProductDetailsServlet?productId=<%=product.getProductId()%>""
 																		class="quick-view hidden-sm-down"> <i
 																		class="fa fa-eye" aria-hidden="true"></i>
 																	</a>

@@ -185,5 +185,45 @@ public class ProductDAO implements DAO {
 		}
 		return products;
 	}
+	
+	public int getSellerIdByProductId(int productId) {
+		// Assuming your product table has a sellerId column
+		String query = "SELECT sellerId FROM tbl_products WHERE productId = ?";
+
+		try (Connection connection = DBConnection.getConnection();
+			 PreparedStatement stmt = connection.prepareStatement(query)) {
+
+			stmt.setInt(1, productId);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt("sellerId");
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return -1; // Return -1 if no seller is found or an error occurs
+	}
+
+	public boolean updateProductStock(int productId, int quantitySold) {
+		String query = "UPDATE tbl_products SET productStock = productStock - ? WHERE productId = ?";
+
+		try (Connection connection = DBConnection.getConnection();
+			 PreparedStatement stmt = connection.prepareStatement(query)) {
+
+			stmt.setInt(1, quantitySold);
+			stmt.setInt(2, productId);
+
+			int rowsAffected = stmt.executeUpdate();
+			return rowsAffected > 0;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 
 }

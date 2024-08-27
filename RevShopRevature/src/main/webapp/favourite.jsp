@@ -1,5 +1,5 @@
 <%@ page import="java.util.List"%>
-<%@ page import="com.revshop.Entity.CartEntity"%>
+<%@ page import="com.revshop.Entity.FavoriteProductsEntity"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,24 +189,15 @@
 						<section id="main">
 							<div class="cart-grid row">
 								<div class="col-md-9 col-xs-12 check-info">
-									<h1 class="title-page">Shopping Cart</h1>
+									<h1 class="title-page">Favorite Products</h1>
 									<div class="cart-container">
 										<div class="cart-overview js-cart">
 											<ul class="cart-items">
 												<%
-												HttpSession s = request.getSession();
-												com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) s.getAttribute("user");
-												List<CartEntity> cartItems = (List<CartEntity>) request.getAttribute("cartItems");
-												double grandTotal = 0;
+												List<FavoriteProductsEntity> favoriteItems = (List<FavoriteProductsEntity>) request.getAttribute("favoriteItems");
 
-												if (cartItems != null && !cartItems.isEmpty()) {
-													for (CartEntity item : cartItems) {
-														// Calculate the effective price after discount
-														double priceAfterDiscount = item.getProductPrice() * (1 - item.getProductDiscount() / 100.0);
-														// Calculate the total price for the current item
-														double itemTotal = priceAfterDiscount * item.getQuantity();
-														// Add to grand total
-														grandTotal += itemTotal;
+												if (favoriteItems != null && !favoriteItems.isEmpty()) {
+													for (FavoriteProductsEntity item : favoriteItems) {
 												%>
 												<li class="cart-item">
 													<div class="product-line-grid row justify-content-between">
@@ -230,10 +221,6 @@
 																<span class="value">RS <%=String.format("%.2f", item.getProductPrice())%></span>
 															</div>
 															<div class="product-line-info">
-																<span class="label-atrr">Quantity:</span> <span
-																	class="value"><%=item.getQuantity()%></span>
-															</div>
-															<div class="product-line-info">
 																<span class="label-atrr">Discount:</span> <span
 																	class="value"><%=item.getProductDiscount()%> %</span>
 															</div>
@@ -241,39 +228,17 @@
 														<div
 															class="product-line-grid-right text-center product-line-actions col-md-4">
 															<div class="row">
-																<div class="col-md-5 col qty">
-																	<div class="label">Qty:</div>
-																	<div class="quantity">
-																		<form action="CartUpdateServlet" method="post">
-																			<input type="hidden" name="productId"
-																				value="<%=item.getProductId()%>" /> <input
-																				type="hidden" name="userId"
-																				value="<%=user.getUserId()%>" /> <input type="text"
-																				name="qty" value="<%=item.getQuantity()%>"
-																				class="input-group form-control" readonly> <span
-																				class="input-group-btn-vertical">
-																				<button
-																					class="btn btn-touchspin js-touchspin bootstrap-touchspin-up"
-																					type="submit" name="action" value="increase">
-																					+</button>
-																				<button
-																					class="btn btn-touchspin js-touchspin bootstrap-touchspin-down"
-																					type="submit" name="action" value="decrease">
-																					-</button>
-																			</span>
-																		</form>
-																	</div>
-																</div>
 																<div class="col-md-5 col price">
-																	<div class="label">Total:</div>
+																	<div class="label">  Total Price</div>
 																	<div class="product-price total">
-																		Rs.<%=String.format("%.2f", itemTotal)%>
+																		
+																		<%=String.format("%.2f", item.getProductPrice() * (1 - item.getProductDiscount() / 100.0))%>
 																	</div>
 																</div>
 																<div class="col-md-2 col text-xs-right align-self-end">
 																	<div class="cart-line-product-actions">
 																		<a class="remove-from-cart" rel="nofollow"
-																			href="CartDeleteProductServlet?productId=<%=item.getProductId()%>&userId=<%=user.getUserId()%>"
+																			href="FavriouteDeleteServlet?favoriteId=<%=item.getFav_id()%>"
 																			data-link-action="delete-from-cart"> <i
 																			class="fa fa-trash-o" aria-hidden="true"></i>
 																		</a>
@@ -288,7 +253,8 @@
 												} else {
 												%>
 												<li class="cart-item">
-													<div class="alert alert-warning">Your cart is empty.</div>
+													<div class="alert alert-warning">You have no favorite
+														products.</div>
 												</li>
 												<%
 												}
@@ -296,68 +262,13 @@
 											</ul>
 										</div>
 									</div>
-									<a href="product-checkout.html"
-										class="continue btn btn-primary pull-xs-right"> Continue </a>
-								</div>
-								<div class="cart-grid-right col-xs-12 col-lg-3">
-									<div class="cart-summary">
-										<div class="cart-detailed-totals">
-											<div class="cart-summary-products">
-												<div class="summary-label">
-													There are
-													<%=cartItems != null ? cartItems.size() : 0%>
-													item(s) in your cart
-												</div>
-											</div>
-											<div class="cart-summary-line" id="cart-subtotal-products">
-												<span class="label js-subtotal">Total products:</span> <span
-													class="value">RS. <%=String.format("%.2f", grandTotal)%></span>
-											</div>
-											<div class="cart-summary-line" id="cart-subtotal-shipping">
-												<span class="label">Total Shipping:</span> <span
-													class="value">Free</span>
-												<div>
-													<small class="value"></small>
-												</div>
-											</div>
-											<div class="cart-summary-line cart-total">
-												<span class="label">Total:</span> <span class="value">RS
-													<%=String.format("%.2f", grandTotal)%> (tax incl.)
-												</span>
-											</div>
-										</div>
-									</div>
-									<div id="block-reassurance">
-										<ul>
-											<li>
-												<div class="block-reassurance-item">
-													<img src="Static/img/product/check1.png"
-														alt="Security policy (edit with Customer reassurance module)">
-													<span>Security policy (edit with Customer
-														reassurance module)</span>
-												</div>
-											</li>
-											<li>
-												<div class="block-reassurance-item">
-													<img src="Static/img/product/check2.png"
-														alt="Delivery policy (edit with Customer reassurance module)">
-													<span>Delivery policy (edit with Customer
-														reassurance module)</span>
-												</div>
-											</li>
-											<li>
-												<div class="block-reassurance-item">
-													<img src="Static/img/product/check3.png"
-														alt="Return policy (edit with Customer reassurance module)">
-													<span>Return policy (edit with Customer reassurance
-														module)</span>
-												</div>
-											</li>
-										</ul>
-									</div>
+									<a href="categories.html"
+										class="continue btn btn-primary pull-xs-right"> Continue
+										Shopping </a>
 								</div>
 							</div>
 						</section>
+
 
 					</div>
 				</div>

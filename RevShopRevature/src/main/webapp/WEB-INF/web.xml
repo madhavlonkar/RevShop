@@ -169,4 +169,44 @@
     <servlet-name>CartDeleteProductServlet</servlet-name>
     <url-pattern>/CartDeleteProductServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FavriouteAddServlet</display-name>
+    <servlet-name>FavriouteAddServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.FavriouteAddServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FavriouteAddServlet</servlet-name>
+    <url-pattern>/FavriouteAddServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FavriouteServletMain</display-name>
+    <servlet-name>FavriouteServletMain</servlet-name>
+    <servlet-class>com.revshop.controllers.FavriouteServletMain</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FavriouteServletMain</servlet-name>
+    <url-pattern>/FavriouteServletMain</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FavriouteDeleteServlet</display-name>
+    <servlet-name>FavriouteDeleteServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.FavriouteDeleteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FavriouteDeleteServlet</servlet-name>
+    <url-pattern>/FavriouteDeleteServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>CheckoutServlet</display-name>
+    <servlet-name>CheckoutServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.CheckoutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CheckoutServlet</servlet-name>
+    <url-pattern>/CheckoutServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

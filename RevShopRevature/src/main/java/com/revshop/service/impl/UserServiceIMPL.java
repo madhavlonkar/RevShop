@@ -17,4 +17,9 @@ public class UserServiceIMPL implements UserService {
     public boolean updateUserDetails(UserEntity user) {
         return userDAO.update((Entity) user);
     }
+    
+    @Override
+    public UserEntity getUserById(int userId) {
+        return (UserEntity) userDAO.retrieveById(userId);
+    }
 }

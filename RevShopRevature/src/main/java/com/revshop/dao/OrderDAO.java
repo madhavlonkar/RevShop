@@ -1,0 +1,92 @@
+package com.revshop.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import com.revshop.Entity.Entity;
+import com.revshop.Entity.OrderEntity;
+import com.revshop.utility.DBConnection;
+
+public class OrderDAO implements DAO {
+
+    private static final String INSERT_ORDER_SQL = 
+        "INSERT INTO tbl_order (orderId, sellerId, userId, productId, transactionId, productName, totalPrice, quantity, imgUrl, status, shippingAddress) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    @Override
+    public boolean insert(Entity entity) throws SQLException {
+        if (!(entity instanceof OrderEntity)) {
+            return false;
+        }
+
+        OrderEntity order = (OrderEntity) entity;
+
+        // Generate a unique orderId
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ORDER_SQL)) {
+
+            // Set the parameters for the prepared statement
+            preparedStatement.setString(1, order.getOrderId());
+            preparedStatement.setInt(2, order.getSellerId());
+            preparedStatement.setInt(3, order.getUserId());
+            preparedStatement.setInt(4, order.getProductId());
+            preparedStatement.setString(5, order.getTranscationId());
+            preparedStatement.setString(6, order.getProductName());
+            preparedStatement.setDouble(7, order.getTotalPrice());
+            preparedStatement.setInt(8, order.getQuantity());
+            preparedStatement.setString(9, order.getImgUrl());
+            preparedStatement.setString(10, order.getStatus());
+            preparedStatement.setString(11, order.getShippingAddress());
+
+            // Execute the insert operation
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            // Return true if the insert was successful, otherwise false
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            // Re-throw the exception to be handled by the calling service
+            throw e;
+        }
+    }
+
+    private String generateOrderId() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+        String currentDate = dateFormat.format(new Date());
+
+        Random random = new Random();
+        int randomNumber = 1000 + random.nextInt(9000); // 4-digit random number
+
+        return "OD" + currentDate + randomNumber;
+    }
+
+    @Override
+    public boolean update(Entity entity) throws SQLException {
+        // Method implementation here...
+        return false;
+    }
+
+    @Override
+    public boolean delete(int id) throws SQLException {
+        // Method implementation here...
+        return false;
+    }
+
+    @Override
+    public Entity retrieveById(int id) throws SQLException {
+        // Method implementation here...
+        return null;
+    }
+
+    @Override
+    public List<Entity> retrieveAll() throws SQLException {
+        // Method implementation here...
+        return null;
+    }
+}
