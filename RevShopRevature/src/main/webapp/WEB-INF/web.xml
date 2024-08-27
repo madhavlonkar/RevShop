@@ -209,4 +209,14 @@
     <servlet-name>CheckoutServlet</servlet-name>
     <url-pattern>/CheckoutServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>OrderServletMain</display-name>
+    <servlet-name>OrderServletMain</servlet-name>
+    <servlet-class>com.revshop.controllers.OrderServletMain</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrderServletMain</servlet-name>
+    <url-pattern>/OrderServletMain</url-pattern>
+  </servlet-mapping>
 </web-app>

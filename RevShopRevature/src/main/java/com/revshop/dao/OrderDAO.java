@@ -2,11 +2,10 @@ package com.revshop.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.revshop.Entity.Entity;
 import com.revshop.Entity.OrderEntity;
@@ -17,6 +16,9 @@ public class OrderDAO implements DAO {
     private static final String INSERT_ORDER_SQL = 
         "INSERT INTO tbl_order (orderId, sellerId, userId, productId, transactionId, productName, totalPrice, quantity, imgUrl, status, shippingAddress) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    private static final String SELECT_ORDERS_BY_USER_ID_SQL =
+            "SELECT * FROM tbl_order WHERE userId = ?";
 
     @Override
     public boolean insert(Entity entity) throws SQLException {
@@ -56,15 +58,6 @@ public class OrderDAO implements DAO {
         }
     }
 
-    private String generateOrderId() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-        String currentDate = dateFormat.format(new Date());
-
-        Random random = new Random();
-        int randomNumber = 1000 + random.nextInt(9000); // 4-digit random number
-
-        return "OD" + currentDate + randomNumber;
-    }
 
     @Override
     public boolean update(Entity entity) throws SQLException {
@@ -88,5 +81,39 @@ public class OrderDAO implements DAO {
     public List<Entity> retrieveAll() throws SQLException {
         // Method implementation here...
         return null;
+    }
+    
+    public List<OrderEntity> getOrdersByUserId(int userId) throws SQLException {
+        List<OrderEntity> orders = new ArrayList<>();
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ORDERS_BY_USER_ID_SQL)) {
+
+            preparedStatement.setInt(1, userId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    OrderEntity order = new OrderEntity();
+                    order.setOrderId(resultSet.getString("orderId"));
+                    order.setSellerId(resultSet.getInt("sellerId"));
+                    order.setUserId(resultSet.getInt("userId"));
+                    order.setProductId(resultSet.getInt("productId"));
+                    order.setTranscationId(resultSet.getString("transactionId"));
+                    order.setProductName(resultSet.getString("productName"));
+                    order.setTotalPrice(resultSet.getDouble("totalPrice"));
+                    order.setQuantity(resultSet.getInt("quantity"));
+                    order.setImgUrl(resultSet.getString("imgUrl"));
+                    order.setStatus(resultSet.getString("status"));
+                    order.setShippingAddress(resultSet.getString("shippingAddress"));
+
+                    orders.add(order);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        return orders;
     }
 }

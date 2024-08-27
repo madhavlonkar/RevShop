@@ -101,4 +101,15 @@ public class OrderServiceIMPL implements OrderService {
 
 		return orderPlaced;
 	}
+
+	@Override
+	public List<OrderEntity> getOrdersByUserId(int userId) {
+		try {
+			return orderDAO.getOrdersByUserId(userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			// Log the exception
+			return null;
+		}
+	}
 }
