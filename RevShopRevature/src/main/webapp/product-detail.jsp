@@ -1,3 +1,7 @@
+<%@ page import="java.util.List"%>
+<%@ page import="com.revshop.Entity.ReviewEntity"%>
+<%@ page import="com.revshop.Entity.ProductEntity"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,6 +116,8 @@ to {
 }
 }
 </style>
+
+
 </head>
 
 <body id="product-detail">
@@ -384,15 +390,14 @@ to {
 														</div>
 
 														<div class="d-flex2 has-border">
-															<span class="float-left"> <span class="availb">&nbsp  Availability:</span>
-																<span class="check"> <i
+															<span class="float-left"> <span class="availb">&nbsp
+																	Availability:</span> <span class="check"> <i
 																	class="fa fa-check-square-o" aria-hidden="true"></i> <span
 																	style="color: ${product.productStock > 0 ? 'green' : 'red'};">
 																		${product.productStock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}
 																</span>
 															</span>
-															</span>
-															<br>
+															</span> <br>
 														</div>
 
 														<!-- Confirmation Message -->
@@ -428,60 +433,54 @@ to {
 													<div id="review" class="tab-pane fade active show">
 														<div class="spr-form">
 															<div class="user-comment">
+																<%
+																List<ReviewEntity> reviews = (List<ReviewEntity>) request.getAttribute("reviews");
+																if (reviews != null && !reviews.isEmpty()) {
+																	for (ReviewEntity review : reviews) {
+																		int stars = review.getStars(); // Get the correct number of stars
+																%>
 																<div class="spr-review">
 																	<div class="spr-review-header">
-																		<span class="spr-review-header-byline"> <strong>Peter
-																				Capidal</strong> - <span>Apr 14, 2018</span>
+																		<span class="spr-review-header-byline"> <strong><%=review.getCustomerName()%></strong>
+																			- <span><%=review.getReviewDate()%></span>
 																		</span>
 																		<div class="rating">
 																			<div class="star-content">
+																				<%
+																				for (int i = 1; i <= 5; i++) {
+																					if (i <= stars) {
+																				%>
+																				<div class="star filled"></div>
+																				<%
+																				} else {
+																				%>
 																				<div class="star"></div>
-																				<div class="star"></div>
-																				<div class="star"></div>
-																				<div class="star"></div>
-																				<div class="star"></div>
+																				<%
+																				}
+																				}
+																				%>
 																			</div>
 																		</div>
 																	</div>
 																	<div class="spr-review-content">
-																		<p class="spr-review-content-body">In feugiat
-																			venenatis enim, non finibus metus bibendum eu. Proin
-																			massa justo, eleifend fermentum varius quis, semper
-																			gravida quam. Cras nec enim sed lacus viverra luctus.
-																			Nunc quis accumsan mauris. Aliquam fermentum sit amet
-																			est id scelerisque. Nam porta risus metus.</p>
+																		<p class="spr-review-content-body"><%=review.getReview()%></p>
 																	</div>
 																</div>
-																<div class="spr-review preview2">
-																	<div class="spr-review-header">
-																		<span class="spr-review-header-byline"> <strong>David
-																				James</strong> - <span>Apr 13, 2018</span>
-																		</span>
-																		<div class="rating">
-																			<div class="star-content">
-																				<div class="star"></div>
-																				<div class="star"></div>
-																				<div class="star"></div>
-																				<div class="star"></div>
-																				<div class="star"></div>
-																			</div>
-																		</div>
-																	</div>
-																	<div class="spr-review-content">
-																		<p class="spr-review-content-body">In feugiat
-																			venenatis enim, non finibus metus bibendum eu. Proin
-																			massa justo, eleifend fermentum varius quis, semper
-																			gravida quam. Cras nec enim sed lacus viverra luctus.
-																			Nunc quis accumsan mauris. Aliquam fermentum sit amet
-																			est id scelerisque. Nam porta risus metus.</p>
-																	</div>
-																</div>
+																<%
+																}
+																} else {
+																%>
+																<p>No reviews yet. Be the first to write a review!</p>
+																<%
+																}
+																%>
 															</div>
 														</div>
-														<form id="write-review-section" method="post" action="#"
-															class="new-review-form">
-															<input type="hidden" name="review[rating]" value="3">
-															<input type="hidden" name="product_id">
+														<form id="write-review-section" method="post"
+															action="ReviewAddServlet" class="new-review-form">
+															<input type="hidden" name="product_id"
+																value="${product.productId}">
+															<!-- Assuming user info is in session -->
 															<h3 class="spr-form-title">Write a review</h3>
 															<fieldset>
 																<div class="spr-form-review-rating">
@@ -490,36 +489,28 @@ to {
 																		<input type="radio" id="star5" name="rating" value="5" />
 																		<label class="full" for="star5"
 																			title="Awesome - 5 stars"></label> <input
-																			type="radio" id="star4half" name="rating"
-																			value="4 and a half" /> <input type="radio"
-																			id="star4" name="rating" value="4" /> <label
+																			type="radio" id="star4" name="rating" value="4" /> <label
 																			class="full" for="star4"
 																			title="Pretty good - 4 stars"></label> <input
-																			type="radio" id="star3half" name="rating"
-																			value="3 and a half" /> <input type="radio"
-																			id="star3" name="rating" value="3" /> <label
+																			type="radio" id="star3" name="rating" value="3" /> <label
 																			class="full" for="star3" title="Meh - 3 stars"></label>
-																		<input type="radio" id="star2half" name="rating"
-																			value="2 and a half" /> <input type="radio"
-																			id="star2" name="rating" value="2" /> <label
-																			class="full" for="star2" title="Kinda bad - 2 stars"></label>
-																		<input type="radio" id="star1half" name="rating"
-																			value="1 and a half" /> <input type="radio"
-																			id="star1" name="rating" value="1" /> <label
+																		<input type="radio" id="star2" name="rating" value="2" />
+																		<label class="full" for="star2"
+																			title="Kinda bad - 2 stars"></label> <input
+																			type="radio" id="star1" name="rating" value="1" /> <label
 																			class="full" for="star1"
-																			title="Sucks big time - 1 star"></label> <input
-																			type="radio" id="starhalf" name="rating" value="half" />
+																			title="Sucks big time - 1 star"></label>
 																	</fieldset>
 																</div>
 															</fieldset>
 															<fieldset class="spr-form-contact">
 																<div class="spr-form-contact-name">
-																	<input
+																	<input name="name"
 																		class="spr-form-input spr-form-input-text form-control"
 																		placeholder="Enter your name">
 																</div>
 																<div class="spr-form-contact-email">
-																	<input
+																	<input name="email"
 																		class="spr-form-input spr-form-input-email form-control"
 																		placeholder="Enter your email">
 																</div>
@@ -527,7 +518,8 @@ to {
 															<fieldset>
 																<div class="spr-form-review-body">
 																	<div class="spr-form-input">
-																		<textarea class="spr-form-input-textarea" rows="10"
+																		<textarea name="review"
+																			class="spr-form-input-textarea" rows="10"
 																			placeholder="Write your comments here"></textarea>
 																	</div>
 																</div>
@@ -538,6 +530,7 @@ to {
 																	value="Submit Review">
 															</div>
 														</form>
+
 													</div>
 												</div>
 											</div>

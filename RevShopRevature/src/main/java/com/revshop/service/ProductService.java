@@ -13,8 +13,11 @@ public interface ProductService {
 	public boolean deleteProduct(int id);
 
 	ProductEntity getProductById(int id);
-	
+
 	public boolean updateProduct(ProductEntity entity);
 
+	public List<ProductEntity> getProductsByCategory(String category);
+
+	public List<ProductEntity> searchProducts(String keyword);
 
 }

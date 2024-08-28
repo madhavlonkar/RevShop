@@ -113,21 +113,19 @@ to {
 	bottom: 0;
 	opacity: 0;
 }
+
 }
-</style>
-<style>
 
 /* Container that holds each product */
 .product-container .thumbnail-container {
 	width: 100%;
-	height: 200px; /* Fixed height for consistency */
+	height: 200px;
 	overflow: hidden;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid #ddd; /* Optional: Add a border for consistency */
+	border: 1px solid #ddd;
 	background-color: #f8f8f8;
-	/* Optional: Add a background color if the image doesn't fill the container */
 }
 
 /* The actual image inside each product */
@@ -138,12 +136,11 @@ to {
 	height: auto;
 	display: block;
 	margin: 0 auto;
-	/* Ensures the entire image fits within the container and is centered */
 }
 
 /* Ensure all product containers have consistent height */
 .product-miniature {
-	min-height: 350px; /* Adjust based on your design */
+	min-height: 350px;
 	margin-bottom: 20px;
 }
 
@@ -158,9 +155,12 @@ to {
 	<div id="toast" class="toast"></div>
 	<header>
 		<%
-		// Fetch the user object from the session
 		HttpSession s = request.getSession();
 		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) s.getAttribute("user");
+		String selectedCategory = request.getParameter("category");
+		if (selectedCategory == null || selectedCategory.isEmpty()) {
+			selectedCategory = "Electronics"; // Default category
+		}
 		%>
 		<!-- header left mobie -->
 		<!-- header desktop -->
@@ -170,8 +170,8 @@ to {
 					<!-- logo -->
 					<div class="col-sm-2 col-md-2 d-flex align-items-center">
 						<div id="logo">
-							<a href="index-2.html"> <img src="Static/img/home/logo.png"
-								alt="logo" class="img-fluid">
+							<a href="HomeServlet?category=Electronics"> <img
+								src="Static/img/home/logo.png" alt="logo" class="img-fluid">
 							</a>
 						</div>
 					</div>
@@ -181,20 +181,23 @@ to {
 						class="col-sm-5 col-md-5 align-items-center justify-content-center navbar-expand-md main-menu">
 						<div class="menu navbar collapse navbar-collapse">
 							<ul class="menu-top navbar-nav">
-								<li><a href="HomeServlet" class="parent">Home</a></li>
-								<li><a href="categories.html" class="parent">Categories</a>
+								<li><a href="HomeServlet?category=Electronics"
+									class="parent">Home</a></li>
+								<li><a href="HomeServlet?category=Electronics"
+									class="parent">Categories</a>
 									<div class="dropdown-menu">
 										<ul>
-											<li class="item"><a href="index-2.html"
-												title="Electronics">Electronics</a></li>
-											<li class="item"><a href="home2.html" title="Fashion">Fashion</a>
-											</li>
-											<li class="item"><a href="home3.html"
+											<li class="item"><a
+												href="HomeServlet?category=Electronics" title="Electronics">Electronics</a></li>
+											<li class="item"><a href="HomeServlet?category=Fashion"
+												title="Fashion">Fashion</a></li>
+											<li class="item"><a
+												href="HomeServlet?category=Home Appliances"
 												title="Home Appliances">Home Appliances</a></li>
-											<li class="item"><a href="home4.html" title="Books">Books</a>
-											</li>
-											<li class="item"><a href="home5.html" title="Sports">Sports</a>
-											</li>
+											<li class="item"><a href="HomeServlet?category=Books"
+												title="Books">Books</a></li>
+											<li class="item"><a href="HomeServlet?category=Sports"
+												title="Sports">Sports</a></li>
 										</ul>
 									</div></li>
 								<li><a href="order-history.html" class="parent">Order
@@ -204,14 +207,13 @@ to {
 						</div>
 					</div>
 
-					<!-- search and acount -->
+					<!-- search and account -->
 					<div
 						class="col-sm-5 col-md-5 d-flex align-items-center justify-content-end"
 						id="search_widget">
-						<form method="get" action="#">
-
-							<span role="status" aria-live="polite"
-								class="ui-helper-hidden-accessible"></span> <input type="text"
+						<form method="get" action="HomeServlet">
+							<input type="hidden" name="category"
+								value="<%=selectedCategory%>"> <input type="text"
 								name="s" value="" placeholder="Search"
 								class="ui-autocomplete-input" autocomplete="off">
 							<button type="submit">
@@ -219,60 +221,52 @@ to {
 							</button>
 						</form>
 
+
 						<div id="block_myaccount_infos" class="hidden-sm-down dropdown">
-							<div class="myaccount-title ">
-								<a href="#acount" data-toggle="collapse" class="acount"> <i
+							<div class="myaccount-title">
+								<a href="#account" data-toggle="collapse" class="account"> <i
 									class="fa fa-user" aria-hidden="true"></i> <span>Account</span>
 									<i class="fa fa-angle-down" aria-hidden="true"></i>
 								</a>
 							</div>
-							<div id="acount" class="collapse">
+							<div id="account" class="collapse">
 								<div class="account-list-content">
 									<div>
-										<a class="login" href="user-acount.html" rel="nofollow"
+										<a class="login" href="user-account.html" rel="nofollow"
 											title="Log in to your customer account"> <i
-											class="fa fa-cog"></i> <span>My Account</span>
-										</a>
+											class="fa fa-cog"></i> <span>My Account</span></a>
 									</div>
 									<div>
 										<a class="login" href="user-login.html" rel="nofollow"
 											title="Log in to your customer account"> <i
-											class="fa fa-sign-in"></i> <span>Sign in</span>
-										</a>
+											class="fa fa-sign-in"></i> <span>Sign in</span></a>
 									</div>
 									<div>
 										<a class="register" href="user-register.html" rel="nofollow"
 											title="Register Account"> <i class="fa fa-user"></i> <span>Register
-												Account</span>
-										</a>
+												Account</span></a>
 									</div>
 									<div>
 										<a class="check-out" href="product-checkout.html"
 											rel="nofollow" title="Checkout"> <i class="fa fa-check"
-											aria-hidden="true"></i> <span>Checkout</span>
-										</a>
+											aria-hidden="true"></i> <span>Checkout</span></a>
 									</div>
 									<div class="link_wishlist">
 										<a href="user-wishlist.html" title="My Wishlists"> <i
-											class="fa fa-heart"></i> <span>My Wishlists</span>
-										</a>
+											class="fa fa-heart"></i> <span>My Wishlists</span></a>
 									</div>
-
-
 								</div>
 							</div>
 						</div>
 						<%
 						if (user != null) {
-							// Show add to cart button only if user is logged in
 						%>
 						<div class="desktop_cart">
 							<div class="blockcart block-cart cart-preview tiva-toggle">
 								<div class="header-cart tiva-toggle-btn">
 									<span class="cart-products-count">1</span> <a
 										href="CartServlet?userId=<%=user.getUserId()%>"> <i
-										class="fa fa-shopping-cart" aria-hidden="true"></i>
-									</a>
+										class="fa fa-shopping-cart" aria-hidden="true"></i></a>
 								</div>
 							</div>
 						</div>
@@ -284,8 +278,7 @@ to {
 								<div class="header-cart tiva-toggle-btn">
 									<span class="cart-products-count">1</span> <a
 										href="LoginAndRegistration/user-login.jsp"> <i
-										class="fa fa-shopping-cart" aria-hidden="true"></i>
-									</a>
+										class="fa fa-shopping-cart" aria-hidden="true"></i></a>
 								</div>
 							</div>
 						</div>
@@ -309,11 +302,8 @@ to {
 							<div class="container no-index">
 								<div class="breadcrumb">
 									<ol>
-										<li><a href="#"> <span>Welcome</span>
-										</a></li>
-										<li><a href="#"> <span>Madhav Lonkar</span>
-										</a></li>
-
+										<li><a href="#"> <span>Welcome</span></a></li>
+										<li><a href="#"> <span>Madhav Lonkar</span></a></li>
 									</ol>
 								</div>
 							</div>
@@ -324,66 +314,37 @@ to {
 								<div class="row">
 									<div
 										class="sidebar-3 sidebar-collection col-lg-3 col-md-4 col-sm-4">
-
 										<!-- category menu -->
 										<div class="sidebar-block">
 											<div class="title-block">Categories</div>
 											<div class="block-content">
 												<div class="cateTitle hasSubCategory open level1">
-													<span class="arrow collapsed collapse-icons"
-														data-toggle="collapse" data-target="#livingroom"
-														aria-expanded="false" role="status"> <i
-														class="zmdi zmdi-minus"></i> <i class="zmdi zmdi-plus"></i>
-													</span> <a class="cateItem" href="#">Electronics</a>
-													<div class="subCategory collapse" id="livingroom"
-														aria-expanded="true" role="status"></div>
+													<a class="cateItem" href="HomeServlet?category=Electronics">Electronics</a>
 												</div>
 												<div class="cateTitle hasSubCategory open level1">
-													<span class="arrow collapsed collapse-icons"
-														data-toggle="collapse" data-target="#bathroom"
-														aria-expanded="false" role="status"> <i
-														class="zmdi zmdi-minus"></i> <i class="zmdi zmdi-plus"></i>
-													</span> <a class="cateItem" href="#">Fashion</a>
+													<a class="cateItem" href="HomeServlet?category=Fashion">Fashion</a>
 												</div>
 												<div class="cateTitle hasSubCategory open level1">
-													<span class="arrow collapsed collapse-icons"
-														data-toggle="collapse" data-target="#diningroom"
-														aria-expanded="false" role="status"> <i
-														class="zmdi zmdi-minus"></i> <i class="zmdi zmdi-plus"></i>
-													</span> <a class="cateItem" href="#">Home Appliances</a>
+													<a class="cateItem"
+														href="HomeServlet?category=Home Appliances">Home
+														Appliances</a>
 												</div>
 												<div class="cateTitle hasSubCategory open level1">
-													<span class="arrow collapsed collapse-icons"
-														data-toggle="collapse" data-target="#bedroom"
-														aria-expanded="false" role="status"> <i
-														class="zmdi zmdi-minus"></i> <i class="zmdi zmdi-plus"></i>
-													</span> <a class="cateItem" href="#">Books</a>
+													<a class="cateItem" href="HomeServlet?category=Books">Books</a>
 												</div>
 												<div class="cateTitle hasSubCategory open level1">
-													<span class="arrow collapsed collapse-icons"
-														data-toggle="collapse" data-target="#kitchen"
-														aria-expanded="false" role="status"> <i
-														class="zmdi zmdi-minus"></i> <i class="zmdi zmdi-plus"></i>
-													</span> <a class="cateItem" href="#">Sports</a>
+													<a class="cateItem" href="HomeServlet?category=Sports">Sports</a>
 												</div>
-
 											</div>
 										</div>
-
-										<!-- best seller -->
-
-
-										<!-- product tag -->
-
 									</div>
 
 									<%
-									// Retrieve the list of products from the request scope
 									List<ProductEntity> products = (List<ProductEntity>) request.getAttribute("products");
 									%>
 									<div class="col-sm-8 col-lg-9 col-md-8 product-container">
 										<h1>All Products</h1>
-										<div class="js-product-list-top firt nav-top">
+										<div class="js-product-list-top first nav-top">
 											<div class="d-flex justify-content-around row">
 												<div class="col col-xs-12">
 													<ul class="nav nav-tabs">
@@ -412,7 +373,6 @@ to {
 										<div class="tab-content product-items">
 											<div id="grid" class="related tab-pane fade in active show">
 												<div class="row">
-
 													<%
 													for (ProductEntity product : products) {
 													%>
@@ -425,34 +385,13 @@ to {
 																	<img class="img-fluid"
 																	src="<%=product.getProductImage()%>"
 																	alt="<%=product.getProductName()%>">
-
 																</a>
-
 															</div>
 															<div class="product-description">
 																<div class="product-groups">
 																	<div class="product-title">
 																		<a
 																			href="ProductDetailsServlet?productId=<%=product.getProductId()%>"><%=product.getProductName()%></a>
-																	</div>
-																	<div class="rating">
-																		<div class="star-content">
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																			<div class="star">
-																				<i class="fa fa-star" aria-hidden="true"></i>
-																			</div>
-																		</div>
 																	</div>
 																	<div class="product-group-price">
 																		<div class="product-price-and-shipping">
@@ -464,12 +403,9 @@ to {
 																	class="product-buttons d-flex justify-content-center">
 																	<%
 																	if (user != null) {
-																		// Show add to cart button only if user is logged in
 																	%>
-																	<!-- Update the form to use AJAX -->
 																	<form action="AddToCartServlet" method="post"
 																		class="formAddToCart">
-
 																		<input type="hidden" name="productId"
 																			value="<%=product.getProductId()%>"> <input
 																			type="hidden" name="userId"
@@ -478,16 +414,13 @@ to {
 																			<i class="fa fa-shopping-cart" aria-hidden="true"></i>
 																		</button>
 																	</form>
-
 																	<a class="addToWishlist"
 																		href="FavriouteAddServlet?productId=<%=product.getProductId()%>&userId=<%=user.getUserId()%>"
 																		data-rel="<%=product.getProductId()%>"> <i
 																		class="fa fa-heart" aria-hidden="true"></i>
 																	</a>
-
 																	<%
 																	} else {
-																	// Show a login prompt or disable button if not logged in
 																	%>
 																	<a class="addToWishlist"
 																		href="FavriouteAddServlet?productId=<%=product.getProductId()%>"
@@ -497,7 +430,8 @@ to {
 																	<%
 																	}
 																	%>
-																	<a href="ProductDetailsServlet?productId=<%=product.getProductId()%>""
+																	<a
+																		href="ProductDetailsServlet?productId=<%=product.getProductId()%>"
 																		class="quick-view hidden-sm-down"> <i
 																		class="fa fa-eye" aria-hidden="true"></i>
 																	</a>
@@ -540,38 +474,18 @@ to {
 																					In Stock
 																				</span>
 																			</div>
-																			<div class="rating">
-																				<div class="star-content">
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																					<div class="star">
-																						<i class="fa fa-star" aria-hidden="true"></i>
-																					</div>
-																				</div>
-																			</div>
 																			<div class="product-group-price">
 																				<div class="product-price-and-shipping">
 																					<span class="price">RS <%=product.getProductPrice()%></span>
 																				</div>
 																			</div>
-																			<div class="discription">
+																			<div class="description">
 																				<%=product.getProductDescription()%>
 																			</div>
 																		</div>
 																		<div class="product-buttons d-flex">
 																			<%
 																			if (user != null) {
-																				// Show add to cart button only if user is logged in
 																			%>
 																			<form action="AddToCartServlet" method="post"
 																				class="formAddToCart">
@@ -586,9 +500,7 @@ to {
 																			</form>
 																			<%
 																			}
-																			// Show a login prompt or disable button if not logged in
 																			%>
-
 																			<a class="addToWishlist"
 																				href="wishlist.jsp?productId=<%=product.getProductId()%>"
 																				data-rel="<%=product.getProductId()%>"> <i
@@ -613,7 +525,7 @@ to {
 
 										<!-- pagination -->
 										<div class="pagination">
-											<div class="js-product-list-top ">
+											<div class="js-product-list-top">
 												<div class="d-flex justify-content-around row">
 													<div class="showing col col-xs-12">
 														<span>SHOWING 1-3 OF 3 ITEM(S)</span>
@@ -621,15 +533,13 @@ to {
 													<div class="page-list col col-xs-12">
 														<ul>
 															<li><a rel="prev" href="#"
-																class="previous disabled js-search-link"> Previous </a>
-															</li>
+																class="previous disabled js-search-link"> Previous </a></li>
 															<li class="current active"><a rel="nofollow"
 																href="#" class="disabled js-search-link"> 1 </a></li>
 															<li><a rel="nofollow" href="#"
 																class="disabled js-search-link"> 2 </a></li>
 															<li><a rel="nofollow" href="#"
 																class="disabled js-search-link"> 3 </a></li>
-
 															<li><a rel="next" href="#"
 																class="next disabled js-search-link"> Next </a></li>
 														</ul>
@@ -638,7 +548,6 @@ to {
 											</div>
 										</div>
 									</div>
-
 									<!-- end col-md-9-1 -->
 								</div>
 							</div>
@@ -751,8 +660,6 @@ to {
 	<div class="back-to-top">
 		<a href="#"> <i class="fa fa-long-arrow-up"></i></a>
 	</div>
-
-
 
 	<script src="Static/libs/jquery/jquery.min.js"></script>
 	<script src="Static/libs/popper/popper.min.js"></script>

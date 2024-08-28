@@ -17,34 +17,52 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public HomeServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ProductService productService = new ProductServiceIMPL();
-		// Retrieve all products
-        List<ProductEntity> products = productService.getAllProducts();
-
-        // Set the products list in the request scope
-        request.setAttribute("products", products);
-
-        // Forward the request to the JSP page
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
+	public HomeServlet() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		ProductService productService = new ProductServiceIMPL();
+
+// Retrieve the selected category from the request
+		String category = request.getParameter("category");
+		String searchQuery = request.getParameter("s");
+		List<ProductEntity> products;
+
+		if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+			// If a search query is provided, search by keyword
+			products = productService.searchProducts(searchQuery);
+		} else if (category != null && !category.isEmpty()) {
+			// If a category is provided, filter by category
+			products = productService.getProductsByCategory(category);
+		} else {
+			// Otherwise, retrieve all products
+			products = productService.getAllProducts();
+		}
+
+// Set the products list in the request scope
+		request.setAttribute("products", products);
+
+// Forward the request to the JSP page
+		request.getRequestDispatcher("/index.jsp").forward(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

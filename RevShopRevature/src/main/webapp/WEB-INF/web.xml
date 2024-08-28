@@ -219,4 +219,14 @@
     <servlet-name>OrderServletMain</servlet-name>
     <url-pattern>/OrderServletMain</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ReviewAddServlet</display-name>
+    <servlet-name>ReviewAddServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.ReviewAddServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReviewAddServlet</servlet-name>
+    <url-pattern>/ReviewAddServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
