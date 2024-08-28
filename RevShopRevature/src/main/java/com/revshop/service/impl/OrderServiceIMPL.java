@@ -112,4 +112,25 @@ public class OrderServiceIMPL implements OrderService {
 			return null;
 		}
 	}
+	
+	@Override
+	public List<OrderEntity> getOrdersBySellerId(int sellerId) {
+        try {
+            return orderDAO.getOrdersBySellerId(sellerId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+	
+	@Override
+    public boolean updateOrderStatus(String orderId, String status) {
+        try {
+            return orderDAO.updateOrderStatus(orderId, status);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

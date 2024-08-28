@@ -1,8 +1,11 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.revshop.Entity.OrderEntity"%>
+<%@ page import="com.revshop.Entity.LoginEntity"%>
 
 <%
 List<OrderEntity> orders = (List<OrderEntity>) request.getAttribute("orders");
+LoginEntity user = (LoginEntity) session.getAttribute("user");
+String role = (user != null) ? user.getRole() : "";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -234,7 +237,32 @@ List<OrderEntity> orders = (List<OrderEntity>) request.getAttribute("orders");
 												style="width: 100px; height: auto;"></td>
 											<td><%=order.getProductName()%></td>
 											<td>Rs. <%=String.format("%.2f", order.getTotalPrice())%></td>
-											<td><%=order.getStatus()%></td>
+											<td>
+												<%
+												if ("seller".equals(role)) {
+												%>
+												<form method="post" action="OrderServletMain">
+													<input type="hidden" name="orderId"
+														value="<%=order.getOrderId()%>"> <input
+														type="hidden" name="action" value="updateStatus">
+													<select name="status" onchange="this.form.submit()">
+														<option value="To Be Shipped"
+															<%="To Be Shipped".equals(order.getStatus()) ? "selected" : ""%>>To
+															Be Shipped</option>
+														<option value="In Transit"
+															<%="In Transit".equals(order.getStatus()) ? "selected" : ""%>>In
+															Transit</option>
+														<option value="Delivered"
+															<%="Delivered".equals(order.getStatus()) ? "selected" : ""%>>Delivered</option>
+														<option value="Cancelled"
+															<%="Cancelled".equals(order.getStatus()) ? "selected" : ""%>>Cancelled</option>
+													</select>
+												</form> <%
+ } else {
+ %> <%=order.getStatus()%> <%
+ }
+ %>
+											</td>
 											<td>
 												<button class="btn btn-primary" type="button"
 													onclick="toggleDetails(this, 'details<%=order.getOrderId()%>')">
@@ -387,22 +415,24 @@ List<OrderEntity> orders = (List<OrderEntity>) request.getAttribute("orders");
 	</div>
 	<!-- Vendor JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <script>
-        function toggleDetails(button, detailsId) {
-            var detailsDiv = document.getElementById(detailsId);
-            
-            if (detailsDiv.style.display === "none") {
-                detailsDiv.style.display = "block";
-                button.textContent = "Hide Details";
-            } else {
-                detailsDiv.style.display = "none";
-                button.textContent = "Show Details";
-            }
-        }
-    </script>
+	<script>
+		function toggleDetails(button, detailsId) {
+			var detailsDiv = document.getElementById(detailsId);
+
+			if (detailsDiv.style.display === "none") {
+				detailsDiv.style.display = "block";
+				button.textContent = "Hide Details";
+			} else {
+				detailsDiv.style.display = "none";
+				button.textContent = "Show Details";
+			}
+		}
+	</script>
 	<script src="Static/libs/jquery/jquery.min.js"></script>
 	<script src="Static/libs/popper/popper.min.js"></script>
 	<script src="Static/libs/bootstrap/js/bootstrap.min.js"></script>
@@ -415,17 +445,18 @@ List<OrderEntity> orders = (List<OrderEntity>) request.getAttribute("orders");
 	<!-- Template JS -->
 	<script src="Static/js/theme.js"></script>
 	<script>
-        function toggleDetails(button, detailsId) {
-            var detailsDiv = document.getElementById(detailsId);
-            
-            if (detailsDiv.style.display === "none" || detailsDiv.style.display === "") {
-                detailsDiv.style.display = "block";
-                button.textContent = "Hide Details";
-            } else {
-                detailsDiv.style.display = "none";
-                button.textContent = "Show Details";
-            }
-        }
-    </script>
+		function toggleDetails(button, detailsId) {
+			var detailsDiv = document.getElementById(detailsId);
+
+			if (detailsDiv.style.display === "none"
+					|| detailsDiv.style.display === "") {
+				detailsDiv.style.display = "block";
+				button.textContent = "Hide Details";
+			} else {
+				detailsDiv.style.display = "none";
+				button.textContent = "Show Details";
+			}
+		}
+	</script>
 </body>
 </html>

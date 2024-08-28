@@ -20,4 +20,10 @@ public interface ProductService {
 
 	public List<ProductEntity> searchProducts(String keyword);
 
+	List<ProductEntity> getProductsBySellerId(int sellerId);
+
+	public List<ProductEntity> getProductsByCategoryAndSeller(String category, int sellerId);
+
+	public List<ProductEntity> searchProductsBySeller(String keyword, int sellerId);
+
 }

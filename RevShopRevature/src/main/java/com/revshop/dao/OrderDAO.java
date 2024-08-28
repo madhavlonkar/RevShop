@@ -116,4 +116,55 @@ public class OrderDAO implements DAO {
 
         return orders;
     }
+    
+    private static final String SELECT_ORDERS_BY_SELLER_ID_SQL =
+            "SELECT * FROM tbl_order WHERE sellerId = ?";
+    private static final String UPDATE_ORDER_STATUS_SQL =
+            "UPDATE tbl_order SET status = ? WHERE orderId = ?";
+
+    public List<OrderEntity> getOrdersBySellerId(int sellerId) throws SQLException {
+        List<OrderEntity> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ORDERS_BY_SELLER_ID_SQL)) {
+
+            preparedStatement.setInt(1, sellerId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    OrderEntity order = new OrderEntity();
+                    order.setOrderId(resultSet.getString("orderId"));
+                    order.setSellerId(resultSet.getInt("sellerId"));
+                    order.setUserId(resultSet.getInt("userId"));
+                    order.setProductId(resultSet.getInt("productId"));
+                    order.setTranscationId(resultSet.getString("transactionId"));
+                    order.setProductName(resultSet.getString("productName"));
+                    order.setTotalPrice(resultSet.getDouble("totalPrice"));
+                    order.setQuantity(resultSet.getInt("quantity"));
+                    order.setImgUrl(resultSet.getString("imgUrl"));
+                    order.setStatus(resultSet.getString("status"));
+                    order.setShippingAddress(resultSet.getString("shippingAddress"));
+
+                    orders.add(order);
+                }
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+        return orders;
+    }
+
+    public boolean updateOrderStatus(String orderId, String status) throws SQLException {
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ORDER_STATUS_SQL)) {
+
+            preparedStatement.setString(1, status);
+            preparedStatement.setString(2, orderId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
 }

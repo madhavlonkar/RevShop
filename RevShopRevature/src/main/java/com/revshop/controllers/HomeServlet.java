@@ -16,55 +16,59 @@ import jakarta.servlet.http.HttpServletResponse;
  * Servlet implementation class HomeServlet
  */
 public class HomeServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public HomeServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public HomeServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		ProductService productService = new ProductServiceIMPL();
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ProductService productService = new ProductServiceIMPL();
 
-// Retrieve the selected category from the request
-		String category = request.getParameter("category");
-		String searchQuery = request.getParameter("s");
-		List<ProductEntity> products;
+        // Retrieve the selected category from the request
+        String category = request.getParameter("category");
+        String searchQuery = request.getParameter("s");
+        List<ProductEntity> products;
 
-		if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-			// If a search query is provided, search by keyword
-			products = productService.searchProducts(searchQuery);
-		} else if (category != null && !category.isEmpty()) {
-			// If a category is provided, filter by category
-			products = productService.getProductsByCategory(category);
-		} else {
-			// Otherwise, retrieve all products
-			products = productService.getAllProducts();
-		}
+        // Check if a search query or category is provided
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            // If a search query is provided, search by keyword
+            products = productService.searchProducts(searchQuery);
+        } else if (category != null && !category.isEmpty()) {
+            // If a category is provided, filter by category
+            products = productService.getProductsByCategory(category);
+        } else {
+            // If no category is selected, set a default category
+            category = "Electronics"; // Set your default category here
+            products = productService.getProductsByCategory(category);
+        }
 
-// Set the products list in the request scope
-		request.setAttribute("products", products);
+        // Set the selected category in the request scope so that the UI can reflect it
+        request.setAttribute("selectedCategory", category);
 
-// Forward the request to the JSP page
-		request.getRequestDispatcher("/index.jsp").forward(request, response);
-	}
+        // Set the products list in the request scope
+        request.setAttribute("products", products);
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+        // Forward the request to the JSP page
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
+    }
 
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 }

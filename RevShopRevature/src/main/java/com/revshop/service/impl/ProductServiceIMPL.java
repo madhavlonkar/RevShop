@@ -84,6 +84,50 @@ public class ProductServiceIMPL implements ProductService {
 
 	    return products;
 	}
+	
+	@Override
+	public List<ProductEntity> getProductsBySellerId(int sellerId) {
+	    List<Entity> entities = pdao.retrieveBySellerId(sellerId);
+	    List<ProductEntity> products = new ArrayList<>();
+
+	    for (Entity entity : entities) {
+	        if (entity instanceof ProductEntity) {
+	            products.add((ProductEntity) entity);
+	        }
+	    }
+
+	    return products;
+	}
+	
+	@Override
+	public List<ProductEntity> getProductsByCategoryAndSeller(String category, int sellerId) {
+	    List<Entity> entities = pdao.retrieveByCategoryAndSeller(category, sellerId);
+	    List<ProductEntity> products = new ArrayList<>();
+
+	    for (Entity entity : entities) {
+	        if (entity instanceof ProductEntity) {
+	            products.add((ProductEntity) entity);
+	        }
+	    }
+
+	    return products;
+	}
+
+	@Override
+	public List<ProductEntity> searchProductsBySeller(String keyword, int sellerId) {
+	    List<Entity> entities = pdao.searchProductsBySeller(keyword, sellerId);
+	    List<ProductEntity> products = new ArrayList<>();
+
+	    for (Entity entity : entities) {
+	        if (entity instanceof ProductEntity) {
+	            products.add((ProductEntity) entity);
+	        }
+	    }
+
+	    return products;
+	}
+
+
 
 
 }
