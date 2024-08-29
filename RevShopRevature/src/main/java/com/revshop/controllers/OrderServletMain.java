@@ -35,7 +35,7 @@ public class OrderServletMain extends HttpServlet {
 				request.getRequestDispatcher("showOrders.jsp").forward(request, response);
 			}
 		} else {
-			response.sendRedirect("login.jsp");
+			response.sendRedirect("LoginAndRegistration/user-login.jsp");
 		}
 	}
 

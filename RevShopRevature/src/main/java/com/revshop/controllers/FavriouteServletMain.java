@@ -38,9 +38,10 @@ public class FavriouteServletMain extends HttpServlet {
             List<FavoriteProductsEntity> favoriteItems = favoriteService.getFavoritesByUserId(user.getUserId());
             logger.debug("Favorite items retrieved: " + favoriteItems);
             request.setAttribute("favoriteItems", favoriteItems);
+            request.getRequestDispatcher("favourite.jsp").forward(request, response);
         }
 
-        request.getRequestDispatcher("favourite.jsp").forward(request, response);
+        response.sendRedirect("LoginAndRegistration/user-login.jsp");
         logger.debug("Exiting doGet() method in FavriouteServletMain");
     }
 

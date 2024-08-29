@@ -68,8 +68,7 @@
 }
 
 @
--webkit-keyframes fadein {
-	from {bottom: 0;
+-webkit-keyframes fadein {from { bottom:0;
 	opacity: 0;
 }
 
@@ -80,8 +79,7 @@ to {
 
 }
 @
-keyframes fadein {
-	from {bottom: 0;
+keyframes fadein {from { bottom:0;
 	opacity: 0;
 }
 
@@ -92,8 +90,7 @@ to {
 
 }
 @
--webkit-keyframes fadeout {
-	from {bottom: 30px;
+-webkit-keyframes fadeout {from { bottom:30px;
 	opacity: 1;
 }
 
@@ -104,8 +101,7 @@ to {
 
 }
 @
-keyframes fadeout {
-	from {bottom: 30px;
+keyframes fadeout {from { bottom:30px;
 	opacity: 1;
 }
 
@@ -147,35 +143,38 @@ to {
 .img-fluid {
 	max-width: 50%;
 }
-</style>
 
+.logo {
+	font-family: Arial, sans-serif; /* Or use a similar font */
+	font-weight: 750; /* Extra bold */
+	font-size: 24px; /* Adjust size as needed */
+	color: #000000; /* Black color */
+}
+</style>
 </head>
 
 <body id="product-sidebar-left" class="product-grid-sidebar-left">
 	<div id="toast" class="toast"></div>
 	<header>
 		<%
-		HttpSession s = request.getSession();
-		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) s.getAttribute("user");
-		String selectedCategory = request.getParameter("category");
+		HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
+		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
+		String selectedCategory = (String) request.getAttribute("selectedCategory");
 		if (selectedCategory == null || selectedCategory.isEmpty()) {
 			selectedCategory = "Electronics"; // Default category
 		}
 		%>
-		<!-- header left mobie -->
-		<!-- header desktop -->
-		<div class="header-top d-xs-none ">
+		<div class="header-top d-xs-none">
 			<div class="container">
 				<div class="row">
 					<!-- logo -->
 					<div class="col-sm-2 col-md-2 d-flex align-items-center">
 						<div id="logo">
-							<a href="HomeServlet?category=Electronics"> <img
-								src="Static/img/home/logo.png" alt="logo" class="img-fluid">
+							<a href="HomeServlet?category=Electronics"> <span
+								class="logo"> RevShop </span>
 							</a>
 						</div>
 					</div>
-
 					<!-- menu -->
 					<div
 						class="col-sm-5 col-md-5 align-items-center justify-content-center navbar-expand-md main-menu">
@@ -200,13 +199,12 @@ to {
 												title="Sports">Sports</a></li>
 										</ul>
 									</div></li>
-								<li><a href="order-history.html" class="parent">Order
+								<li><a href="OrderServletMain" class="parent">Order
 										History</a></li>
 								<li><a href="FavriouteServletMain" class="parent">Favorites</a></li>
 							</ul>
 						</div>
 					</div>
-
 					<!-- search and account -->
 					<div
 						class="col-sm-5 col-md-5 d-flex align-items-center justify-content-end"
@@ -220,41 +218,76 @@ to {
 								<i class="fa fa-search"></i>
 							</button>
 						</form>
-
-
 						<div id="block_myaccount_infos" class="hidden-sm-down dropdown">
 							<div class="myaccount-title">
-								<a href="#account" data-toggle="collapse" class="account"> <i
+								<a href="#acount" data-toggle="collapse" class="acount"> <i
 									class="fa fa-user" aria-hidden="true"></i> <span>Account</span>
 									<i class="fa fa-angle-down" aria-hidden="true"></i>
 								</a>
 							</div>
-							<div id="account" class="collapse">
+							<div id="acount" class="collapse">
 								<div class="account-list-content">
+									<%
+									if (user != null) {
+									%>
+									<!-- Check if the user is logged in -->
+									<!-- My Account Link -->
 									<div>
-										<a class="login" href="user-account.html" rel="nofollow"
+										<a class="login" href="UserAccountServlet" rel="nofollow"
 											title="Log in to your customer account"> <i
-											class="fa fa-cog"></i> <span>My Account</span></a>
+											class="fa fa-cog"></i> <span>My Account</span>
+										</a>
 									</div>
+									<!-- Checkout Link -->
 									<div>
-										<a class="login" href="user-login.html" rel="nofollow"
-											title="Log in to your customer account"> <i
-											class="fa fa-sign-in"></i> <span>Sign in</span></a>
+										<a class="check-out" href="CheckoutServlet" rel="nofollow"
+											title="Checkout"> <i class="fa fa-check"
+											aria-hidden="true"></i> <span>Checkout</span>
+										</a>
 									</div>
+									<!-- Seller Dashboard Link (only for sellers) -->
+									<%
+									if ("seller".equals(user.getRole())) {
+									%>
+									<!-- Check if the user role is 'seller' -->
 									<div>
-										<a class="register" href="user-register.html" rel="nofollow"
-											title="Register Account"> <i class="fa fa-user"></i> <span>Register
-												Account</span></a>
+										<a class="seller-dashboard" href="ProductMaintenanceServlet"
+											rel="nofollow" title="Seller Dashboard"> <i
+											class="fa fa-tachometer-alt"></i> <span>Seller
+												Dashboard</span>
+										</a>
 									</div>
-									<div>
-										<a class="check-out" href="product-checkout.html"
-											rel="nofollow" title="Checkout"> <i class="fa fa-check"
-											aria-hidden="true"></i> <span>Checkout</span></a>
-									</div>
+									<%
+									}
+									%>
+									<!-- Log Out Link -->
 									<div class="link_wishlist">
-										<a href="user-wishlist.html" title="My Wishlists"> <i
-											class="fa fa-heart"></i> <span>My Wishlists</span></a>
+										<a href="LogoutServlet" title="Log Out"> <i
+											class="fa fa-heart"></i> <span>Log Out</span>
+										</a>
 									</div>
+									<%
+									} else {
+									%>
+									<!-- If the user is not logged in -->
+									<!-- Sign In Link -->
+									<div>
+										<a class="login" href="LoginAndRegistration/user-login.jsp"
+											rel="nofollow" title="Log in to your customer account"> <i
+											class="fa fa-sign-in"></i> <span>Sign in</span>
+										</a>
+									</div>
+									<!-- Register Link -->
+									<div>
+										<a class="register"
+											href="LoginAndRegistration/user-register.jsp" rel="nofollow"
+											title="Register Account"> <i class="fa fa-user"></i> <span>Register
+												Account</span>
+										</a>
+									</div>
+									<%
+									}
+									%>
 								</div>
 							</div>
 						</div>
@@ -266,7 +299,8 @@ to {
 								<div class="header-cart tiva-toggle-btn">
 									<span class="cart-products-count">1</span> <a
 										href="CartServlet?userId=<%=user.getUserId()%>"> <i
-										class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+										class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
 								</div>
 							</div>
 						</div>
@@ -278,7 +312,8 @@ to {
 								<div class="header-cart tiva-toggle-btn">
 									<span class="cart-products-count">1</span> <a
 										href="LoginAndRegistration/user-login.jsp"> <i
-										class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+										class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
 								</div>
 							</div>
 						</div>
@@ -302,8 +337,9 @@ to {
 							<div class="container no-index">
 								<div class="breadcrumb">
 									<ol>
-										<li><a href="#"> <span>Welcome</span></a></li>
-										<li><a href="#"> <span>Madhav Lonkar</span></a></li>
+										<li><a href="#"> <span>Home</span></a></li>
+										<li><a href="#"> <span><%=selectedCategory%></span></a></li>
+										<!-- Display the selected category -->
 									</ol>
 								</div>
 							</div>
@@ -357,15 +393,7 @@ to {
 												<div class="col col-xs-12">
 													<div
 														class="d-flex sort-by-row justify-content-lg-end justify-content-md-end">
-														<div class="products-sort-order dropdown">
-															<select class="select-title">
-																<option value="">Sort by</option>
-																<option value="name-asc">Name, A to Z</option>
-																<option value="name-desc">Name, Z to A</option>
-																<option value="price-asc">Price, low to high</option>
-																<option value="price-desc">Price, high to low</option>
-															</select>
-														</div>
+														<div class="products-sort-order dropdown"></div>
 													</div>
 												</div>
 											</div>
@@ -423,7 +451,7 @@ to {
 																	} else {
 																	%>
 																	<a class="addToWishlist"
-																		href="FavriouteAddServlet?productId=<%=product.getProductId()%>"
+																		href="LoginAndRegistration/user-login.jsp"
 																		data-rel="<%=product.getProductId()%>"> <i
 																		class="fa fa-heart" aria-hidden="true"></i>
 																	</a>
@@ -498,15 +526,24 @@ to {
 																					Add to cart
 																				</button>
 																			</form>
+																			<a class="addToWishlist"
+																				href="FavriouteAddServlet?productId=<%=product.getProductId()%>&userId=<%=user.getUserId()%>"
+																				data-rel="<%=product.getProductId()%>"> <i
+																				class="fa fa-heart" aria-hidden="true"></i>
+																			</a>
+																			<%
+																			} else {
+																			%>
+																			<a class="addToWishlist"
+																				href="LoginAndRegistration/user-login.jsp"
+																				data-rel="<%=product.getProductId()%>"> <i
+																				class="fa fa-heart" aria-hidden="true"></i>
+																			</a>
 																			<%
 																			}
 																			%>
-																			<a class="addToWishlist"
-																				href="wishlist.jsp?productId=<%=product.getProductId()%>"
-																				data-rel="<%=product.getProductId()%>"> <i
-																				class="fa fa-heart" aria-hidden="true"></i>
-																			</a> <a
-																				href="quick-view.jsp?id=<%=product.getProductId()%>"
+																			<a
+																				href="ProductDetailsServlet?productId=<%=product.getProductId()%>"
 																				class="quick-view hidden-sm-down"> <i
 																				class="fa fa-eye" aria-hidden="true"></i>
 																			</a>
@@ -567,12 +604,17 @@ to {
 						<div class="nov-html col-lg-4 col-sm-12 col-xs-12">
 							<div class="block">
 								<div class="block-content">
-									<p class="logo-footer">
-										<img src="Static/img/home/logo.png" alt="img">
-									</p>
-									<p class="content-logo">Lorem ipsum dolor sit amet,
-										consectetur adipiscing elit sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim</p>
+									<p class="logo-footer"
+										style="font-size: 32px; font-weight: bold; color: #000;">
+										RevShop</p>
+									<p class="content-logo">RevShop is an e-commerce platform
+										developed under the Revature training program. The project is
+										built using JDBC, Servlets, and JSP to deliver a robust and
+										scalable shopping experience. Our goal is to provide a
+										user-friendly interface and a seamless shopping journey.</p>
+									<p class="content-logo">This project showcases the
+										practical application of Java EE technologies, focusing on
+										building a dynamic, database-driven website.</p>
 								</div>
 							</div>
 						</div>
@@ -585,8 +627,7 @@ to {
 											<i class="fa fa-home" aria-hidden="true"></i> <span>Address:</span>
 										</div>
 										<div class="content-contact address-contact">
-											<p>123 Suspendis matti, Visaosang Building VST District
-												NY Accums, North American</p>
+											<p>A.p: Korhale Bk, Tal-Baramati, Dist-Pune, 412103</p>
 										</div>
 									</div>
 									<div class="contact-us">
@@ -602,7 +643,7 @@ to {
 											<i class="fa fa-phone" aria-hidden="true"></i> <span>Phone:</span>
 										</div>
 										<div class="content-contact phone-contact">
-											<p>+919370548600</p>
+											<p>+91 9370548600</p>
 										</div>
 									</div>
 								</div>
@@ -616,14 +657,22 @@ to {
 										<div id="social-block">
 											<div class="social">
 												<ul class="list-inline mb-0 justify-content-end">
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-facebook"></i></a></li>
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-twitter"></i></a></li>
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-google"></i></a></li>
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-instagram"></i></a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-facebook"></i>
+													</a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-twitter"></i>
+													</a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-google"></i>
+													</a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-instagram"></i>
+													</a></li>
 												</ul>
 											</div>
 										</div>
@@ -656,9 +705,11 @@ to {
 			</div>
 		</div>
 	</footer>
+
 	<!-- back to top -->
 	<div class="back-to-top">
-		<a href="#"> <i class="fa fa-long-arrow-up"></i></a>
+		<a href="#"> <i class="fa fa-long-arrow-up"></i>
+		</a>
 	</div>
 
 	<script src="Static/libs/jquery/jquery.min.js"></script>

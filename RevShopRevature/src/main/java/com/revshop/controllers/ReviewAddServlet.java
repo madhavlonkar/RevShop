@@ -48,6 +48,11 @@ public class ReviewAddServlet extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
         LoginEntity user = (LoginEntity) session.getAttribute("user");
+        if(user==null)
+        {
+        	response.sendRedirect("LoginAndRegistration/user-login.jsp");
+        	return;
+        }
 
 		// Get form data
 		String reviewText = request.getParameter("review");

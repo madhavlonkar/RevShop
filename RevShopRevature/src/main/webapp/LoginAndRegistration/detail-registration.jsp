@@ -9,6 +9,13 @@
 	text-align: center;
 	color: #333;
 }
+
+.logo {
+	font-family: Arial, sans-serif; /* Or use a similar font */
+	font-weight: 750; /* Extra bold */
+	font-size: 24px; /* Adjust size as needed */
+	color: #000000; /* Black color */
+}
 </style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,14 +60,18 @@
 </head>
 <body class="user-login blog">
 	<header>
+		<%
+		HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
+		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
+		%>
 		<div class="header-top d-xs-none">
 			<div class="container">
 				<div class="row">
 					<!-- logo -->
 					<div class="col-sm-2 col-md-2 d-flex align-items-center">
 						<div id="logo">
-							<a href="index-2.html"> <img src="Static/img/home/logo.png"
-								alt="logo" class="img-fluid">
+							<a href="HomeServlet?category=Electronics"> <span
+								class="logo"> RevShop </span>
 							</a>
 						</div>
 					</div>
@@ -69,25 +80,28 @@
 						class="col-sm-5 col-md-5 align-items-center justify-content-center navbar-expand-md main-menu">
 						<div class="menu navbar collapse navbar-collapse">
 							<ul class="menu-top navbar-nav">
-								<li><a href="index.html" class="parent">Home</a></li>
-								<li><a href="categories.html" class="parent">Categories</a>
+								<li><a href="HomeServlet?category=Electronics"
+									class="parent">Home</a></li>
+								<li><a href="HomeServlet?category=Electronics"
+									class="parent">Categories</a>
 									<div class="dropdown-menu">
 										<ul>
-											<li class="item"><a href="index-2.html"
-												title="Electronics">Electronics</a></li>
-											<li class="item"><a href="home2.html" title="Fashion">Fashion</a>
-											</li>
-											<li class="item"><a href="home3.html"
+											<li class="item"><a
+												href="HomeServlet?category=Electronics" title="Electronics">Electronics</a></li>
+											<li class="item"><a href="HomeServlet?category=Fashion"
+												title="Fashion">Fashion</a></li>
+											<li class="item"><a
+												href="HomeServlet?category=Home Appliances"
 												title="Home Appliances">Home Appliances</a></li>
-											<li class="item"><a href="home4.html" title="Books">Books</a>
-											</li>
-											<li class="item"><a href="home5.html" title="Sports">Sports</a>
-											</li>
+											<li class="item"><a href="HomeServlet?category=Books"
+												title="Books">Books</a></li>
+											<li class="item"><a href="HomeServlet?category=Sports"
+												title="Sports">Sports</a></li>
 										</ul>
 									</div></li>
-								<li><a href="order-history.html" class="parent">Order
+								<li><a href="OrderServletMain" class="parent">Order
 										History</a></li>
-								<li><a href="favorites.html" class="parent">Favorites</a></li>
+								<li><a href="FavriouteServletMain" class="parent">Favorites</a></li>
 							</ul>
 						</div>
 					</div>
@@ -95,6 +109,14 @@
 					<div
 						class="col-sm-5 col-md-5 d-flex align-items-center justify-content-end"
 						id="search_widget">
+						<form method="get" action="HomeServlet">
+							<input type="hidden" name="category"> <input type="text"
+								name="s" value="" placeholder="Search"
+								class="ui-autocomplete-input" autocomplete="off">
+							<button type="submit">
+								<i class="fa fa-search"></i>
+							</button>
+						</form>
 						<div id="block_myaccount_infos" class="hidden-sm-down dropdown">
 							<div class="myaccount-title">
 								<a href="#acount" data-toggle="collapse" class="acount"> <i
@@ -104,33 +126,99 @@
 							</div>
 							<div id="acount" class="collapse">
 								<div class="account-list-content">
+									<%
+									if (user != null) {
+									%>
+									<!-- Check if the user is logged in -->
+									<!-- My Account Link -->
 									<div>
-										<a class="login" href="user-acount.html" rel="nofollow"
+										<a class="login" href="UserAccountServlet" rel="nofollow"
 											title="Log in to your customer account"> <i
-											class="fa fa-cog"></i> <span>My Account</span></a>
+											class="fa fa-cog"></i> <span>My Account</span>
+										</a>
 									</div>
+									<!-- Checkout Link -->
 									<div>
-										<a class="login" href="user-login.html" rel="nofollow"
-											title="Log in to your customer account"> <i
-											class="fa fa-sign-in"></i> <span>Sign in</span></a>
+										<a class="check-out" href="CheckoutServlet" rel="nofollow"
+											title="Checkout"> <i class="fa fa-check"
+											aria-hidden="true"></i> <span>Checkout</span>
+										</a>
 									</div>
+									<!-- Seller Dashboard Link (only for sellers) -->
+									<%
+									if ("seller".equals(user.getRole())) {
+									%>
+									<!-- Check if the user role is 'seller' -->
 									<div>
-										<a class="register" href="user-register.html" rel="nofollow"
-											title="Register Account"> <i class="fa fa-user"></i> <span>Register
-												Account</span></a>
+										<a class="seller-dashboard" href="ProductMaintenanceServlet"
+											rel="nofollow" title="Seller Dashboard"> <i
+											class="fa fa-tachometer-alt"></i> <span>Seller
+												Dashboard</span>
+										</a>
 									</div>
-									<div>
-										<a class="check-out" href="product-checkout.html"
-											rel="nofollow" title="Checkout"> <i class="fa fa-check"
-											aria-hidden="true"></i> <span>Checkout</span></a>
-									</div>
+									<%
+									}
+									%>
+									<!-- Log Out Link -->
 									<div class="link_wishlist">
-										<a href="user-wishlist.html" title="My Wishlists"> <i
-											class="fa fa-heart"></i> <span>My Wishlists</span></a>
+										<a href="LogoutServlet" title="Log Out"> <i
+											class="fa fa-heart"></i> <span>Log Out</span>
+										</a>
 									</div>
+									<%
+									} else {
+									%>
+									<!-- If the user is not logged in -->
+									<!-- Sign In Link -->
+									<div>
+										<a class="login" href="LoginAndRegistration/user-login.jsp"
+											rel="nofollow" title="Log in to your customer account"> <i
+											class="fa fa-sign-in"></i> <span>Sign in</span>
+										</a>
+									</div>
+									<!-- Register Link -->
+									<div>
+										<a class="register"
+											href="LoginAndRegistration/user-register.jsp" rel="nofollow"
+											title="Register Account"> <i class="fa fa-user"></i> <span>Register
+												Account</span>
+										</a>
+									</div>
+									<%
+									}
+									%>
 								</div>
 							</div>
 						</div>
+						<%
+						if (user != null) {
+						%>
+						<div class="desktop_cart">
+							<div class="blockcart block-cart cart-preview tiva-toggle">
+								<div class="header-cart tiva-toggle-btn">
+									<span class="cart-products-count">1</span> <a
+										href="CartServlet?userId=<%=user.getUserId()%>"> <i
+										class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						<%
+						} else {
+						%>
+						<div class="desktop_cart">
+							<div class="blockcart block-cart cart-preview tiva-toggle">
+								<div class="header-cart tiva-toggle-btn">
+									<span class="cart-products-count">1</span> <a
+										href="LoginAndRegistration/user-login.jsp"> <i
+										class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						<%
+						}
+						%>
 					</div>
 				</div>
 			</div>
@@ -216,7 +304,6 @@
 
 										<%
 										// Retrieve the LoginEntity object from the session
-										LoginEntity user = (LoginEntity) session.getAttribute("user");
 
 										// Add a hidden field to pass the userId or email for updating the user
 										if (user != null) {
@@ -294,12 +381,17 @@
 						<div class="nov-html col-lg-4 col-sm-12 col-xs-12">
 							<div class="block">
 								<div class="block-content">
-									<p class="logo-footer">
-										<img src="Static/img/home/logo.png" alt="img">
-									</p>
-									<p class="content-logo">Lorem ipsum dolor sit amet,
-										consectetur adipiscing elit sed do eiusmod tempor incididunt
-										ut labore et dolore magna aliqua. Ut enim ad minim</p>
+									<p class="logo-footer"
+										style="font-size: 32px; font-weight: bold; color: #000;">
+										RevShop</p>
+									<p class="content-logo">RevShop is an e-commerce platform
+										developed under the Revature training program. The project is
+										built using JDBC, Servlets, and JSP to deliver a robust and
+										scalable shopping experience. Our goal is to provide a
+										user-friendly interface and a seamless shopping journey.</p>
+									<p class="content-logo">This project showcases the
+										practical application of Java EE technologies, focusing on
+										building a dynamic, database-driven website.</p>
 								</div>
 							</div>
 						</div>
@@ -312,8 +404,7 @@
 											<i class="fa fa-home" aria-hidden="true"></i> <span>Address:</span>
 										</div>
 										<div class="content-contact address-contact">
-											<p>123 Suspendis matti, Visaosang Building VST District
-												NY Accums, North American</p>
+											<p>A.p: Korhale Bk, Tal-Baramati, Dist-Pune, 412103</p>
 										</div>
 									</div>
 									<div class="contact-us">
@@ -329,7 +420,7 @@
 											<i class="fa fa-phone" aria-hidden="true"></i> <span>Phone:</span>
 										</div>
 										<div class="content-contact phone-contact">
-											<p>+919370548600</p>
+											<p>+91 9370548600</p>
 										</div>
 									</div>
 								</div>
@@ -343,14 +434,22 @@
 										<div id="social-block">
 											<div class="social">
 												<ul class="list-inline mb-0 justify-content-end">
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-facebook"></i></a></li>
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-twitter"></i></a></li>
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-google"></i></a></li>
-													<li class="list-inline-item mb-0"><a href="#"
-														target="_blank"> <i class="fa fa-instagram"></i></a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-facebook"></i>
+													</a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-twitter"></i>
+													</a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-google"></i>
+													</a></li>
+													<li class="list-inline-item mb-0"><a
+														href="https://www.instagram.com/maddy_8600/"
+														target="_blank"> <i class="fa fa-instagram"></i>
+													</a></li>
 												</ul>
 											</div>
 										</div>

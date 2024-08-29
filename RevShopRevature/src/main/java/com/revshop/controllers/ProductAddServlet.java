@@ -103,9 +103,9 @@ public class ProductAddServlet extends HttpServlet {
 
 		// Respond to the client
 		if (isProductSaved) {
-			response.getWriter().println("Product added successfully.");
+			response.sendRedirect("ProductMaintenanceServlet");
 		} else {
-			response.getWriter().println("Failed to add product.");
+			response.sendRedirect("Seller/addproduct.jsp");
 		}
 	}
 
