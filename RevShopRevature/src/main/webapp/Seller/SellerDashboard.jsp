@@ -38,6 +38,7 @@
 	font-size: 24px; /* Adjust size as needed */
 	color: #000000; /* Black color */
 }
+
 </style>
 </head>
 <body class="product-cart checkout-cart blog">
@@ -76,7 +77,7 @@
 												href="ProductMaintenanceServlet?category=Fashion"
 												title="Fashion">Fashion</a></li>
 											<li class="item"><a
-												href="ProductMaintenanceServlet?category=Home Appliances"
+												href="ProductMaintenanceServlet?category=HomeAppliances"
 												title="Home Appliances">Home Appliances</a></li>
 											<li class="item"><a
 												href="ProductMaintenanceServlet?category=Books"
@@ -239,7 +240,7 @@
 								</div>
 								<div class="cateTitle hasSubCategory open level1">
 									<a class="cateItem"
-										href="ProductMaintenanceServlet?category=Home Appliances">Home
+										href="ProductMaintenanceServlet?category=HomeAppliances">Home
 										Appliances</a>
 								</div>
 								<div class="cateTitle hasSubCategory open level1">
@@ -257,6 +258,29 @@
 					<!-- Main Content -->
 					<div id="content-wrapper" class="col-lg-9 col-md-8 col-sm-8">
 						<section id="main">
+						 <!-- Low Stock Alerts -->
+                            <%
+                            List<ProductEntity> lowStockProducts = (List<ProductEntity>) request.getAttribute("lowStockProducts");
+                            if (lowStockProducts != null && !lowStockProducts.isEmpty()) {
+                            %>
+                            <div class="low-stock-alert">
+    <strong style="color: #856404; background-color: #ffc107; padding: 5px; border-radius: 3px;">
+        Low Stock Alert!
+    </strong>
+    <span style="color: #856404;background-color: #ffc107; padding: 5px; border-radius: 3px;"> The following products are below the threshold:</span>
+    <ul style="color: red; padding-left: 20px;"><br>
+        <%
+        for (ProductEntity product : lowStockProducts) {
+        %>
+        <li><%= product.getProductName() %> - Current Stock: <%= product.getProductStock() %> (Threshold: <%= product.getThreshold() %>)</li>
+        <%
+        }
+        %>
+    </ul>
+</div>
+                            <%
+                            }
+                            %>
 							<div class="cart-grid row">
 								<div class="col-md-12 col-xs-12 check-info">
 									<h1 class="title-page">Product List</h1>

@@ -17,35 +17,40 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class FavriouteServletMain extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(FavriouteServletMain.class);
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(FavriouteServletMain.class);
 
-    private FavriouteProductService favoriteService = new FavoriteProductsServiceIMPL();
+	private FavriouteProductService favoriteService = new FavoriteProductsServiceIMPL();
 
-    public FavriouteServletMain() {
-        super();
-    }
+	public FavriouteServletMain() {
+		super();
+	}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.debug("Entering doGet() method in FavriouteServletMain");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		logger.debug("Entering doGet() method in FavriouteServletMain");
 
-        HttpSession session = request.getSession();
-        LoginEntity user = (LoginEntity) session.getAttribute("user");
+		HttpSession session = request.getSession();
+		LoginEntity user = (LoginEntity) session.getAttribute("user");
 
-        logger.debug("User retrieved from session: " + user);
+		logger.debug("User retrieved from session: " + user);
 
-        if (user != null) {
-            List<FavoriteProductsEntity> favoriteItems = favoriteService.getFavoritesByUserId(user.getUserId());
-            logger.debug("Favorite items retrieved: " + favoriteItems);
-            request.setAttribute("favoriteItems", favoriteItems);
-            request.getRequestDispatcher("favourite.jsp").forward(request, response);
-        }
+		if (user != null) {
+			List<FavoriteProductsEntity> favoriteItems = favoriteService.getFavoritesByUserId(user.getUserId());
+			logger.debug("Favorite items retrieved: " + favoriteItems);
+			request.setAttribute("favoriteItems", favoriteItems);
+			request.getRequestDispatcher("favourite.jsp").forward(request, response);
+		} else {
+			// Redirect only if user is not logged in, and avoid redirecting after
+			// forwarding
+			response.sendRedirect("LoginAndRegistration/user-login.jsp");
+		}
 
-        response.sendRedirect("LoginAndRegistration/user-login.jsp");
-        logger.debug("Exiting doGet() method in FavriouteServletMain");
-    }
+		logger.debug("Exiting doGet() method in FavriouteServletMain");
+	}
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
-    }
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
+	}
 }

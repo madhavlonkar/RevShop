@@ -125,7 +125,7 @@ public class OrderServiceIMPL implements OrderService {
                     + "<p>Your order <b>" + order.getOrderId() + "</b> has been placed successfully.</p>"
                     + "<p>Product: " + order.getProductName() + "</p>"
                     + "<p>Quantity: " + order.getQuantity() + "</p>"
-                    + "<p>Total Price: $" + order.getTotalPrice() + "</p>"
+                    + "<p>Total Price: RS" + order.getTotalPrice() + "</p>"
                     + "<p>Shipping Address: " + shippingAddress + "</p>"
                     + "<p>We will notify you once your order is shipped.</p>"
                     + "<br><p>Thank you for shopping with us!</p>";
@@ -139,7 +139,7 @@ public class OrderServiceIMPL implements OrderService {
                     + "<p>Order <b>" + order.getOrderId() + "</b> has been placed by a customer.</p>"
                     + "<p>Product: " + order.getProductName() + "</p>"
                     + "<p>Quantity: " + order.getQuantity() + "</p>"
-                    + "<p>Total Price: $" + order.getTotalPrice() + "</p>"
+                    + "<p>Total Price: RS" + order.getTotalPrice() + "</p>"
                     + "<p>Shipping Address: " + shippingAddress + "</p>"
                     + "<br><p>Please proceed with the necessary steps to ship the order.</p>";
 

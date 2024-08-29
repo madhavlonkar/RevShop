@@ -62,6 +62,7 @@ public class ProductAddServlet extends HttpServlet {
 		String productCategory = request.getParameter("product_category");
 		String productStatus = request.getParameter("product_status");
 		String productTags = request.getParameter("product_tags");
+		String threshold = request.getParameter("threshold");
 
 		String uploadDirectory = "C:\\Users\\Maddy\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
 		
@@ -93,6 +94,7 @@ public class ProductAddServlet extends HttpServlet {
 		product.setProductStatus(productStatus);
 		product.setProductTags(productTags);
 		product.setSellerId(sellerId);
+		product.setThreshold(Integer.parseInt(threshold));
 
 		// Set the image path in the product entity
 		product.setProductImage(imagePath);

@@ -15,6 +15,7 @@ public class ProductEntity implements Entity {
 
 	private String productImage;
 	private int sellerId;
+	private int threshold;
 
 	public int getProductId() {
 		return productId;
@@ -112,13 +113,17 @@ public class ProductEntity implements Entity {
 		this.sellerId = sellerId;
 	}
 
-	public ProductEntity() {
-		super();
+	public int getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(int threshold) {
+		this.threshold = threshold;
 	}
 
 	public ProductEntity(int productId, String productName, String productDescription, double productPrice,
 			double productDiscount, int productStock, String productBrand, String productCategory, String productTags,
-			String productStatus, String productImage, int sellerId) {
+			String productStatus, String productImage, int sellerId, int threshold) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -132,6 +137,11 @@ public class ProductEntity implements Entity {
 		this.productStatus = productStatus;
 		this.productImage = productImage;
 		this.sellerId = sellerId;
+		this.threshold = threshold;
+	}
+
+	public ProductEntity() {
+		super();
 	}
 
 	@Override
@@ -140,7 +150,7 @@ public class ProductEntity implements Entity {
 				+ productDescription + ", productPrice=" + productPrice + ", productDiscount=" + productDiscount
 				+ ", productStock=" + productStock + ", productBrand=" + productBrand + ", productCategory="
 				+ productCategory + ", productTags=" + productTags + ", productStatus=" + productStatus
-				+ ", productImage=" + productImage + ", sellerId=" + sellerId + "]";
+				+ ", productImage=" + productImage + ", sellerId=" + sellerId + ", threshold=" + threshold + "]";
 	}
 
 }

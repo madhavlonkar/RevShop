@@ -127,6 +127,10 @@ public class ProductServiceIMPL implements ProductService {
 	    return products;
 	}
 
+	@Override
+    public List<ProductEntity> getLowStockProducts(int sellerId) {
+        return pdao.getProductsBelowThreshold(sellerId);
+    }
 
 
 

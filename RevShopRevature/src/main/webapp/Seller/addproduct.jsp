@@ -465,15 +465,26 @@ p {
 												id="productTags" name="product_tags"
 												placeholder="e.g., sale, new, bestseller">
 										</div>
+
 									</div>
-									<div class="form-group">
-										<label for="productImage">Product Image *</label> <input
-											type="file" id="productImage" name="product_image"
-											accept="image/*" required>
+									<div class="form-row">
+										<div class="form-group">
+
+											<label for="productImage">Product Image *</label> <input
+												type="file" id="productImage" name="product_image"
+												accept="image/*" required>
+										</div>
+										
+										<div class="form-group">
+											<label for="Threshold">Threshold</label> <input type="text"
+												id="threshold" name="threshold"
+												placeholder="Threshold For Product">
+										</div>
 									</div>
+
 									<button class="checkout-btn" type="submit">Add Product</button>
 								</form>
-								<a href="#" class="back-btn">← Back to Dashboard</a>
+								<a href="ProductMaintenanceServlet" class="back-btn">← Back to Dashboard</a>
 							</div>
 
 							<div class="cart-section">

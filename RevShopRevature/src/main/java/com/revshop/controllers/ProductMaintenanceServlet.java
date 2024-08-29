@@ -48,6 +48,9 @@ public class ProductMaintenanceServlet extends HttpServlet {
             // Set the selected category and products list in request scope
             request.setAttribute("selectedCategory", category);
             request.setAttribute("products", products);
+            
+            List<ProductEntity> lowStockProducts = productService.getLowStockProducts(sellerId);
+            request.setAttribute("lowStockProducts", lowStockProducts);
 
             request.getRequestDispatcher("Seller/SellerDashboard.jsp").forward(request, response);
         } else {

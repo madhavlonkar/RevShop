@@ -26,4 +26,6 @@ public interface ProductService {
 
 	public List<ProductEntity> searchProductsBySeller(String keyword, int sellerId);
 
+	List<ProductEntity> getLowStockProducts(int sellerId);
+
 }

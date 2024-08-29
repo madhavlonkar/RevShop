@@ -191,7 +191,7 @@ to {
 											<li class="item"><a href="HomeServlet?category=Fashion"
 												title="Fashion">Fashion</a></li>
 											<li class="item"><a
-												href="HomeServlet?category=Home Appliances"
+												href="HomeServlet?category=HomeAppliances"
 												title="Home Appliances">Home Appliances</a></li>
 											<li class="item"><a href="HomeServlet?category=Books"
 												title="Books">Books</a></li>
@@ -362,7 +362,7 @@ to {
 												</div>
 												<div class="cateTitle hasSubCategory open level1">
 													<a class="cateItem"
-														href="HomeServlet?category=Home Appliances">Home
+														href="HomeServlet?category=HomeAppliances">Home
 														Appliances</a>
 												</div>
 												<div class="cateTitle hasSubCategory open level1">

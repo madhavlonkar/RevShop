@@ -31,8 +31,9 @@ public class RegistrationServlet extends HttpServlet {
 
     // Page paths
     private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/user-register.jsp";
-    private static final String SUCCESS_PAGE = "OtherPages/Success.html";
+//    private static final String SUCCESS_PAGE = "OtherPages/Success.html";
     private static final String ERROR_PAGE = "OtherPages/Error.html";
+    private static final String DETAIL_REGISTRATION_JSP = "LoginAndRegistration/detail-registration.jsp";
 
     private final LoginService loginService = LoginServiceIMPL.getInstance();
 
@@ -78,7 +79,7 @@ public class RegistrationServlet extends HttpServlet {
 
             boolean result = loginService.saveLogin(registration);
             if (result) {
-                response.sendRedirect(SUCCESS_PAGE);
+                response.sendRedirect(DETAIL_REGISTRATION_JSP);
             } else {
                 response.sendRedirect(ERROR_PAGE);
             }

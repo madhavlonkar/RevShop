@@ -82,7 +82,7 @@ public class ProductUpdateServlet extends HttpServlet {
         boolean isUpdated = productService.updateProduct(product);
 
         if (isUpdated) {
-            response.sendRedirect("product-list.jsp?updateSuccess=true");
+            response.sendRedirect("Seller/addproduct.jsp");
         } else {
             response.sendRedirect("product-edit.jsp?updateSuccess=false");
         }

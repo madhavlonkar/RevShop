@@ -34,7 +34,7 @@ public class ProductDAO implements DAO {
 		return instance;
 	}
 
-	private static final String INSERT_PRODUCT_QUERY = "INSERT INTO tbl_products(productName, productDescription, productPrice, productDiscount, productStock, productImage, productBrand, productCategory, productTags, productStatus,sellerId) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT_PRODUCT_QUERY = "INSERT INTO tbl_products(productName, productDescription, productPrice, productDiscount, productStock, productImage, productBrand, productCategory, productTags, productStatus,sellerId,threshold) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String RETRIEVE_ALL_QUERY = "SELECT * FROM tbl_products";
 	private static final String RETRIEVE_BY_ID_QUERY = "SELECT * FROM tbl_products WHERE productId = ?";
 	private static final String UPDATE_PRODUCT_QUERY = "UPDATE tbl_products SET productName = ?, productDescription = ?, productPrice = ?, productDiscount = ?, productStock = ?, productImage = ?, productBrand = ?, productCategory = ?, productTags = ?, productStatus = ? WHERE productId = ?";
@@ -59,6 +59,7 @@ public class ProductDAO implements DAO {
 			stmt.setString(9, product.getProductTags());
 			stmt.setString(10, product.getProductStatus());
 			stmt.setInt(11, product.getSellerId());
+			stmt.setInt(12, product.getThreshold());
 
 			int result = stmt.executeUpdate();
 			return result == 1;
@@ -396,5 +397,39 @@ public class ProductDAO implements DAO {
 	    }
 	    return products;
 	}
+	
+	public List<ProductEntity> getProductsBelowThreshold(int sellerId) {
+        String query = "SELECT * FROM tbl_products WHERE sellerId = ? AND productStock < threshold";
+        List<ProductEntity> products = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            stmt.setInt(1, sellerId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ProductEntity product = new ProductEntity();
+                    product.setProductId(rs.getInt("productId"));
+                    product.setProductName(rs.getString("productName"));
+                    product.setProductDescription(rs.getString("productDescription"));
+                    product.setProductPrice(rs.getDouble("productPrice"));
+                    product.setProductDiscount(rs.getDouble("productDiscount"));
+                    product.setProductStock(rs.getInt("productStock"));
+                    product.setProductImage(rs.getString("productImage"));
+                    product.setProductBrand(rs.getString("productBrand"));
+                    product.setProductCategory(rs.getString("productCategory"));
+                    product.setProductTags(rs.getString("productTags"));
+                    product.setProductStatus(rs.getString("productStatus"));
+                    product.setSellerId(rs.getInt("sellerId"));
+                    product.setThreshold(rs.getInt("threshold"));
+                    products.add(product);
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.error("Error retrieving products below threshold for seller ID: " + sellerId, e);
+        }
+        return products;
+    }
 
 }
