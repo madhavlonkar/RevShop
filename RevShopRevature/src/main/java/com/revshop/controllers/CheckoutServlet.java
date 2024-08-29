@@ -1,7 +1,6 @@
 package com.revshop.controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import com.revshop.Entity.CartEntity;
@@ -37,8 +36,7 @@ public class CheckoutServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -61,8 +59,7 @@ public class CheckoutServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -85,20 +82,15 @@ public class CheckoutServlet extends HttpServlet {
 			// Place the order
 			boolean orderPlaced = orderService.placeOrder(loginUser.getUserId(), paymentId, shippingAddress);
 
-			// Send response back to the user
-			response.setContentType("text/html");
-			PrintWriter out = response.getWriter();
+			// Redirect to the appropriate page based on the result
 			if (orderPlaced) {
-				out.println("<h2>Payment successful!</h2>");
-				out.println("<p>Thank you, " + userDetails.getFirstName() + " " + userDetails.getLastName() + "</p>");
-				out.println("<p>Your order will be shipped to: " + userDetails.getShippingAddress() + "</p>");
+				response.sendRedirect("OtherPages/Success.html");
 			} else {
-				out.println("<h2>There was an issue placing your order. Please try again.</h2>");
+				response.sendRedirect("OtherPages/Error.html");
 			}
 
 		} else {
-			response.sendRedirect("login.jsp");
+			response.sendRedirect("LoginAndRegistration/user-login.jsp");
 		}
 	}
-
 }
