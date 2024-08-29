@@ -56,7 +56,7 @@ public class CheckoutServlet extends HttpServlet {
 
             request.getRequestDispatcher("checkout.jsp").forward(request, response);
         } else {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("LoginAndRegistration/user-login.jsp");
         }
 	}
 

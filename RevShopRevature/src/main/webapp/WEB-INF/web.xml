@@ -229,4 +229,14 @@
     <servlet-name>ReviewAddServlet</servlet-name>
     <url-pattern>/ReviewAddServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UserAccountServlet</display-name>
+    <servlet-name>UserAccountServlet</servlet-name>
+    <servlet-class>com.revshop.controllers.UserAccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserAccountServlet</servlet-name>
+    <url-pattern>/UserAccountServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
