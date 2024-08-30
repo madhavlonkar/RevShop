@@ -7,11 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.revshop.Entity.Entity;
 import com.revshop.Entity.ReviewEntity;
 import com.revshop.utility.DBConnection;
 
 public class ReviewDAO implements DAO {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReviewDAO.class);
 
     private static final String INSERT_REVIEW_SQL = 
         "INSERT INTO tbl_review (review, stars, productId, userId, customerName, customerEmail, reviewDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -22,6 +27,7 @@ public class ReviewDAO implements DAO {
     @Override
     public boolean insert(Entity entity) throws SQLException {
         if (!(entity instanceof ReviewEntity)) {
+            logger.warn("Entity provided is not an instance of ReviewEntity");
             return false;
         }
 
@@ -37,12 +43,18 @@ public class ReviewDAO implements DAO {
             preparedStatement.setInt(4, review.getUserId());
             preparedStatement.setString(5, review.getCustomerName());
             preparedStatement.setString(6, review.getCustomerEmail());
-            preparedStatement.setDate(7, new java.sql.Date(review.getReviewDate().getTime())); // Use current date
+            preparedStatement.setDate(7, new java.sql.Date(review.getReviewDate().getTime()));
 
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+            if (rowsAffected > 0) {
+                logger.info("Review inserted successfully for product ID: {}", review.getProductId());
+                return true;
+            } else {
+                logger.warn("Failed to insert review for product ID: {}", review.getProductId());
+                return false;
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting review for product ID: {}", review.getProductId(), e);
             throw e;
         }
     }
@@ -70,8 +82,9 @@ public class ReviewDAO implements DAO {
                     reviews.add(review);
                 }
             }
+            logger.info("Retrieved {} reviews for product ID: {}", reviews.size(), productId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving reviews for product ID: {}", productId, e);
             throw e;
         }
 
@@ -81,24 +94,28 @@ public class ReviewDAO implements DAO {
     @Override
     public boolean update(Entity entity) throws SQLException {
         // Implement the update logic if required
+        logger.warn("Update method is not implemented");
         return false;
     }
 
     @Override
     public boolean delete(int id) throws SQLException {
         // Implement the delete logic if required
+        logger.warn("Delete method is not implemented");
         return false;
     }
 
     @Override
     public Entity retrieveById(int id) throws SQLException {
         // Implement the retrieve by ID logic if required
+        logger.warn("Retrieve by ID method is not implemented");
         return null;
     }
 
     @Override
     public List<Entity> retrieveAll() throws SQLException {
         // Implement the retrieve all logic if required
+        logger.warn("Retrieve all method is not implemented");
         return null;
     }
 }

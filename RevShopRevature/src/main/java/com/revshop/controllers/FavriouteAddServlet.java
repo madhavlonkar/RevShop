@@ -21,11 +21,13 @@ public class FavriouteAddServlet extends HttpServlet {
         super();
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doPost(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         logger.debug("Entering doPost() method in FavriouteAddServlet");
@@ -37,6 +39,7 @@ public class FavriouteAddServlet extends HttpServlet {
 
             logger.debug("Received parameters: productId=" + productIdParam + ", userId=" + userIdParam);
 
+            // Validate the parameters
             if (productIdParam == null || userIdParam == null || productIdParam.isEmpty() || userIdParam.isEmpty()) {
                 throw new IllegalArgumentException("Product ID or User ID is missing.");
             }

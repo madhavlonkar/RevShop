@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.revshop.Entity.CartEntity;
 import com.revshop.Entity.OrderEntity;
 import com.revshop.Entity.TransactionEntity;
-import com.revshop.Entity.UserEntity;
 import com.revshop.dao.CartDAO;
 import com.revshop.dao.OrderDAO;
 import com.revshop.dao.ProductDAO;
@@ -18,6 +20,8 @@ import com.revshop.utility.DBConnection;
 import com.revshop.utility.EcommerceEmailUtility;
 
 public class OrderServiceIMPL implements OrderService {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceIMPL.class); // Logger instance
 
     private OrderDAO orderDAO;
     private TransactionDAO transactionDAO;
@@ -33,20 +37,21 @@ public class OrderServiceIMPL implements OrderService {
         this.userDAO = UserDAO.getInstance();
     }
 
+    @Override
     public boolean placeOrder(int userId, String paymentId, String shippingAddress) {
+        logger.debug("Placing order for user ID: {} with payment ID: {}", userId, paymentId);
         Connection connection = null;
         boolean orderPlaced = false;
 
         try {
-            // Establish a connection and start a transaction
             connection = DBConnection.getConnection();
             connection.setAutoCommit(false); // Start transaction
 
             // Fetch cart items for the user
             List<CartEntity> cartItems = cartDAO.getCartByUserId(userId);
+            logger.debug("Retrieved {} items from cart for user ID: {}", cartItems.size(), userId);
 
             for (CartEntity item : cartItems) {
-                // Fetch the seller ID from the product table
                 int sellerId = productDAO.getSellerIdByProductId(item.getProductId());
 
                 // Create and save the order
@@ -63,6 +68,7 @@ public class OrderServiceIMPL implements OrderService {
                 order.setStatus("To Be Shipped");
                 order.setShippingAddress(shippingAddress);
                 orderDAO.insert(order);
+                logger.debug("Order created with ID: {} for product ID: {}", order.getOrderId(), item.getProductId());
 
                 // Save transaction details
                 TransactionEntity transaction = new TransactionEntity();
@@ -72,37 +78,41 @@ public class OrderServiceIMPL implements OrderService {
                 transaction.setUserId(userId);
                 transaction.setSellerId(sellerId);
                 transactionDAO.insert(transaction);
+                logger.debug("Transaction created with ID: {} for order ID: {}", paymentId, order.getOrderId());
 
                 // Update product stock
                 productDAO.updateProductStock(item.getProductId(), item.getQuantity());
+                logger.debug("Product stock updated for product ID: {}", item.getProductId());
 
                 // Remove items from the cart
                 cartDAO.deleteProductFromCart(userId, item.getProductId());
+                logger.debug("Product ID: {} removed from cart for user ID: {}", item.getProductId(), userId);
 
                 // Send emails to buyer and seller
-                sendOrderEmails(order, shippingAddress, item, sellerId,userId);
+                sendOrderEmails(order, shippingAddress, item, sellerId, userId);
             }
 
-            // Commit the transaction if everything is successful
             connection.commit();
             orderPlaced = true;
+            logger.info("Order placed successfully for user ID: {} with payment ID: {}", userId, paymentId);
 
         } catch (SQLException e) {
+            logger.error("Error placing order for user ID: {}", userId, e);
             if (connection != null) {
                 try {
                     connection.rollback(); // Rollback in case of error
+                    logger.warn("Transaction rolled back for user ID: {}", userId);
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    logger.error("Error during transaction rollback for user ID: {}", userId, ex);
                 }
             }
-            e.printStackTrace();
         } finally {
             if (connection != null) {
                 try {
                     connection.setAutoCommit(true); // Reset auto-commit mode
                     connection.close(); // Close the connection
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error closing connection for user ID: {}", userId, e);
                 }
             }
         }
@@ -110,16 +120,12 @@ public class OrderServiceIMPL implements OrderService {
         return orderPlaced;
     }
 
-    private void sendOrderEmails(OrderEntity order, String shippingAddress, CartEntity item, int sellerId,int userId) {
-        // Retrieve the buyer's UserEntity
-    	String buyerEmail = userDAO.retrieveById(userId).getEmail();
-        // Retrieve the seller's UserEntity
-    	String sellerEmail = userDAO.retrieveById(sellerId).getEmail();
-
-        // Get the email addresses
+    private void sendOrderEmails(OrderEntity order, String shippingAddress, CartEntity item, int sellerId, int userId) {
+        logger.debug("Sending order emails for order ID: {} to user ID: {} and seller ID: {}", order.getOrderId(), userId, sellerId);
+        String buyerEmail = userDAO.retrieveById(userId).getEmail();
+        String sellerEmail = userDAO.retrieveById(sellerId).getEmail();
 
         if (buyerEmail != null && sellerEmail != null) {
-            // Prepare email content for buyer
             String buyerSubject = "Order Confirmation - " + order.getOrderId();
             String buyerMessage = "<h1>Thank you for your purchase!</h1>"
                     + "<p>Your order <b>" + order.getOrderId() + "</b> has been placed successfully.</p>"
@@ -130,10 +136,9 @@ public class OrderServiceIMPL implements OrderService {
                     + "<p>We will notify you once your order is shipped.</p>"
                     + "<br><p>Thank you for shopping with us!</p>";
 
-            // Send email to buyer
             EcommerceEmailUtility.sendOrderConfirmationToBuyer(buyerEmail, buyerSubject, buyerMessage);
+            logger.info("Order confirmation email sent to buyer: {}", buyerEmail);
 
-            // Prepare email content for seller
             String sellerSubject = "New Order Placed - " + order.getOrderId();
             String sellerMessage = "<h1>New Order Received!</h1>"
                     + "<p>Order <b>" + order.getOrderId() + "</b> has been placed by a customer.</p>"
@@ -143,46 +148,53 @@ public class OrderServiceIMPL implements OrderService {
                     + "<p>Shipping Address: " + shippingAddress + "</p>"
                     + "<br><p>Please proceed with the necessary steps to ship the order.</p>";
 
-            // Send email to seller
             EcommerceEmailUtility.sendOrderNotificationToSeller(sellerEmail, sellerSubject, sellerMessage);
+            logger.info("Order notification email sent to seller: {}", sellerEmail);
         } else {
-            // Handle cases where emails could not be retrieved (e.g., log an error)
             if (buyerEmail == null) {
-                System.err.println("Buyer email could not be retrieved for userId: " + order.getUserId());
+                logger.error("Buyer email could not be retrieved for userId: {}", userId);
             }
             if (sellerEmail == null) {
-                System.err.println("Seller email could not be retrieved for sellerId: " + sellerId);
+                logger.error("Seller email could not be retrieved for sellerId: {}", sellerId);
             }
         }
     }
 
     @Override
     public List<OrderEntity> getOrdersByUserId(int userId) {
+        logger.debug("Retrieving orders for user ID: {}", userId);
         try {
             return orderDAO.getOrdersByUserId(userId);
         } catch (SQLException e) {
-            e.printStackTrace();
-            // Log the exception
+            logger.error("Error retrieving orders for user ID: {}", userId, e);
             return null;
         }
     }
 
     @Override
     public List<OrderEntity> getOrdersBySellerId(int sellerId) {
+        logger.debug("Retrieving orders for seller ID: {}", sellerId);
         try {
             return orderDAO.getOrdersBySellerId(sellerId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving orders for seller ID: {}", sellerId, e);
             return null;
         }
     }
 
     @Override
     public boolean updateOrderStatus(String orderId, String status) {
+        logger.debug("Updating order status to '{}' for order ID: {}", status, orderId);
         try {
-            return orderDAO.updateOrderStatus(orderId, status);
+            boolean result = orderDAO.updateOrderStatus(orderId, status);
+            if (result) {
+                logger.info("Order status updated to '{}' for order ID: {}", status, orderId);
+            } else {
+                logger.error("Failed to update order status to '{}' for order ID: {}", status, orderId);
+            }
+            return result;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating order status to '{}' for order ID: {}", status, orderId, e);
             return false;
         }
     }

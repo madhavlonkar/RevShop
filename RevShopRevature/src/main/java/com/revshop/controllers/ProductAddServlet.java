@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.revshop.Entity.LoginEntity;
 import com.revshop.Entity.ProductEntity;
 import com.revshop.service.ProductService;
@@ -23,92 +26,99 @@ import jakarta.servlet.http.Part;
  * Servlet implementation class ProductAddServlet
  */
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-		maxFileSize = 1024 * 1024 * 10, // 10MB
-		maxRequestSize = 1024 * 1024 * 50) // 50MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class ProductAddServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = LoggerFactory.getLogger(ProductAddServlet.class);  // Logger instance
 
-	public ProductAddServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public ProductAddServlet() {
+        super();
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        logger.debug("Served at: {}", request.getContextPath());
+        response.getWriter().append("Served at: ").append(request.getContextPath());
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		HttpSession session = request.getSession();
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        logger.debug("Entering doPost() method in ProductAddServlet");
+
+        HttpSession session = request.getSession();
         LoginEntity user = (LoginEntity) session.getAttribute("user");
-        
-		int sellerId=user.getUserId();
-		String productName = request.getParameter("product_name");
-		String productDescription = request.getParameter("product_description");
-		double productPrice = Double.parseDouble(request.getParameter("product_price"));
-		double productDiscount = Double.parseDouble(request.getParameter("product_discount"));
-		int productStock = Integer.parseInt(request.getParameter("product_stock"));
-		String productBrand = request.getParameter("product_brand");
-		String productCategory = request.getParameter("product_category");
-		String productStatus = request.getParameter("product_status");
-		String productTags = request.getParameter("product_tags");
-		String threshold = request.getParameter("threshold");
 
-		String uploadDirectory = "C:\\Users\\Maddy\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
-		
+        if (user == null) {
+            logger.warn("User session is null, redirecting to login page.");
+            response.sendRedirect("LoginAndRegistration/user-login.jsp");
+            return;
+        }
 
-		// Retrieve the uploaded file
-		Part filePart = request.getPart("product_image");
+        try {
+            int sellerId = user.getUserId();
+            String productName = request.getParameter("product_name");
+            String productDescription = request.getParameter("product_description");
+            double productPrice = Double.parseDouble(request.getParameter("product_price"));
+            double productDiscount = Double.parseDouble(request.getParameter("product_discount"));
+            int productStock = Integer.parseInt(request.getParameter("product_stock"));
+            String productBrand = request.getParameter("product_brand");
+            String productCategory = request.getParameter("product_category");
+            String productStatus = request.getParameter("product_status");
+            String productTags = request.getParameter("product_tags");
+            String threshold = request.getParameter("threshold");
 
-		// Get the file name from the Part object
-		String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            logger.debug("Received product details - Name: {}, Price: {}, Stock: {}", productName, productPrice, productStock);
 
-		// Create a path for the file
-		Path filePath = Paths.get(uploadDirectory + fileName);
+            String uploadDirectory = "C:\\Users\\Maddy\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
 
-		// Save the file to the specified directory
-		Files.copy(filePart.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            // Retrieve the uploaded file
+            Part filePart = request.getPart("product_image");
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
-		// Store the file path in the database
-		String imagePath = "Static/img/home/" + fileName;
+            // Create a path for the file
+            Path filePath = Paths.get(uploadDirectory + fileName);
+            Files.copy(filePart.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            logger.debug("File uploaded to: {}", filePath);
 
-		// Create a new ProductEntity and set its fields
-		ProductEntity product = new ProductEntity();
-		product.setProductName(productName);
-		product.setProductDescription(productDescription);
-		product.setProductPrice(productPrice);
-		product.setProductDiscount(productDiscount);
-		product.setProductStock(productStock);
-		product.setProductBrand(productBrand);
-		product.setProductCategory(productCategory);
-		product.setProductStatus(productStatus);
-		product.setProductTags(productTags);
-		product.setSellerId(sellerId);
-		product.setThreshold(Integer.parseInt(threshold));
+            // Store the file path in the database
+            String imagePath = "Static/img/home/" + fileName;
 
-		// Set the image path in the product entity
-		product.setProductImage(imagePath);
+            // Create a new ProductEntity and set its fields
+            ProductEntity product = new ProductEntity();
+            product.setProductName(productName);
+            product.setProductDescription(productDescription);
+            product.setProductPrice(productPrice);
+            product.setProductDiscount(productDiscount);
+            product.setProductStock(productStock);
+            product.setProductBrand(productBrand);
+            product.setProductCategory(productCategory);
+            product.setProductStatus(productStatus);
+            product.setProductTags(productTags);
+            product.setSellerId(sellerId);
+            product.setThreshold(Integer.parseInt(threshold));
+            product.setProductImage(imagePath);
 
-		// Save the product to the database
-		ProductService productService = new ProductServiceIMPL();
-		boolean isProductSaved = productService.saveProduct(product);
+            logger.debug("Product entity created: {}", product);
 
-		// Respond to the client
-		if (isProductSaved) {
-			response.sendRedirect("ProductMaintenanceServlet");
-		} else {
-			response.sendRedirect("Seller/addproduct.jsp");
-		}
-	}
+            // Save the product to the database
+            ProductService productService = new ProductServiceIMPL();
+            boolean isProductSaved = productService.saveProduct(product);
 
+            if (isProductSaved) {
+                logger.info("Product successfully saved: {}", productName);
+                response.sendRedirect("ProductMaintenanceServlet");
+            } else {
+                logger.error("Failed to save product: {}", productName);
+                response.sendRedirect("Seller/addproduct.jsp");
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred while adding product", e);
+            response.sendRedirect("Seller/addproduct.jsp");
+        }
+
+        logger.debug("Exiting doPost() method in ProductAddServlet");
+    }
 }

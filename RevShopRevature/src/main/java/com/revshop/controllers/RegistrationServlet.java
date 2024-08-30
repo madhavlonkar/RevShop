@@ -21,39 +21,45 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-
-	public RegistrationServlet() {
-		super();
-	}
-
-	private static final Logger logger = LoggerFactory.getLogger(RegistrationServlet.class);
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = LoggerFactory.getLogger(RegistrationServlet.class);
 
     // Page paths
     private static final String LOGIN_REGISTRATION_JSP = "LoginAndRegistration/user-register.jsp";
-//    private static final String SUCCESS_PAGE = "OtherPages/Success.html";
     private static final String ERROR_PAGE = "OtherPages/Error.html";
     private static final String DETAIL_REGISTRATION_JSP = "LoginAndRegistration/detail-registration.jsp";
 
     private final LoginService loginService = LoginServiceIMPL.getInstance();
 
+    public RegistrationServlet() {
+        super();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        logger.debug("Entering doGet() method in RegistrationServlet");
         request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+        logger.debug("Exiting doGet() method in RegistrationServlet");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        logger.debug("Entering doPost() method in RegistrationServlet");
+
         String userType = request.getParameter("userType");
         String userName = request.getParameter("username");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        logger.debug("Received registration details - Username: {}, Email: {}, UserType: {}", userName, email, userType);
+
         if (userName == null || email == null || password == null || userType == null) {
+            logger.warn("Registration failed: Missing fields in registration form.");
             request.setAttribute("RegistererrorMessage", "All fields are required.");
             request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
+            logger.debug("Exiting doPost() method in RegistrationServlet");
             return;
         }
 
@@ -68,32 +74,37 @@ public class RegistrationServlet extends HttpServlet {
 
         try {
             if (loginService.emailExists(registration.getEmail())) {
+                logger.warn("Registration failed: Email already exists - {}", email);
                 forwardWithError(request, response, "Email already exists. Please use a different email.");
                 return;
             }
 
             if (loginService.usernameExists(registration.getUserName())) {
+                logger.warn("Registration failed: Username already exists - {}", userName);
                 forwardWithError(request, response, "Username already exists. Please choose a different username.");
                 return;
             }
 
             boolean result = loginService.saveLogin(registration);
             if (result) {
-                response.sendRedirect(DETAIL_REGISTRATION_JSP);
+                logger.info("Registration successful for user: {}", userName);
+                response.sendRedirect("LoginAndRegistration/user-login.jsp");
             } else {
+                logger.error("Registration failed: Unable to save user to database.");
                 response.sendRedirect(ERROR_PAGE);
             }
         } catch (Exception e) {
-        	e.printStackTrace();
             logger.error("Error during registration: ", e);
             forwardWithError(request, response, "An unexpected error occurred. Please try again later.");
         }
+
+        logger.debug("Exiting doPost() method in RegistrationServlet");
     }
 
     private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
             throws ServletException, IOException {
+        logger.debug("Forwarding with error message: {}", errorMessage);
         request.setAttribute("RegistererrorMessage", errorMessage);
         request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
     }
-
 }

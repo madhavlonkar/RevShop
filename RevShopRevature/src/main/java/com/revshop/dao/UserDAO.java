@@ -17,11 +17,10 @@ import com.revshop.utility.DBConnection;
 public class UserDAO implements DAO {
 
     private static final Logger logger = Logger.getLogger(UserDAO.class);
-    
+
     private static final String INSERT_USER_BASIC = "INSERT INTO tbl_user (email) VALUES (?)";
     private static final String INSERT_USER_FULL = "INSERT INTO tbl_user (firstName, lastName, gender, mobile, email, pincode, billingAddress, shippingAddress, bankAccountNo, ifsc, companyName, gstNumber, websiteUrl, productType, panNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_USER = "UPDATE tbl_user SET firstName = ?, lastName = ?, gender = ?, mobile = ?, pincode = ?, billingAddress = ?, shippingAddress = ?, bankAccountNo = ?, ifsc = ?, companyName = ?, gstNumber = ?, websiteUrl = ?, productType = ?, panNumber = ? WHERE userId = ?";
-
 
     // Singleton instance
     private static UserDAO instance;
@@ -44,13 +43,13 @@ public class UserDAO implements DAO {
     @Override
     public boolean insert(Entity entity) {
         logger.debug("Entering insert() method with entity: " + entity);
-        
+
         UserEntity user = (UserEntity) entity;
         int result = 0;
-        Connection connection = null; // Declare connection outside try-with-resources
+        Connection connection = null;
 
         try {
-            connection = DBConnection.getConnection(); // Initialize connection
+            connection = DBConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_FULL, Statement.RETURN_GENERATED_KEYS);
 
             connection.setAutoCommit(false);
@@ -87,23 +86,10 @@ public class UserDAO implements DAO {
             logger.debug("Rows affected: " + result);
         } catch (SQLException e) {
             logger.error("SQL Exception in insert() method", e);
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    logger.error("SQL Exception during rollback in insert() method", ex);
-                }
-            }
+            rollbackConnection(connection);
             return false;
         } finally {
-            // Ensure that the connection is closed properly
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("SQL Exception during connection close in insert() method", e);
-                }
-            }
+            closeConnection(connection);
         }
 
         logger.debug("Exiting insert() method");
@@ -113,13 +99,13 @@ public class UserDAO implements DAO {
     @Override
     public boolean update(Entity entity) {
         logger.debug("Entering update() method with entity: " + entity);
-        
+
         UserEntity user = (UserEntity) entity;
         int result = 0;
-        Connection connection = null; // Declare connection outside try-with-resources
+        Connection connection = null;
 
         try {
-            connection = DBConnection.getConnection(); // Initialize connection
+            connection = DBConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER);
 
             connection.setAutoCommit(false);
@@ -151,23 +137,10 @@ public class UserDAO implements DAO {
             logger.debug("Rows affected: " + result);
         } catch (SQLException e) {
             logger.error("SQL Exception in update() method", e);
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    logger.error("SQL Exception during rollback in update() method", ex);
-                }
-            }
+            rollbackConnection(connection);
             return false;
         } finally {
-            // Ensure that the connection is closed properly
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("SQL Exception during connection close in update() method", e);
-                }
-            }
+            closeConnection(connection);
         }
 
         logger.debug("Exiting update() method");
@@ -185,7 +158,7 @@ public class UserDAO implements DAO {
     @Override
     public UserEntity retrieveById(int id) {
         logger.debug("Entering retrieveById() method with id: " + id);
-        
+
         UserEntity user = null;
         String query = "SELECT * FROM tbl_user WHERE userId = ?";
 
@@ -234,12 +207,12 @@ public class UserDAO implements DAO {
 
     public int initialInsertAndGetKeys(Entity entity) {
         logger.debug("Entering initialInsertAndGetKeys() method with entity: " + entity);
-        
+
         int userId = -1;
-        Connection connection = null; // Declare connection outside try-with-resources
+        Connection connection = null;
 
         try {
-            connection = DBConnection.getConnection(); // Initialize connection
+            connection = DBConnection.getConnection();
             PreparedStatement userPreparedStatement = connection.prepareStatement(INSERT_USER_BASIC, Statement.RETURN_GENERATED_KEYS);
 
             connection.setAutoCommit(false);
@@ -255,33 +228,40 @@ public class UserDAO implements DAO {
                         userId = generatedKeys.getInt(1);
                     }
                 }
-                connection.commit(); // Commit the transaction after successfully getting the keys
+                connection.commit();
             } else {
-                connection.rollback(); // Rollback if user insertion failed
+                connection.rollback();
             }
 
             logger.debug("Generated userId: " + userId);
         } catch (SQLException e) {
             logger.error("SQL Exception in initialInsertAndGetKeys() method", e);
-            if (connection != null) {
-                try {
-                    connection.rollback(); // Rollback on exception
-                } catch (SQLException ex) {
-                    logger.error("SQL Exception during rollback in initialInsertAndGetKeys() method", ex);
-                }
-            }
+            rollbackConnection(connection);
         } finally {
-            // Ensure that the connection is closed properly
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error("SQL Exception during connection close in initialInsertAndGetKeys() method", e);
-                }
-            }
+            closeConnection(connection);
         }
 
         logger.debug("Exiting initialInsertAndGetKeys() method");
-        return userId; // Return the generated user ID
+        return userId;
+    }
+
+    private void rollbackConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                logger.error("SQL Exception during rollback", ex);
+            }
+        }
+    }
+
+    private void closeConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.error("SQL Exception during connection close", e);
+            }
+        }
     }
 }

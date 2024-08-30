@@ -128,11 +128,11 @@ to {
 </head>
 
 <body id="product-detail">
-		<%
-		HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
-		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
-		%>
-		<jsp:include page="/includes/header.jsp" />
+	<%
+	HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
+	com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
+	%>
+	<jsp:include page="/includes/header.jsp" />
 
 	<!-- main content -->
 	<div class="main-content">
@@ -325,7 +325,7 @@ to {
 											<div class="review" id="review-section">
 												<ul class="nav nav-tabs">
 													<li class="active"><a data-toggle="tab" href="#review">Reviews
-															</a></li>
+													</a></li>
 												</ul>
 
 												<div class="tab-content">
@@ -349,11 +349,13 @@ to {
 																				for (int i = 1; i <= 5; i++) {
 																					if (i <= stars) {
 																				%>
-																				<div class="star filled"></div>
+																				<span style="color: gold;">&#9733;</span>
+																				<!-- Filled star -->
 																				<%
 																				} else {
 																				%>
-																				<div class="star"></div>
+																				<span style="color: gray;">&#9734;</span>
+																				<!-- Empty star -->
 																				<%
 																				}
 																				}
@@ -447,7 +449,7 @@ to {
 
 
 	<!-- footer -->
-	
+
 	<!-- back to top -->
 	<div class="back-to-top">
 		<a href="#"> <i class="fa fa-long-arrow-up"></i></a>

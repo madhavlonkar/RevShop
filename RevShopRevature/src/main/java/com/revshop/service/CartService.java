@@ -13,6 +13,6 @@ public interface CartService {
 
 	boolean updateQuantity(CartEntity cart, String action);
 
-	public void removeProductFromCart(int userId, int productId);
+	public boolean removeProductFromCart(int userId, int productId);
 
 }

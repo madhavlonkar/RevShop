@@ -3,6 +3,8 @@ package com.revshop.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.revshop.Entity.ProductEntity;
 import com.revshop.service.ProductService;
 import com.revshop.service.impl.ProductServiceIMPL;
@@ -17,58 +19,64 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class HomeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(HomeServlet.class);  // Logger instance
 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public HomeServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ProductService productService = new ProductServiceIMPL();
+        logger.debug("Entering doGet() method in HomeServlet");
 
-        // Retrieve the selected category from the request
-        String category = request.getParameter("category");
-        String searchQuery = request.getParameter("s");
-        List<ProductEntity> products;
+        try {
+            ProductService productService = new ProductServiceIMPL();
 
-        // Check if a search query or category is provided
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            // If a search query is provided, search by keyword
-            products = productService.searchProducts(searchQuery);
-        } else if (category != null && !category.isEmpty()) {
-            // If a category is provided, filter by category
-            products = productService.getProductsByCategory(category);
-        } else {
-            // If no category is selected, set a default category
-            category = "Electronics"; // Set your default category here
-            products = productService.getProductsByCategory(category);
+            String category = request.getParameter("category");
+            String searchQuery = request.getParameter("s");
+            logger.debug("Received parameters - category: " + category + ", searchQuery: " + searchQuery);
+
+            List<ProductEntity> products;
+
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                products = productService.searchProducts(searchQuery);
+                logger.debug("Products retrieved by search query: " + products.size());
+            } else if (category != null && !category.isEmpty()) {
+                products = productService.getProductsByCategory(category);
+                logger.debug("Products retrieved by category: " + products.size());
+            } else {
+                category = "Electronics"; // Set your default category here
+                products = productService.getProductsByCategory(category);
+                logger.debug("Products retrieved by default category 'Electronics': " + products.size());
+            }
+
+            request.setAttribute("selectedCategory", category);
+
+            request.setAttribute("products", products);
+
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            logger.debug("Forwarded to index.jsp with products and category");
+        } catch (Exception e) {
+            logger.error("An error occurred in doGet() method of HomeServlet", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while processing your request.");
         }
 
-        // Set the selected category in the request scope so that the UI can reflect it
-        request.setAttribute("selectedCategory", category);
-
-        // Set the products list in the request scope
-        request.setAttribute("products", products);
-
-        // Forward the request to the JSP page
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
+        logger.debug("Exiting doGet() method in HomeServlet");
     }
 
     /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
+        logger.debug("Entering doPost() method in HomeServlet");
         doGet(request, response);
+        logger.debug("Exiting doPost() method in HomeServlet");
     }
 }

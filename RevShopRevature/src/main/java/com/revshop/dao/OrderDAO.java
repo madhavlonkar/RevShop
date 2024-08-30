@@ -7,11 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.revshop.Entity.Entity;
 import com.revshop.Entity.OrderEntity;
 import com.revshop.utility.DBConnection;
 
 public class OrderDAO implements DAO {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderDAO.class); // Logger instance
 
     private static final String INSERT_ORDER_SQL = 
         "INSERT INTO tbl_order (orderId, sellerId, userId, productId, transactionId, productName, totalPrice, quantity, imgUrl, status, shippingAddress) " +
@@ -20,15 +25,20 @@ public class OrderDAO implements DAO {
     private static final String SELECT_ORDERS_BY_USER_ID_SQL =
             "SELECT * FROM tbl_order WHERE userId = ?";
 
+    private static final String SELECT_ORDERS_BY_SELLER_ID_SQL =
+            "SELECT * FROM tbl_order WHERE sellerId = ?";
+    
+    private static final String UPDATE_ORDER_STATUS_SQL =
+            "UPDATE tbl_order SET status = ? WHERE orderId = ?";
+
     @Override
     public boolean insert(Entity entity) throws SQLException {
         if (!(entity instanceof OrderEntity)) {
+            logger.warn("Attempted to insert an entity that is not an instance of OrderEntity");
             return false;
         }
 
         OrderEntity order = (OrderEntity) entity;
-
-        // Generate a unique orderId
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ORDER_SQL)) {
@@ -49,15 +59,20 @@ public class OrderDAO implements DAO {
             // Execute the insert operation
             int rowsAffected = preparedStatement.executeUpdate();
 
+            if (rowsAffected > 0) {
+                logger.info("Order inserted successfully: {}", order.getOrderId());
+            } else {
+                logger.warn("Failed to insert order: {}", order.getOrderId());
+            }
+
             // Return true if the insert was successful, otherwise false
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            // Re-throw the exception to be handled by the calling service
-            throw e;
+            logger.error("Error inserting order: {}", order.getOrderId(), e);
+            throw e; // Re-throw the exception to be handled by the calling service
         }
     }
-
 
     @Override
     public boolean update(Entity entity) throws SQLException {
@@ -84,6 +99,7 @@ public class OrderDAO implements DAO {
     }
     
     public List<OrderEntity> getOrdersByUserId(int userId) throws SQLException {
+        logger.debug("Retrieving orders for user ID: {}", userId);
         List<OrderEntity> orders = new ArrayList<>();
 
         try (Connection connection = DBConnection.getConnection();
@@ -108,21 +124,19 @@ public class OrderDAO implements DAO {
 
                     orders.add(order);
                 }
+                logger.info("Retrieved {} orders for user ID: {}", orders.size(), userId);
             }
 
         } catch (SQLException e) {
+            logger.error("Error retrieving orders for user ID: {}", userId, e);
             throw e;
         }
 
         return orders;
     }
-    
-    private static final String SELECT_ORDERS_BY_SELLER_ID_SQL =
-            "SELECT * FROM tbl_order WHERE sellerId = ?";
-    private static final String UPDATE_ORDER_STATUS_SQL =
-            "UPDATE tbl_order SET status = ? WHERE orderId = ?";
 
     public List<OrderEntity> getOrdersBySellerId(int sellerId) throws SQLException {
+        logger.debug("Retrieving orders for seller ID: {}", sellerId);
         List<OrderEntity> orders = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ORDERS_BY_SELLER_ID_SQL)) {
@@ -146,14 +160,17 @@ public class OrderDAO implements DAO {
 
                     orders.add(order);
                 }
+                logger.info("Retrieved {} orders for seller ID: {}", orders.size(), sellerId);
             }
         } catch (SQLException e) {
+            logger.error("Error retrieving orders for seller ID: {}", sellerId, e);
             throw e;
         }
         return orders;
     }
 
     public boolean updateOrderStatus(String orderId, String status) throws SQLException {
+        logger.debug("Updating order status for order ID: {}", orderId);
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ORDER_STATUS_SQL)) {
 
@@ -161,9 +178,15 @@ public class OrderDAO implements DAO {
             preparedStatement.setString(2, orderId);
 
             int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                logger.info("Order status updated successfully for order ID: {}", orderId);
+            } else {
+                logger.warn("Failed to update order status for order ID: {}", orderId);
+            }
             return rowsAffected > 0;
 
         } catch (SQLException e) {
+            logger.error("Error updating order status for order ID: {}", orderId, e);
             throw e;
         }
     }

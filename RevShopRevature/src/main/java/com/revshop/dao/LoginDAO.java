@@ -6,11 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.revshop.Entity.Entity;
 import com.revshop.Entity.LoginEntity;
 import com.revshop.utility.DBConnection;
 
 public class LoginDAO implements DAO {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginDAO.class); // Logger instance
+
     private static final String INSERT_LOGIN_SQL = "INSERT INTO tbl_login (username, email, password, isFirstLogin, role, userid) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String CHECK_EMAIL_SQL = "SELECT * FROM tbl_login WHERE email = ?";
     private static final String CHECK_USERNAME_SQL = "SELECT * FROM tbl_login WHERE username = ?";
@@ -38,10 +44,11 @@ public class LoginDAO implements DAO {
 
     @Override
     public boolean insert(Entity entity) {
+        logger.debug("Inserting new login entity");
         boolean isSaved = false;
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement loginPreparedStatement = connection.prepareStatement(INSERT_LOGIN_SQL)) {
-             
+
             connection.setAutoCommit(false);
             LoginEntity login = (LoginEntity) entity;
 
@@ -61,24 +68,28 @@ public class LoginDAO implements DAO {
                 if (loginResult > 0) {
                     isSaved = true;
                     connection.commit(); // Commit if successful
+                    logger.info("Login entity inserted successfully for user ID: {}", userId);
                 } else {
                     connection.rollback(); // Rollback if unsuccessful
+                    logger.error("Failed to insert login entity for user ID: {}", userId);
                 }
             } else {
                 connection.rollback(); // Rollback if user ID generation failed
+                logger.error("Failed to generate user ID for login entity");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting login entity", e);
         }
         return isSaved;
     }
 
     @Override
     public boolean update(Entity entity) {
+        logger.debug("Updating login entity");
         LoginEntity loginEntity = (LoginEntity) entity;
         String query = "UPDATE tbl_login SET email = ?, password = ?, isFirstLogin = ?, role = ?, username = ? WHERE loginId = ?";
-        
+
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -90,10 +101,15 @@ public class LoginDAO implements DAO {
             preparedStatement.setInt(6, loginEntity.getLoginId());
 
             int result = preparedStatement.executeUpdate();
+            if (result > 0) {
+                logger.info("Login entity updated successfully for login ID: {}", loginEntity.getLoginId());
+            } else {
+                logger.error("Failed to update login entity for login ID: {}", loginEntity.getLoginId());
+            }
             return result > 0;
-            
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating login entity for login ID: {}", loginEntity.getLoginId(), e);
             return false;
         }
     }
@@ -117,33 +133,43 @@ public class LoginDAO implements DAO {
     }
 
     public LoginEntity findByEmail(String email) {
+        logger.debug("Finding login entity by email: {}", email);
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CHECK_EMAIL_SQL)) {
 
             preparedStatement.setString(1, email);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return extractLoginEntity(resultSet);
+                    LoginEntity loginEntity = extractLoginEntity(resultSet);
+                    logger.info("Login entity found for email: {}", email);
+                    return loginEntity;
+                } else {
+                    logger.warn("No login entity found for email: {}", email);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error finding login entity by email: {}", email, e);
         }
         return null;
     }
 
     public LoginEntity findByUsername(String username) {
+        logger.debug("Finding login entity by username: {}", username);
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CHECK_USERNAME_SQL)) {
 
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return extractLoginEntity(resultSet);
+                    LoginEntity loginEntity = extractLoginEntity(resultSet);
+                    logger.info("Login entity found for username: {}", username);
+                    return loginEntity;
+                } else {
+                    logger.warn("No login entity found for username: {}", username);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error finding login entity by username: {}", username, e);
         }
         return null;
     }
@@ -160,5 +186,4 @@ public class LoginDAO implements DAO {
         loginEntity.setUserId(resultSet.getInt("userid"));
         return loginEntity;
     }
-
 }
