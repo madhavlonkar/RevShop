@@ -52,10 +52,10 @@ String role = (user != null) ? user.getRole() : "";
 <link rel="stylesheet" type="text/css" href="Static/css/reponsive.css">
 <style>
 .logo {
-	font-family: Arial, sans-serif; /* Or use a similar font */
-	font-weight: 750; /* Extra bold */
-	font-size: 24px; /* Adjust size as needed */
-	color: #000000; /* Black color */
+	font-family: Arial, sans-serif;
+	font-weight: 750;
+	font-size: 24px;
+	color: #000000;
 }
 /* Custom styles */
 .order-table img {
@@ -82,22 +82,27 @@ String role = (user != null) ? user.getRole() : "";
 		<div id="wrapper-site">
 			<!-- breadcrumb -->
 			<nav class="breadcrumb-bg">
-							<div class="container no-index">
-								<div class="breadcrumb">
-									<ol>
-										<li><a href="#"> <span>Home</span></a></li>
-										<li><a href="#"> <span>Orders</span></a></li>
-										<!-- Display the selected category -->
-									</ol>
-								</div>
-							</div>
-						</nav>
+				<div class="container no-index">
+					<div class="breadcrumb">
+						<ol>
+							<li><a href="#"> <span>Home</span></a></li>
+							<li><a href="#"> <span>Orders</span></a></li>
+						</ol>
+					</div>
+				</div>
+			</nav>
 			<div class="container">
 				<div class="row">
 					<div id="content-wrapper"
 						class="col-xs-12 col-sm-12 col-md-12 col-lg-12 onecol">
 						<section id="main">
 							<h1 class="title-page">My Orders</h1>
+
+							<% if ("seller".equals(role)) { %>
+								<button class="btn btn-primary" type="button" 
+									onclick="location.href='OrderServletMain?action=myOrders'">My Orders</button>
+							<% } %>
+							
 							<div class="order-container">
 								<%
 								if (orders != null && !orders.isEmpty()) {
@@ -127,7 +132,7 @@ String role = (user != null) ? user.getRole() : "";
 											<td>Rs. <%=String.format("%.2f", order.getTotalPrice())%></td>
 											<td>
 												<%
-												if ("seller".equals(role)) {
+												if ("seller".equals(role) && !"myOrders".equals(request.getParameter("action"))) {
 												%>
 												<form method="post" action="OrderServletMain">
 													<input type="hidden" name="orderId"
@@ -146,10 +151,10 @@ String role = (user != null) ? user.getRole() : "";
 															<%="Cancelled".equals(order.getStatus()) ? "selected" : ""%>>Cancelled</option>
 													</select>
 												</form> <%
- } else {
- %> <%=order.getStatus()%> <%
- }
- %>
+												} else {
+												%> <%=order.getStatus()%> <%
+												}
+												%>
 											</td>
 											<td>
 												<button class="btn btn-primary" type="button"
@@ -211,8 +216,6 @@ String role = (user != null) ? user.getRole() : "";
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-	
-	
 	<script>
 		function toggleDetails(button, detailsId) {
 			var detailsDiv = document.getElementById(detailsId);
