@@ -7,79 +7,70 @@ UserEntity userDetails = (UserEntity) request.getAttribute("userDetails");
 List<CartEntity> cartItems = (List<CartEntity>) request.getAttribute("cartItems");
 
 double totalAmount = 0;
-for (CartEntity item : cartItems) {
-    double priceAfterDiscount = item.getProductPrice() * (1 - item.getProductDiscount() / 100.0);
-    double itemTotal = priceAfterDiscount * item.getQuantity();
-    totalAmount += itemTotal;
+if (cartItems != null && !cartItems.isEmpty()) {
+    for (CartEntity item : cartItems) {
+        double priceAfterDiscount = item.getProductPrice() * (1 - item.getProductDiscount() / 100.0);
+        double itemTotal = priceAfterDiscount * item.getQuantity();
+        totalAmount += itemTotal;
+    }
 }
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <style>
-    .logo {
-	font-family: Arial, sans-serif; /* Or use a similar font */
-	font-weight: 750; /* Extra bold */
-	font-size: 24px; /* Adjust size as needed */
-	color: #000000; /* Black color */
-}
+        .logo {
+            font-family: Arial, sans-serif;
+            font-weight: 750;
+            font-size: 24px;
+            color: #000000;
+        }
         .section-divider {
             margin: 20px 0;
             font-weight: bold;
             text-align: center;
             color: #333;
         }
-
         .product-summary {
             margin: 20px 0;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-
         .product-summary h4 {
             font-weight: bold;
             margin-bottom: 10px;
         }
-
         .product-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-
         .product-item span {
             display: inline-block;
             margin-right: 10px;
         }
-
         .product-total {
             font-weight: bold;
         }
-
         .checkout-container {
             display: flex;
             justify-content: space-between;
         }
-
         .checkout-form {
-            flex: 0 0 65%; /* Adjusts the width of the details section */
+            flex: 0 0 65%;
             margin-right: 20px;
         }
-
         .order-summary {
-            flex: 0 0 30%; /* Adjusts the width of the order summary */
+            flex: 0 0 30%;
         }
-
         .checkout-form form {
             text-align: left;
         }
-
         .checkout-form .form-group {
             text-align: left;
             margin-bottom: 15px;
         }
-
         .checkout-form .form-control {
             width: 100%;
             text-align: left;
@@ -87,34 +78,29 @@ for (CartEntity item : cartItems) {
             padding: 10px;
             box-sizing: border-box;
         }
-
         .checkout-form .btn-primary {
             width: 100%;
             padding: 10px;
             font-size: 16px;
             font-weight: bold;
         }
-
         .product-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
         .product-item span {
-            flex: 1; /* Makes each span take up an equal amount of space */
-            text-align: left; /* Aligns text to the left */
+            flex: 1;
+            text-align: left;
         }
-
         .product-item span:nth-child(2) {
-            text-align: center; /* Centers the quantity */
-            flex: 0 0 50px; /* Fixed width for quantity */
+            text-align: center;
+            flex: 0 0 50px;
         }
-
         .product-item span:nth-child(3) {
-            text-align: right; /* Aligns the total price to the right */
-            flex: 0 0 100px; /* Fixed width for total price */
+            text-align: right;
+            flex: 0 0 100px;
         }
     </style>
     <meta charset="UTF-8">
@@ -140,10 +126,8 @@ for (CartEntity item : cartItems) {
 </head>
 <body class="user-login blog">
     <jsp:include page="/includes/header.jsp" />
-    <!-- main content -->
     <div class="main-content">
         <div class="wrap-banner">
-            <!-- breadcrumb -->
             <nav class="breadcrumb-bg">
                 <div class="container no-index">
                     <div class="breadcrumb">
@@ -155,7 +139,6 @@ for (CartEntity item : cartItems) {
                 </div>
             </nav>
         </div>
-        <!-- main -->
         <div id="wrapper-site">
             <div>
                 <div class="row">
@@ -164,11 +147,13 @@ for (CartEntity item : cartItems) {
                             <div id="content" class="page-content">
                                 <div class="checkout-form">
                                     <h1 class="text-center title-page">Checkout</h1>
-                                    <div id="error-message"
-                                        style="color: red; font-weight: bold; text-align: center;">
-                                        <!-- Error messages will appear here -->
+                                    <div id="error-message" style="color: red; font-weight: bold; text-align: center;">
                                     </div>
                                     <br>
+                                    <% if (cartItems == null || cartItems.isEmpty()) { %>
+													<div class="alert alert-warning">You have no Item in Cart
+														.</div>
+                                    <% } else { %>
                                     <div class="order-summary">
                                         <div class="section-divider">Order Summary</div>
                                         <div class="product-summary">
@@ -256,9 +241,8 @@ for (CartEntity item : cartItems) {
                                             <button type="button" class="btn btn-primary" onclick="payNow()">Pay Now</button>
                                         </div>
                                     </form>
+                                    <% } %>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -266,7 +250,6 @@ for (CartEntity item : cartItems) {
             </div>
         </div>
     </div>
-    <!-- footer -->
     <jsp:include page="/includes/footer.jsp" />
     
     <!-- Razorpay integration -->
@@ -275,8 +258,8 @@ for (CartEntity item : cartItems) {
         function payNow() {
         	var amountInPaise = Math.round(<%=totalAmount * 100%>);
             var options = {
-                "key": "rzp_test_wquKp1Dkyy2Nck", // Enter the Key ID generated from the Dashboard
-                "amount": amountInPaise, // Amount is in paise (multiply by 100)
+                "key": "rzp_test_wquKp1Dkyy2Nck",
+                "amount": amountInPaise,
                 "currency": "INR",
                 "name": "Rev Shop",
                 "description": "Test Transaction",
@@ -284,8 +267,6 @@ for (CartEntity item : cartItems) {
                 "handler": function (response) {
                     alert("Payment successful!");
                     var payment_id = response.razorpay_payment_id;
-
-                    // Submit the payment ID to the backend to confirm the payment and save the order
                     document.getElementById('payment_id').value = payment_id;
                     document.getElementById('checkout-form').submit();
                 },

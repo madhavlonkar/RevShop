@@ -92,7 +92,7 @@
 														<!-- product left content: image -->
 														<div class="product-line-grid-left col-md-2">
 															<span class="product-image media-middle"> <a
-																href="product-detail.html?productId=<%=item.getProductId()%>">
+																href="ProductDetailsServlet?productId=<%=item.getProductId()%>">
 																	<img class="img-fluid" src="<%=item.getImgUrl()%>"
 																	alt="<%=item.getProductName()%>">
 															</a>
@@ -101,7 +101,7 @@
 														<div class="product-line-grid-body col-md-6">
 															<div class="product-line-info">
 																<a class="label"
-																	href="product-detail.html?productId=<%=item.getProductId()%>"
+																	href="ProductDetailsServlet?productId=<%=item.getProductId()%>"
 																	data-id_customization="0"> <%=item.getProductName()%>
 																</a>
 															</div>
