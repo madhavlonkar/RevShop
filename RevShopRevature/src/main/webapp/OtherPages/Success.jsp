@@ -83,7 +83,9 @@ p strong {
             <h1>Order Placed Successfully!</h1>
             <p>Thank you for your purchase.</p>
             <p>You will receive an email confirmation shortly with your order details.</p>
-            <a href="HomeServlet" class="btn">Continue Shopping</a>
+            <form action="/RevShopRevature/HomeServlet" method="get">
+            <button type="submit" class="btn">Continue Shopping</button>
+            </form>
         </div>
     </div>
 </body>

@@ -89,7 +89,9 @@ p strong {
             <h1>Something Went Wrong!</h1>
             <p>We encountered an issue processing your request. Please try again later.</p>
             <p>If the problem persists, contact our support team.</p>
-            <a href="HomeServlet" class="btn">Return to Home</a>
+            <form method="get" action="HomeServlet">
+            <button type="Submit" class="btn">Return to Home</button>
+            </form>
         </div>
     </div>
 </body>

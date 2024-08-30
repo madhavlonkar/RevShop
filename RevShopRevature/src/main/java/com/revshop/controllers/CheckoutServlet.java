@@ -84,9 +84,9 @@ public class CheckoutServlet extends HttpServlet {
 
 			// Redirect to the appropriate page based on the result
 			if (orderPlaced) {
-				response.sendRedirect("OtherPages/Success.html");
+				response.sendRedirect("OtherPages/Success.jsp");
 			} else {
-				response.sendRedirect("OtherPages/Error.html");
+				response.sendRedirect("OtherPages/Error.jsp");
 			}
 
 		} else {

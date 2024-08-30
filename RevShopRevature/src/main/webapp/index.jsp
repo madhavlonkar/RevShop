@@ -262,7 +262,7 @@ to {
 									%>
 									<!-- Log Out Link -->
 									<div class="link_wishlist">
-										<a href="LogoutServlet" title="Log Out"> <i
+										<a href="LoginAndRegistration/user-login.jsp" title="Log Out"> <i
 											class="fa fa-heart"></i> <span>Log Out</span>
 										</a>
 									</div>

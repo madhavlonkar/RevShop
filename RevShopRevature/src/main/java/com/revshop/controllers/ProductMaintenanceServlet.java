@@ -54,7 +54,7 @@ public class ProductMaintenanceServlet extends HttpServlet {
 
             request.getRequestDispatcher("Seller/SellerDashboard.jsp").forward(request, response);
         } else {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("LoginAndRegistration/user-login.jsp");
         }
     }
 
