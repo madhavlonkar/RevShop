@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.revature.helper.RegistrationHelper;
 import com.revshop.Entity.LoginEntity;
 import com.revshop.service.LoginService;
 import com.revshop.service.impl.LoginServiceIMPL;
@@ -60,6 +61,19 @@ public class RegistrationServlet extends HttpServlet {
             request.setAttribute("RegistererrorMessage", "All fields are required.");
             request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
             logger.debug("Exiting doPost() method in RegistrationServlet");
+            return;
+        }
+        
+     // Email and Password validation
+        if (email == null || !RegistrationHelper.isValidEmail(email)) {
+            logger.warn("Invalid email format provided: {}", email);
+            forwardWithError(request, response, "Please enter a valid email address.");
+            return;
+        }
+
+        if (password == null || !RegistrationHelper.isValidPassword(password)) {
+            logger.warn("Invalid password criteria for email: {}", email);
+            forwardWithError(request, response, "Password must be at least 6 characters long and include an uppercase letter, a number, and a special character.");
             return;
         }
 

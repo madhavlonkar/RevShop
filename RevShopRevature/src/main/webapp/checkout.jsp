@@ -255,37 +255,77 @@ if (cartItems != null && !cartItems.isEmpty()) {
     <!-- Razorpay integration -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-        function payNow() {
-        	var amountInPaise = Math.round(<%=totalAmount * 100%>);
-            var options = {
-                "key": "rzp_test_wquKp1Dkyy2Nck",
-                "amount": amountInPaise,
-                "currency": "INR",
-                "name": "Rev Shop",
-                "description": "Test Transaction",
-                "image": "https://example.com/your_logo",
-                "handler": function (response) {
-                    alert("Payment successful!");
-                    var payment_id = response.razorpay_payment_id;
-                    document.getElementById('payment_id').value = payment_id;
-                    document.getElementById('checkout-form').submit();
-                },
-                "prefill": {
-                    "name": "<%=userDetails.getFirstName() + ' ' + userDetails.getLastName()%>",
-                    "email": "<%=userDetails.getEmail()%>",
-                    "contact": "<%=userDetails.getMobile()%>"
-                },
-                "notes": {
-                    "address": "<%=userDetails.getShippingAddress()%>"
-                },
-                "theme": {
-                    "color": "#3399cc"
-                }
-            };
+function validateCheckoutForm() {
+    const address = document.querySelector('input[name="address"]').value.trim();
+    const city = document.querySelector('input[name="city"]').value.trim();
+    const state = document.querySelector('input[name="state"]').value.trim();
+    const zip = document.querySelector('input[name="zip"]').value.trim();
+    
+    // Address validation
+    if (address === "") {
+        alert("Shipping Address is required.");
+        return false;
+    }
+    
+    // City validation
+    if (city === "") {
+        alert("City is required.");
+        return false;
+    }
+    
+    // State validation
+    if (state === "") {
+        alert("State is required.");
+        return false;
+    }
+    
+    // Zip Code validation
+    if (zip === "" || isNaN(zip) || zip.length !== 6) {
+        alert("Please enter a valid 6-digit Zip Code.");
+        return false;
+    }
 
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
+    return true;
+}
+
+function payNow() {
+    if (!validateCheckoutForm()) {
+        return; // Prevent payment if form validation fails
+    }
+    
+    var amountInPaise = Math.round(<%=totalAmount * 100%>);
+    var options = {
+        "key": "rzp_test_wquKp1Dkyy2Nck",
+        "amount": amountInPaise,
+        "currency": "INR",
+        "name": "Rev Shop",
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "handler": function (response) {
+            alert("Payment successful!");
+            var payment_id = response.razorpay_payment_id;
+            document.getElementById('payment_id').value = payment_id;
+            document.getElementById('checkout-form').submit();
+        },
+        "prefill": {
+            "name": "<%=userDetails.getFirstName() + ' ' + userDetails.getLastName()%>",
+            "email": "<%=userDetails.getEmail()%>",
+            "contact": "<%=userDetails.getMobile()%>"
+        },
+        "notes": {
+            "address": "<%=userDetails.getShippingAddress()%>"
+        },
+        "theme": {
+            "color": "#3399cc"
         }
-    </script>
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+
+document.querySelector('.btn-primary').onclick = payNow;
+</script>
+    
 </body>
 </html>

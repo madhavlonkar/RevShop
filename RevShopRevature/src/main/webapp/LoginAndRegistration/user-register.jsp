@@ -89,7 +89,8 @@
 									</div>
 									<br>
 									<form id="customer-form" class="js-customer-form"
-										action="/RevShopRevature/RegistrationServlet" method="POST">
+										action="/RevShopRevature/RegistrationServlet" method="POST"
+										onsubmit="return validateForm()">
 										<div>
 											<div class="form-group">
 												<div>
@@ -144,6 +145,45 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		function validateForm() {
+			const username = document.forms["customer-form"]["username"].value;
+			const email = document.forms["customer-form"]["email"].value;
+			const password = document.forms["customer-form"]["password"].value;
+			const userType = document.forms["customer-form"]["userType"].value;
+
+			// Username validation: must be at least 3 characters long and contain at least one letter
+			const usernamePattern = /[a-zA-Z]/;
+			if (username.length < 3 || !usernamePattern.test(username)) {
+				alert("Username must be at least 3 characters long and contain at least one letter.");
+				return false;
+			}
+
+			// Email validation
+			const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailPattern.test(email)) {
+				alert("Please enter a valid email address.");
+				return false;
+			}
+
+			// Password validation: must be at least 6 characters long, include uppercase, lowercase, number, and special character
+			const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+			if (!passwordPattern.test(password)) {
+				alert("Password must be at least 6 characters long and include an uppercase letter, a number, and a special character.");
+				return false;
+			}
+
+			// User type validation: ensure one is selected
+			if (userType === "") {
+				alert("Please select an account type.");
+				return false;
+			}
+
+			return true; // If all validations pass
+		}
+	</script>
+
+
 	<!-- footer -->
 	<jsp:include page="/includes/footer.jsp" />
 </body>

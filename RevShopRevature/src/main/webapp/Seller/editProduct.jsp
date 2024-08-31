@@ -244,7 +244,7 @@ p {
 								<p>Fill in the details to update the product in the system</p>
 								<form
 									action="${pageContext.request.contextPath}/ProductUpdateServlet"
-									method="POST" enctype="multipart/form-data">
+									method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
 									<%
 									ProductEntity product = (ProductEntity) request.getAttribute("product");
 									if (product != null) {
@@ -275,8 +275,7 @@ p {
 										<div class="form-group">
 											<label for="productPrice">Price *</label> <input
 												type="number" id="productPrice" name="product_price"
-												value="<%=product.getProductPrice()%>" step="0.01"
-												required>
+												value="<%=product.getProductPrice()%>" step="0.01" required>
 										</div>
 										<div class="form-group">
 											<label for="productDiscount">Discount</label> <input
@@ -388,6 +387,99 @@ p {
 												productImageInput.value = ""; // Reset the file input
 											});
 						</script>
+
+						<script>
+							function validateForm() {
+								const productName = document
+										.getElementById('productName').value
+										.trim();
+								const productCategory = document
+										.getElementById('productCategory').value;
+								const productPrice = document
+										.getElementById('productPrice').value
+										.trim();
+								const productDiscount = document
+										.getElementById('productDiscount').value
+										.trim();
+								const productStock = document
+										.getElementById('productStock').value
+										.trim();
+								const productBrand = document
+										.getElementById('productBrand').value
+										.trim();
+								const productDescription = document
+										.getElementById('productDescription').value
+										.trim();
+								const productStatus = document
+										.getElementById('productStatus').value;
+								const productImage = document
+										.getElementById('productImage').files[0];
+
+								// Validate required fields
+								if (productName === "") {
+									alert("Product Name is required.");
+									return false;
+								}
+
+								if (productCategory === "") {
+									alert("Please select a product category.");
+									return false;
+								}
+
+								if (productPrice === "" || isNaN(productPrice)
+										|| parseFloat(productPrice) <= 0) {
+									alert("Please enter a valid product price greater than 0.");
+									return false;
+								}
+
+								if (productDiscount !== ""
+										&& (isNaN(productDiscount)
+												|| parseFloat(productDiscount) < 0 || parseFloat(productDiscount) > 100)) {
+									alert("Please enter a valid discount percentage between 0 and 100.");
+									return false;
+								}
+
+								if (productStock === "" || isNaN(productStock)
+										|| parseInt(productStock) < 0) {
+									alert("Please enter a valid stock quantity of 0 or more.");
+									return false;
+								}
+
+								if (productBrand === "") {
+									alert("Product Brand is required.");
+									return false;
+								}
+
+								if (productDescription === "") {
+									alert("Product Description is required.");
+									return false;
+								}
+
+								if (productStatus === "") {
+									alert("Please select a product status.");
+									return false;
+								}
+
+								// Validate image upload (if a new image is provided)
+								if (productImage) {
+									const allowedTypes = [ 'image/jpeg',
+											'image/png', 'image/gif',
+											'image/webp' ];
+									if (!allowedTypes
+											.includes(productImage.type)) {
+										alert("Please upload a valid image file (JPEG, PNG, GIF, WebP).");
+										return false;
+									}
+								}
+
+								// If all validations pass, allow form submission
+								return true;
+							}
+
+							// Attach validation function to the form submission
+							document.querySelector('form').onsubmit = validateForm;
+						</script>
+
 
 
 						<jsp:include page="/includes/footer.jsp" />

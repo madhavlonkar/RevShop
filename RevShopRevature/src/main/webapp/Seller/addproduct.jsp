@@ -241,7 +241,7 @@ p {
 								<h2>Add New Product</h2>
 								<p>Fill in the details to add a new product to the system</p>
 								<form action="/RevShopRevature/ProductAddServlet" method="POST"
-									enctype="multipart/form-data">
+									enctype="multipart/form-data" onsubmit="return validateForm()">
 									<div class="form-row">
 										<div class="form-group">
 											<label for="productName">Product Name *</label> <input
@@ -310,7 +310,7 @@ p {
 												type="file" id="productImage" name="product_image"
 												accept="image/*" required>
 										</div>
-										
+
 										<div class="form-group">
 											<label for="Threshold">Threshold</label> <input type="text"
 												id="threshold" name="threshold"
@@ -320,7 +320,8 @@ p {
 
 									<button class="checkout-btn" type="submit">Add Product</button>
 								</form>
-								<a href="ProductMaintenanceServlet" class="back-btn">← Back to Dashboard</a>
+								<a href="ProductMaintenanceServlet" class="back-btn">←
+									Back to Dashboard</a>
 							</div>
 
 							<div class="cart-section">
@@ -365,6 +366,107 @@ p {
 			productImageInput.value = ""; // Reset the file input
 		});
 	</script>
+
+	<script>
+		function validateForm() {
+			const productName = document.getElementById('productName').value
+					.trim();
+			const productCategory = document.getElementById('productCategory').value;
+			const productPrice = document.getElementById('productPrice').value
+					.trim();
+			const productDiscount = document.getElementById('productDiscount').value
+					.trim();
+			const productStock = document.getElementById('productStock').value
+					.trim();
+			const productBrand = document.getElementById('productBrand').value
+					.trim();
+			const productDescription = document
+					.getElementById('productDescription').value.trim();
+			const productStatus = document.getElementById('productStatus').value;
+			const productImage = document.getElementById('productImage').files[0];
+			const threshold = document.getElementById('threshold').value.trim();
+
+			// Product Name Validation
+			if (productName === "") {
+				alert("Product Name is required.");
+				return false;
+			}
+
+			// Product Category Validation
+			if (productCategory === "") {
+				alert("Please select a product category.");
+				return false;
+			}
+
+			// Product Price Validation
+			if (productPrice === "" || isNaN(productPrice)
+					|| parseFloat(productPrice) <= 0) {
+				alert("Please enter a valid product price greater than 0.");
+				return false;
+			}
+
+			// Product Discount Validation (Optional)
+			if (productDiscount !== ""
+					&& (isNaN(productDiscount)
+							|| parseFloat(productDiscount) < 0 || parseFloat(productDiscount) > 100)) {
+				alert("Please enter a valid discount percentage between 0 and 100.");
+				return false;
+			}
+
+			// Product Stock Validation
+			if (productStock === "" || isNaN(productStock)
+					|| parseInt(productStock) < 0) {
+				alert("Please enter a valid stock quantity of 0 or more.");
+				return false;
+			}
+
+			// Product Brand Validation
+			if (productBrand === "") {
+				alert("Product Brand is required.");
+				return false;
+			}
+
+			// Product Description Validation
+			if (productDescription === "") {
+				alert("Product Description is required.");
+				return false;
+			}
+
+			// Product Status Validation
+			if (productStatus === "") {
+				alert("Please select a product status.");
+				return false;
+			}
+
+			// Product Image Validation
+			if (!productImage) {
+				alert("Product Image is required.");
+				return false;
+			}
+
+			// Validate image type (should be an image file)
+			const allowedTypes = [ 'image/jpeg', 'image/png', 'image/gif',
+					'image/webp' ];
+			if (!allowedTypes.includes(productImage.type)) {
+				alert("Please upload a valid image file (JPEG, PNG, GIF, WebP).");
+				return false;
+			}
+
+			// Threshold Validation (Optional)
+			if (threshold !== ""
+					&& (isNaN(threshold) || parseInt(threshold) < 0)) {
+				alert("Please enter a valid threshold value of 0 or more.");
+				return false;
+			}
+
+			// If all validations pass
+			return true;
+		}
+
+		// Attach validation function to the form submission
+		document.querySelector('form').onsubmit = validateForm;
+	</script>
+
 
 	<jsp:include page="/includes/footer.jsp" />
 </body>

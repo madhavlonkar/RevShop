@@ -189,4 +189,24 @@ public class CartDAO implements DAO {
             return false; // Return false if there was an exception
         }
     }
+    
+    public int getCartItemQuantity(int userId, int productId) {
+        String query = "SELECT quantity FROM tbl_cart WHERE user_id = ? AND product_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, userId);
+            stmt.setInt(2, productId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("quantity");
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Error retrieving cart item quantity for user ID: {}, product ID: {}", userId, productId, e);
+        }
+        return 0; // Default to 0 if not found
+    }
+
 }

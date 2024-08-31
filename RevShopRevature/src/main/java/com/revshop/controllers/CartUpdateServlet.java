@@ -58,6 +58,9 @@ public class CartUpdateServlet extends HttpServlet {
 
 			// Update the cart based on the action (e.g., increase or decrease quantity)
 			boolean updateSuccess = cartService.updateQuantity(cart, action);
+			if (!updateSuccess) {
+				request.setAttribute("errorMessage", "Cannot update quantity. Exceeds available stock.");
+			}
 			logger.debug("Cart update success: " + updateSuccess);
 
 			// Redirect back to the cart page to show the updated cart

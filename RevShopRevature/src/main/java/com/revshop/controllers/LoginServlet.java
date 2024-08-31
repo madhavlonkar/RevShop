@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.revature.helper.RegistrationHelper;
 import com.revshop.Entity.LoginEntity;
 import com.revshop.service.LoginService;
 import com.revshop.service.impl.LoginServiceIMPL;
@@ -48,11 +49,7 @@ public class LoginServlet extends HttpServlet {
 
         logger.debug("Attempting to log in with email: {}", email);
 
-        if (email == null || password == null) {
-            logger.warn("Email or password is missing.");
-            forwardWithError(request, response, "Username and password are required.");
-            return;
-        }
+        
 
         try {
             if (loginService.validate(email, password)) {
@@ -95,4 +92,5 @@ public class LoginServlet extends HttpServlet {
         request.setAttribute("LoginerrorMessage", errorMessage);
         request.getRequestDispatcher(LOGIN_REGISTRATION_JSP).forward(request, response);
     }
+
 }

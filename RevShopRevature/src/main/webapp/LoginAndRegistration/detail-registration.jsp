@@ -59,11 +59,11 @@
 <link rel="stylesheet" type="text/css" href="Static/css/reponsive.css">
 </head>
 <body class="user-login blog">
-		<%
-		HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
-		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
-		%>
-		<jsp:include page="/includes/header.jsp" />
+	<%
+	HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
+	com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
+	%>
+	<jsp:include page="/includes/header.jsp" />
 	<!-- main content -->
 	<div class="main-content">
 		<div class="wrap-banner">
@@ -102,7 +102,7 @@
 									<br>
 									<form id="customer-form"
 										action="/RevShopRevature/DetailRegistrationServlet"
-										method="POST">
+										method="POST" onsubmit="return validateForm()">
 										<!-- Personal Details Section -->
 										<div class="section-divider">------------------------Personal
 											Details-------------------------</div>
@@ -213,6 +213,88 @@
 		</div>
 	</div>
 	<!-- footer -->
+	<script>
+		function validateForm() {
+			// Validate personal details
+			const firstName = document.forms["customer-form"]["firstName"].value;
+			const lastName = document.forms["customer-form"]["lastName"].value;
+			const gender = document.forms["customer-form"]["gender"].value;
+			const mobile = document.forms["customer-form"]["mobile"].value;
+			const pincode = document.forms["customer-form"]["pincode"].value;
+			const billingAddress = document.forms["customer-form"]["billingAddress"].value;
+
+			// Validate company details (only if user is a seller)
+			const companyName = document.forms["customer-form"]["companyName"] ? document.forms["customer-form"]["companyName"].value
+					: null;
+			const gstNumber = document.forms["customer-form"]["gstNumber"] ? document.forms["customer-form"]["gstNumber"].value
+					: null;
+			const websiteUrl = document.forms["customer-form"]["websiteUrl"] ? document.forms["customer-form"]["websiteUrl"].value
+					: null;
+			const panNumber = document.forms["customer-form"]["panNumber"] ? document.forms["customer-form"]["panNumber"].value
+					: null;
+			const bankAccountNo = document.forms["customer-form"]["bankAccountNo"] ? document.forms["customer-form"]["bankAccountNo"].value
+					: null;
+			const ifsc = document.forms["customer-form"]["ifsc"] ? document.forms["customer-form"]["ifsc"].value
+					: null;
+
+			// Personal details validation
+			if (firstName.trim() === "") {
+				alert("First Name is required.");
+				return false;
+			}
+			if (lastName.trim() === "") {
+				alert("Last Name is required.");
+				return false;
+			}
+			if (gender === "") {
+				alert("Please select your gender.");
+				return false;
+			}
+			if (!/^\d{10}$/.test(mobile)) {
+				alert("Please enter a valid 10-digit mobile number.");
+				return false;
+			}
+			if (!/^\d{6}$/.test(pincode)) {
+				alert("Please enter a valid 6-digit pincode.");
+				return false;
+			}
+			if (billingAddress.trim() === "") {
+				alert("Billing Address is required.");
+				return false;
+			}
+
+			// Company details validation (only if user is a seller)
+			if (companyName !== null && companyName.trim() === "") {
+				alert("Company Name is required for sellers.");
+				return false;
+			}
+			if (gstNumber !== null && !/^\d{15}$/.test(gstNumber)) {
+				alert("Please enter a valid 15-digit GST Number.");
+				return false;
+			}
+			if (websiteUrl !== null && websiteUrl.trim() !== ""
+					&& !/^https?:\/\/.+/.test(websiteUrl)) {
+				alert("Please enter a valid website URL.");
+				return false;
+			}
+			if (panNumber !== null
+					&& !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panNumber)) {
+				alert("Please enter a valid PAN Number.");
+				return false;
+			}
+			if (bankAccountNo !== null && !/^\d+$/.test(bankAccountNo)) {
+				alert("Please enter a valid Bank Account Number.");
+				return false;
+			}
+			if (ifsc !== null && !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+				alert("Please enter a valid IFSC Code.");
+				return false;
+			}
+
+			return true; // If all validations pass
+		}
+	</script>
+
 	<jsp:include page="/includes/footer.jsp" />
 </body>
 </html>

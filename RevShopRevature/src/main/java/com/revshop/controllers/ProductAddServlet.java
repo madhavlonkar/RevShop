@@ -30,7 +30,7 @@ import jakarta.servlet.http.Part;
         maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class ProductAddServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = LoggerFactory.getLogger(ProductAddServlet.class);  // Logger instance
+    private static final Logger logger = LoggerFactory.getLogger(ProductAddServlet.class);
 
     public ProductAddServlet() {
         super();
@@ -59,26 +59,77 @@ public class ProductAddServlet extends HttpServlet {
 
         try {
             int sellerId = user.getUserId();
-            String productName = request.getParameter("product_name");
-            String productDescription = request.getParameter("product_description");
-            double productPrice = Double.parseDouble(request.getParameter("product_price"));
-            double productDiscount = Double.parseDouble(request.getParameter("product_discount"));
-            int productStock = Integer.parseInt(request.getParameter("product_stock"));
-            String productBrand = request.getParameter("product_brand");
-            String productCategory = request.getParameter("product_category");
-            String productStatus = request.getParameter("product_status");
-            String productTags = request.getParameter("product_tags");
-            String threshold = request.getParameter("threshold");
+            String productName = request.getParameter("product_name").trim();
+            String productDescription = request.getParameter("product_description").trim();
+            String productPriceStr = request.getParameter("product_price").trim();
+            String productDiscountStr = request.getParameter("product_discount").trim();
+            String productStockStr = request.getParameter("product_stock").trim();
+            String productBrand = request.getParameter("product_brand").trim();
+            String productCategory = request.getParameter("product_category").trim();
+            String productStatus = request.getParameter("product_status").trim();
+            String productTags = request.getParameter("product_tags").trim();
+            String thresholdStr = request.getParameter("threshold").trim();
 
-            logger.debug("Received product details - Name: {}, Price: {}, Stock: {}", productName, productPrice, productStock);
+            // Validate required fields
+            if (productName.isEmpty() || productDescription.isEmpty() || productPriceStr.isEmpty() ||
+                    productStockStr.isEmpty() || productBrand.isEmpty() || productCategory.isEmpty() ||
+                    productStatus.isEmpty() || thresholdStr.isEmpty()) {
+                forwardWithError(request, response, "All fields marked with * are required.");
+                return;
+            }
 
-            String uploadDirectory = "C:\\Users\\Maddy\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
+            // Validate numeric fields
+            double productPrice = 0;
+            double productDiscount = 0;
+            int productStock = 0;
+            int threshold = 0;
 
-            // Retrieve the uploaded file
+            try {
+                productPrice = Double.parseDouble(productPriceStr);
+                if (productPrice <= 0) {
+                    forwardWithError(request, response, "Product price must be greater than 0.");
+                    return;
+                }
+
+                if (!productDiscountStr.isEmpty()) {
+                    productDiscount = Double.parseDouble(productDiscountStr);
+                    if (productDiscount < 0 || productDiscount > 100) {
+                        forwardWithError(request, response, "Product discount must be between 0 and 100.");
+                        return;
+                    }
+                }
+
+                productStock = Integer.parseInt(productStockStr);
+                if (productStock < 0) {
+                    forwardWithError(request, response, "Product stock must be 0 or greater.");
+                    return;
+                }
+
+                threshold = Integer.parseInt(thresholdStr);
+                if (threshold < 0) {
+                    forwardWithError(request, response, "Threshold must be 0 or greater.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                forwardWithError(request, response, "Invalid number format in one of the fields.");
+                return;
+            }
+
+            // Validate image upload
             Part filePart = request.getPart("product_image");
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            if (filePart == null || filePart.getSize() == 0) {
+                forwardWithError(request, response, "Product image is required.");
+                return;
+            }
 
-            // Create a path for the file
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            if (!isValidImageType(filePart)) {
+                forwardWithError(request, response, "Please upload a valid image file (JPEG, PNG, GIF, WebP).");
+                return;
+            }
+
+            // Define the upload directory
+            String uploadDirectory = "C:\\Users\\Maddy\\git\\RevShop\\RevShopRevature\\src\\main\\webapp\\Static\\img\\home\\";
             Path filePath = Paths.get(uploadDirectory + fileName);
             Files.copy(filePart.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             logger.debug("File uploaded to: {}", filePath);
@@ -98,7 +149,7 @@ public class ProductAddServlet extends HttpServlet {
             product.setProductStatus(productStatus);
             product.setProductTags(productTags);
             product.setSellerId(sellerId);
-            product.setThreshold(Integer.parseInt(threshold));
+            product.setThreshold(threshold);
             product.setProductImage(imagePath);
 
             logger.debug("Product entity created: {}", product);
@@ -116,9 +167,23 @@ public class ProductAddServlet extends HttpServlet {
             }
         } catch (Exception e) {
             logger.error("Error occurred while adding product", e);
-            response.sendRedirect("Seller/addproduct.jsp");
+            forwardWithError(request, response, "An error occurred while adding the product. Please try again.");
         }
 
         logger.debug("Exiting doPost() method in ProductAddServlet");
+    }
+
+    private boolean isValidImageType(Part part) {
+        String contentType = part.getContentType();
+        return contentType.equals("image/jpeg") ||
+               contentType.equals("image/png") ||
+               contentType.equals("image/gif") ||
+               contentType.equals("image/webp");
+    }
+
+    private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
+            throws ServletException, IOException {
+        request.setAttribute("errorMessage", errorMessage);
+        request.getRequestDispatcher("Seller/addproduct.jsp").forward(request, response);
     }
 }

@@ -494,6 +494,61 @@ to {
 					window.print();
 				});
 	</script>
+	
+	<script>
+            document.getElementById('submitComment').addEventListener('click', function(event) {
+                // Prevent the form submission to validate
+                event.preventDefault();
+
+                // Validate Rating
+                var ratingChecked = false;
+                var ratingElements = document.getElementsByName('rating');
+                for (var i = 0; i < ratingElements.length; i++) {
+                    if (ratingElements[i].checked) {
+                        ratingChecked = true;
+                        break;
+                    }
+                }
+
+                if (!ratingChecked) {
+                    alert("Please select a rating.");
+                    return false;
+                }
+
+                // Validate Name
+                var name = document.querySelector('input[name="name"]').value.trim();
+                if (name === "") {
+                    alert("Please enter your name.");
+                    return false;
+                }
+                if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    alert("Please enter a valid name (letters and spaces only).");
+                    return false;
+                }
+
+                // Validate Email
+                var email = document.querySelector('input[name="email"]').value.trim();
+                var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                if (email === "") {
+                    alert("Please enter your email.");
+                    return false;
+                }
+                if (!emailPattern.test(email)) {
+                    alert("Please enter a valid email address.");
+                    return false;
+                }
+
+                // Validate Review
+                var review = document.querySelector('textarea[name="review"]').value.trim();
+                if (review === "") {
+                    alert("Please write your review.");
+                    return false;
+                }
+
+                // If all validations pass, submit the form
+                document.getElementById('write-review-section').submit();
+            });
+        </script>
 	<!-- Vendor JS -->
 	<jsp:include page="/includes/footer.jsp" />
 </body>

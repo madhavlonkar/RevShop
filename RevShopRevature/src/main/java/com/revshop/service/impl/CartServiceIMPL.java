@@ -29,6 +29,11 @@ public class CartServiceIMPL implements CartService {
         try {
             ProductEntity product = productService.getProductById(cartItem.getProductId());
 
+            if (product.getProductStock() < 1) {
+                logger.warn("Attempted to add product ID {} to cart, but stock is insufficient", cartItem.getProductId());
+                return false; // Prevent adding to cart if no stock is available
+            }
+
             cartItem.setImgUrl(product.getProductImage());
             cartItem.setProductDiscount(product.getProductDiscount());
             cartItem.setProductName(product.getProductName());
@@ -51,22 +56,20 @@ public class CartServiceIMPL implements CartService {
     }
 
     @Override
-    public List<CartEntity> getCart(int userId) {
-        logger.debug("Retrieving cart for user ID {}", userId);
-        try {
-            List<CartEntity> userCart = cartDAO.getCartByUserId(userId);
-            logger.info("Retrieved {} items in cart for user ID {}", userCart.size(), userId);
-            return userCart;
-        } catch (Exception e) {
-            logger.error("Error retrieving cart for user ID {}", userId, e);
-            return null;
-        }
-    }
-
-    @Override
     public boolean updateQuantity(CartEntity cart, String action) {
         logger.debug("Updating quantity for product ID {} in cart for user ID {} with action {}", cart.getProductId(), cart.getUserId(), action);
         try {
+            ProductEntity product = productService.getProductById(cart.getProductId());
+            int currentQuantityInCart = cartDAO.getCartItemQuantity(cart.getUserId(), cart.getProductId());
+
+            if ("increase".equals(action)) {
+                if (currentQuantityInCart + 1 > product.getProductStock()) {
+                    logger.warn("Attempted to increase quantity for product ID {} to {} in cart for user ID {}, but stock is insufficient", 
+                        cart.getProductId(), currentQuantityInCart + 1, cart.getUserId());
+                    return false; // Prevent increasing if it exceeds available stock
+                }
+            }
+
             boolean update = cartDAO.update(cart, action);
             if (update) {
                 logger.info("Quantity updated successfully for product ID {} in cart for user ID {}", cart.getProductId(), cart.getUserId());
@@ -77,6 +80,19 @@ public class CartServiceIMPL implements CartService {
         } catch (Exception e) {
             logger.error("Error updating quantity for product ID {} in cart for user ID {}", cart.getProductId(), cart.getUserId(), e);
             return false;
+        }
+    }
+
+    @Override
+    public List<CartEntity> getCart(int userId) {
+        logger.debug("Retrieving cart for user ID {}", userId);
+        try {
+            List<CartEntity> userCart = cartDAO.getCartByUserId(userId);
+            logger.info("Retrieved {} items in cart for user ID {}", userCart.size(), userId);
+            return userCart;
+        } catch (Exception e) {
+            logger.error("Error retrieving cart for user ID {}", userId, e);
+            return null;
         }
     }
 
