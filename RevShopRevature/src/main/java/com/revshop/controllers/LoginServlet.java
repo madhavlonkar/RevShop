@@ -49,8 +49,6 @@ public class LoginServlet extends HttpServlet {
 
         logger.debug("Attempting to log in with email: {}", email);
 
-        
-
         try {
             if (loginService.validate(email, password)) {
                 logger.info("User validation successful for email: {}", email);
@@ -59,17 +57,14 @@ public class LoginServlet extends HttpServlet {
                 LoginEntity user = loginService.findByEmail(email);
 
                 if (user != null) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("user", user);
-                    logger.debug("User details added to session: {}", user);
-
-                    // Check if it's the user's first login
                     if (user.isFirstLogin()) {
                         logger.info("First login detected for user: {}", email);
-                        response.sendRedirect(DETAIL_REGISTRATION_JSP);
+                        request.setAttribute("Firstuser", user); // Store user object temporarily
+                        request.getRequestDispatcher(DETAIL_REGISTRATION_JSP).forward(request, response);
                     } else {
-                        // Redirect to the home page after a normal login
-                        logger.info("Normal login, redirecting to HomeServlet for user: {}", email);
+                        HttpSession session = request.getSession();
+                        session.setAttribute("user", user);
+                        logger.debug("User details added to session: {}", user);
                         response.sendRedirect("HomeServlet");
                     }
                 } else {
@@ -85,6 +80,7 @@ public class LoginServlet extends HttpServlet {
             forwardWithError(request, response, "An unexpected error occurred. Please try again later.");
         }
     }
+
 
     private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
             throws ServletException, IOException {

@@ -54,7 +54,8 @@ public class ProductMaintenanceServlet extends HttpServlet {
                     logger.debug("Products retrieved by category: {}", products.size());
                 } else {
                     // If no category or search query is provided, show all products of the seller
-                    products = productService.getProductsBySellerId(sellerId);
+                	category="electronics";
+                	products = productService.getProductsByCategoryAndSeller(category, sellerId);
                     logger.debug("All products retrieved for seller: {}", products.size());
                 }
 

@@ -60,8 +60,8 @@
 </head>
 <body class="user-login blog">
 	<%
-	HttpSession s = request.getSession(false); // Use false to prevent creating a new session if one doesn't exist
-	com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) (s != null ? s.getAttribute("user") : null);
+		// Retrieve the LoginEntity object from the request attribute "Firstuser"
+		com.revshop.Entity.LoginEntity user = (com.revshop.Entity.LoginEntity) request.getAttribute("Firstuser");
 	%>
 	<jsp:include page="/includes/header.jsp" />
 	<!-- main content -->
@@ -103,6 +103,16 @@
 									<form id="customer-form"
 										action="/RevShopRevature/DetailRegistrationServlet"
 										method="POST" onsubmit="return validateForm()">
+										
+										<!-- Email Section (display only, no input) -->
+										<div class="row">
+											<div class="form-group col-md-12">
+												<label>Email:</label>
+												<p><strong><%= user != null ? user.getEmail() : "" %></strong></p>
+												<input type="hidden" name="email" value="<%=user != null ? user.getEmail() : "" %>">
+											</div>
+										</div>
+
 										<!-- Personal Details Section -->
 										<div class="section-divider">------------------------Personal
 											Details-------------------------</div>
@@ -142,15 +152,12 @@
 											</div>
 										</div>
 
+										<!-- Hidden field for user ID -->
 										<%
-										// Retrieve the LoginEntity object from the session
-
-										// Add a hidden field to pass the userId or email for updating the user
+										// Add a hidden field to pass the userId for updating the user
 										if (user != null) {
 										%>
-										<input type="hidden" name="userId"
-											value="<%=user.getUserId()%>"> <input type="hidden"
-											name="email" value="<%=user.getEmail()%>">
+										<input type="hidden" name="userId" value="<%=user.getUserId()%>">
 										<%
 										}
 
