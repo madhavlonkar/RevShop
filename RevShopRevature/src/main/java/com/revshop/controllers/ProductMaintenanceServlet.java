@@ -10,6 +10,7 @@ import com.revshop.Entity.LoginEntity;
 import com.revshop.Entity.ProductEntity;
 import com.revshop.service.ProductService;
 import com.revshop.service.impl.ProductServiceIMPL;
+import com.revshop.utility.EcommerceEmailUtility;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -66,6 +67,30 @@ public class ProductMaintenanceServlet extends HttpServlet {
                 List<ProductEntity> lowStockProducts = productService.getLowStockProducts(sellerId);
                 request.setAttribute("lowStockProducts", lowStockProducts);
                 logger.debug("Low stock products retrieved: {}", lowStockProducts.size());
+
+                if (!lowStockProducts.isEmpty()) {
+                    // Prepare the email content
+                    StringBuilder emailContent = new StringBuilder();
+                    emailContent.append("<h2>Low Stock Alert</h2>");
+                    emailContent.append("<p>The following products are below the threshold value:</p>");
+                    emailContent.append("<table border='1'><tr><th>Product Name</th><th>Current Quantity</th><th>Threshold</th></tr>");
+
+                    for (ProductEntity product : lowStockProducts) {
+                        emailContent.append("<tr><td>")
+                            .append(product.getProductName())
+                            .append("</td><td>")
+                            .append(product.getProductStock())
+                            .append("</td><td>")
+                            .append(product.getThreshold())
+                            .append("</td></tr>");
+               
+                    }
+                    emailContent.append("</table>");
+
+                    // Send the email to the seller
+                    EcommerceEmailUtility.sendOrderNotificationToSeller(user.getEmail(), "Low Stock Alert", emailContent.toString());
+                    logger.debug("Low stock alert email sent to seller: {}", user.getEmail());
+                }
 
                 request.getRequestDispatcher("Seller/SellerDashboard.jsp").forward(request, response);
                 logger.debug("Forwarded to Seller/SellerDashboard.jsp");

@@ -1,7 +1,10 @@
 package com.revshop.utility;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
@@ -14,72 +17,51 @@ import javax.mail.internet.MimeMultipart;
 
 public class EcommerceEmailUtility {
 
-    // SMTP server credentials
-    private static final String SMTP_HOST = "smtp-relay.sendinblue.com";
-    private static final String SMTP_PORT = "587";
-    private static final String SMTP_USERNAME = "vayavi6626@yasiok.com";
-    private static final String SMTP_PASSWORD = "ZDgPTAzQnXOcsESY";
-    private static final String FROM_EMAIL = "java88pro@gmail.com";
+    private static final Properties props = new Properties();
 
-    /**
-     * Sends an order confirmation email to the buyer.
-     *
-     * @param buyerEmail the buyer's email address
-     * @param subject    the email subject
-     * @param message    the email message
-     */
+    static {
+        try (InputStream input = EcommerceEmailUtility.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if (input == null) {
+                throw new IOException("Sorry, unable to find application.properties");
+            }
+            props.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void sendOrderConfirmationToBuyer(String buyerEmail, String subject, String message) {
         sendEmail(buyerEmail, subject, message, null);
     }
 
-    /**
-     * Sends an order notification email to the seller.
-     *
-     * @param sellerEmail the seller's email address
-     * @param subject     the email subject
-     * @param message     the email message
-     */
     public static void sendOrderNotificationToSeller(String sellerEmail, String subject, String message) {
         sendEmail(sellerEmail, subject, message, null);
     }
 
-    /**
-     * Sends an email with optional attachment.
-     *
-     * @param recipientEmail the recipient's email address
-     * @param subject        the email subject
-     * @param message        the email message
-     * @param attachmentPath the path to the file to attach (optional)
-     */
     private static void sendEmail(String recipientEmail, String subject, String message, String attachmentPath) {
 
-        // Create all the needed properties
         Properties connectionProperties = new Properties();
-        connectionProperties.put("mail.smtp.host", SMTP_HOST);
+        connectionProperties.put("mail.smtp.host", props.getProperty("smtp.host"));
         connectionProperties.put("mail.smtp.auth", "true");
-        connectionProperties.put("mail.smtp.socketFactory.port", SMTP_PORT);
+        connectionProperties.put("mail.smtp.socketFactory.port", props.getProperty("smtp.port"));
         connectionProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        connectionProperties.put("mail.smtp.port", SMTP_PORT);
+        connectionProperties.put("mail.smtp.port", props.getProperty("smtp.port"));
 
-        // Create the session
         Session session = Session.getDefaultInstance(connectionProperties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
+                return new PasswordAuthentication(props.getProperty("smtp.username"), props.getProperty("smtp.password"));
             }
         });
 
         try {
-            // Create the message
             Message emailMessage = new MimeMessage(session);
-            emailMessage.setFrom(new InternetAddress(FROM_EMAIL));
+            emailMessage.setFrom(new InternetAddress(props.getProperty("email.from")));
             emailMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             emailMessage.setSubject(subject);
 
             if (attachmentPath == null || attachmentPath.isEmpty()) {
-                // Simple text email
                 emailMessage.setText(message);
             } else {
-                // Email with attachment
                 MimeBodyPart mimeBodyPart = new MimeBodyPart();
                 mimeBodyPart.setContent(message, "text/html");
 
@@ -93,7 +75,6 @@ public class EcommerceEmailUtility {
                 emailMessage.setContent(multipart);
             }
 
-            // Send the message
             Transport.send(emailMessage);
             System.out.println("Email sent successfully to " + recipientEmail);
 
