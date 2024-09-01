@@ -265,9 +265,12 @@ p {
 													<%="electronics".equals(product.getProductCategory()) ? "selected" : ""%>>Electronics</option>
 												<option value="fashion"
 													<%="fashion".equals(product.getProductCategory()) ? "selected" : ""%>>Fashion</option>
-												<option value="home_decor"
-													<%="home_decor".equals(product.getProductCategory()) ? "selected" : ""%>>Home
-													Decor</option>
+												<option value="HomeAppliances"
+													<%="HomeAppliances".equals(product.getProductCategory()) ? "selected" : ""%>>HomeAppliances</option>
+												<option value="Books"
+													<%="Books".equals(product.getProductCategory()) ? "selected" : ""%>>Books</option>
+												<option value="Sports"
+													<%="Sports".equals(product.getProductCategory()) ? "selected" : ""%>>Sports</option>
 											</select>
 										</div>
 									</div>
