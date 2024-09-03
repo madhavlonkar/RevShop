@@ -1,1 +1,1 @@
-Deleted Application.properties File For Security Purposes Need To Create one Berfore Cloning Project
+Deleted Application.properties File For Security Purposes Need To Create one Before Using it Project
