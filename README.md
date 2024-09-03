@@ -1,1 +1,8 @@
-Deleted Application.properties File For Security Purposes Need To Create one Before Using it Project
+Technology Used:
+-JDBC
+-Servlet
+-HTML,CSS,JS
+-MYSQL (Hikari CP)
+
+Algorithm:
+-Bcrypt
